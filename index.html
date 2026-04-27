@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theodoro & Porto — Advocacia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preload" href="group.png" as="image" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:      #133F3B;
+      --forest-dark: #0d2e2b;
+      --forest-deep: #081a18;
+      --gold:        #C9A84C;
+      --gold-light:  #E2C068;
+      --gold-dim:    rgba(201,168,76,.12);
+      --cream:       #FAFAF8;
+      --cream-2:     #F3F0E8;
+      --cream-3:     #E8E4D8;
+      --text:        #1A1A1A;
+      --text-mid:    #5A574F;
+      --text-light:  #908C84;
+      --r:           14px;
+      --shadow-lg:   0 12px 56px rgba(8,26,24,.16);
+    }
+
+    html { scroll-behavior: auto; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── PRELOADER ── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 10000;
+      background: var(--forest-deep);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .pre-logo { display: flex; align-items: center; justify-content: center; }
+    .pre-logo img { height: clamp(80px, 18vw, 130px); width: auto; }
+    .pre-prog { width: 180px; height: 1px; background: rgba(201,168,76,.2); }
+    .pre-bar  { height: 100%; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+
+    /* ── NAV ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: 76px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; transition: background .4s, border-color .4s;
+    }
+    #nav.scrolled {
+      background: rgba(8,26,24,.94); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,.12);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 110px; width: auto; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: .78rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(250,250,248,.6); text-decoration: none; position: relative; transition: color .2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: right; transition: transform .3s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+    .nav-cta {
+      font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--forest-deep); background: var(--gold); text-decoration: none;
+      padding: .6rem 1.4rem; border-radius: 4px; transition: background .2s;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 16px rgba(201,168,76,.5);
+    }
+    .nav-cta::after {
+      content: '';
+      position: absolute; top: 0; left: -75%;
+      width: 50%; height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.45) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: shimmer 2.4s ease-in-out infinite;
+    }
+    .nav-cta:hover { background: var(--gold-light); }
+    .nav-burger { display: none; flex-direction: column; gap: 6px; background: none; border: none; cursor: pointer; }
+    .nav-burger span { width: 26px; height: 1.5px; background: var(--cream); transition: .3s; }
+
+    /* ── MOBILE MENU ── */
+    #mob-menu {
+      position: fixed; inset: 0; z-index: 999;
+      background: var(--forest-deep);
+      display: flex; align-items: center; justify-content: center;
+      clip-path: circle(0% at calc(100% - 5vw - 13px) 38px);
+      transition: clip-path .65s cubic-bezier(.77,0,.18,1);
+    }
+    #mob-menu.open { clip-path: circle(150% at calc(100% - 5vw - 13px) 38px); }
+    #mob-menu ul   { list-style: none; text-align: center; }
+    #mob-menu li   { overflow: hidden; margin-bottom: .5rem; }
+    #mob-menu a {
+      display: block; font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem,6vw,3.5rem); color: var(--cream); text-decoration: none;
+      transform: translateY(110%); transition: transform .5s cubic-bezier(.77,0,.18,1), color .2s;
+    }
+    #mob-menu.open a  { transform: translateY(0); }
+    #mob-menu a:hover { color: var(--gold); }
+
+    /* ── LINE MASK ── */
+    .lm  { display: block; overflow: hidden; }
+    .lm > span { display: block; transform: translateY(110%); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1.05fr .95fr;
+      align-items: center; gap: 4vw;
+      background: var(--forest-deep);
+      padding: 120px 5vw 80px; overflow: hidden; position: relative;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(201,168,76,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.035) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(ellipse 90% 90% at 30% 50%, black, transparent);
+    }
+    .hero-glow {
+      position: absolute; top: 40%; left: 25%; transform: translate(-50%,-50%);
+      width: 500px; height: 400px; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(19,63,59,.55), transparent 70%);
+      filter: blur(70px);
+    }
+    /* LEFT */
+    .hero-left { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: .68rem; font-weight: 600; letter-spacing: .25em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 1.75rem;
+    }
+    .hero-h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+      font-weight: 400; color: var(--cream);
+      line-height: 1.08; margin-bottom: 1.5rem;
+    }
+    .hero-h1 em { font-style: normal; color: var(--gold); font-weight: 800; }
+    .hero-sub {
+      font-size: clamp(.9rem,1.2vw,1rem); font-weight: 300;
+      color: rgba(250,250,248,.5); max-width: 480px; margin-bottom: 2.5rem; line-height: 1.8;
+    }
+    /* Google rating badge no hero */
+    .hero-rating {
+      display: flex; width: fit-content; align-items: center; gap: .35rem;
+      margin-top: .85rem; margin-bottom: 1.5rem;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 30px; padding: .35rem .85rem;
+    }
+    .hr-score { font-family: 'Syne', sans-serif; font-size: .78rem; font-weight: 600; color: var(--cream); }
+    .hr-stars  { color: #FBBC05; font-size: .68rem; letter-spacing: .04em; }
+    .hr-sep    { color: rgba(250,250,248,.3); font-size: .68rem; }
+    .hr-count  { font-size: .62rem; color: rgba(250,250,248,.45); letter-spacing: .02em; }
+
+    /* CTA */
+    .btn-modal {
+      display: inline-flex; align-items: center; gap: .65rem;
+      background: var(--gold); color: var(--forest-deep);
+      font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      padding: 1rem 2rem; border-radius: 4px; border: none; cursor: pointer;
+      transition: background .2s; font-family: 'Inter', sans-serif;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 18px rgba(201,168,76,.55);
+    }
+    .btn-modal::after {
+      content: '';
+      position: absolute; top: 0; left: -75%;
+      width: 50%; height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.45) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: shimmer 2.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { left: -75%; }
+      60%  { left: 125%; }
+      100% { left: 125%; }
+    }
+    .btn-modal svg { width: 16px; height: 16px; transition: transform .2s; }
+    .btn-modal:hover { background: var(--gold-light); }
+    .btn-modal:hover svg { transform: translateX(4px); }
+    /* RIGHT: group photo */
+    .hero-right {
+      position: static;
+    }
+    .hero-img {
+      position: absolute;
+      right: -8vw;
+      bottom: -8vh;
+      height: 120vh;
+      width: auto;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 24px 60px rgba(0,0,0,.5));
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* scroll hint */
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 5vw;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .hero-scroll span { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(250,250,248,.25); }
+    .s-line { width: 40px; height: 1px; background: linear-gradient(to right, var(--gold), transparent); animation: sline 2s ease-in-out infinite; }
+    @keyframes sline { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 5000;
+      background: rgba(8,26,24,.75); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--cream); border-radius: 20px;
+      padding: 2.5rem; width: 90%; max-width: 480px;
+      transform: translateY(24px) scale(.97);
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      position: relative; overflow: hidden;
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+    .modal-close {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--cream-2); border: none; cursor: pointer;
+      font-size: .9rem; color: var(--text-mid);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; z-index: 2;
+    }
+    .modal-close:hover { background: var(--cream-3); }
+
+    /* Steps progress */
+    .modal-progress {
+      display: flex; align-items: center; gap: 0; margin-bottom: 2rem;
+    }
+    .mp-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cream-3); transition: background .3s, transform .3s;
+      flex-shrink: 0;
+    }
+    .mp-dot.active { background: var(--gold); transform: scale(1.25); }
+    .mp-dot.done   { background: var(--forest); }
+    .mp-line {
+      flex: 1; height: 1px; background: var(--cream-3);
+      transition: background .3s;
+    }
+    .mp-line.done  { background: var(--forest); }
+
+    /* Step panels */
+    .modal-step {
+      display: none; animation: stepIn .3s ease;
+    }
+    .modal-step.active { display: block; }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .modal-tag {
+      font-size: .65rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .75rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .modal-tag::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 400; color: var(--text); margin-bottom: 1.5rem; line-height: 1.2;
+    }
+    .modal-title em { font-style: normal; color: var(--forest); }
+    .m-field { margin-bottom: 1rem; }
+    .m-field label {
+      display: block; font-size: .62rem; font-weight: 600; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--text-light); margin-bottom: .4rem;
+    }
+    .m-field input, .m-field textarea {
+      width: 100%; background: var(--cream-2); border: 1px solid var(--cream-3);
+      border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif;
+      font-size: .9rem; padding: .7rem 1rem; outline: none; transition: border-color .2s;
+    }
+    .m-field input:focus, .m-field textarea:focus { border-color: var(--forest); }
+    .m-field textarea { resize: none; height: 120px; }
+
+    /* Buttons */
+    .modal-next {
+      width: 100%; padding: .85rem 1.5rem; margin-top: .5rem;
+      background: var(--forest); color: var(--cream); border: none; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+      transition: background .2s, opacity .2s;
+    }
+    .modal-next:hover { background: var(--forest-dark); }
+    .modal-nav { display: flex; gap: .75rem; margin-top: .5rem; }
+    .modal-nav .modal-next { flex: 1; margin-top: 0; }
+    .modal-back {
+      background: none; border: 1px solid var(--cream-3); border-radius: 8px;
+      color: var(--text-mid); font-family: 'Inter', sans-serif; font-size: .8rem;
+      font-weight: 600; padding: .85rem 1.2rem; cursor: pointer; transition: border-color .2s, color .2s;
+      white-space: nowrap;
+    }
+    .modal-back:hover { border-color: var(--forest); color: var(--forest); }
+    .modal-back-solo { width: 100%; margin-top: .75rem; text-align: center; }
+
+    /* Analysis box */
+    .modal-analysis {
+      border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+    }
+    .ma-icon { font-size: 2rem; margin-bottom: .5rem; }
+    .ma-label {
+      font-size: .6rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+      margin-bottom: .4rem;
+    }
+    .ma-title {
+      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 600;
+      margin-bottom: .4rem; color: var(--text);
+    }
+    .ma-desc { font-size: .82rem; color: var(--text-mid); line-height: 1.6; }
+    .modal-analysis.match   { background: #eaf7ee; }
+    .modal-analysis.match .ma-label   { color: #1a7a3c; }
+    .modal-analysis.nomatch { background: var(--cream-2); }
+    .modal-analysis.nomatch .ma-label { color: var(--text-light); }
+
+    .btn-wpp {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: .75rem;
+      background: #25D366; color: #fff; border: none; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; padding: .9rem;
+      cursor: pointer; transition: background .2s; text-decoration: none;
+    }
+    .btn-wpp:hover { background: #1ebe5d; }
+    .btn-wpp svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* ── TICKER ── */
+    .ticker { background: var(--gold); overflow: hidden; height: 46px; display: flex; align-items: center; }
+    .ticker-track {
+      display: flex; align-items: center; gap: 0; white-space: nowrap; will-change: transform;
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 2rem; padding-right: 2rem; flex-shrink: 0;
+    }
+    .ticker-track span { font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--forest-deep); flex-shrink: 0; }
+    .ticker-track .sep { opacity: .35; }
+
+    /* ── STATS ── */
+    #stats { background: var(--cream-2); padding: 80px 5vw; }
+    .stats-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      background: var(--cream-3); border: 1px solid var(--cream-3);
+      border-radius: var(--r); overflow: hidden;
+    }
+    .stat-item {
+      padding: 2.5rem 2rem; text-align: center;
+      background: var(--cream-2); border-right: 1px solid var(--cream-3);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-top { display: flex; align-items: flex-end; justify-content: center; gap: .1rem; margin-bottom: .5rem; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem,4vw,3.2rem); color: var(--forest); line-height: 1; }
+    .stat-sfx { font-family: 'Syne', sans-serif; font-size: 1.4rem; color: var(--gold); }
+    .stat-label { font-size: .68rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-light); }
+
+    /* ── SECTION COMMONS ── */
+    .s-label { display: inline-flex; align-items: center; gap: .65rem; font-size: .66rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; }
+    .s-lline { display: block; width: 28px; height: 1px; background: var(--gold); }
+    .s-title { font-family: 'Syne', sans-serif; font-size: clamp(1.9rem,3.5vw,3rem); font-weight: 400; line-height: 1.15; margin-bottom: 1rem; }
+    .s-title em { font-style: normal; color: var(--gold); font-weight: 800; }
+    .s-title.light { color: var(--cream); }
+    .s-sub { font-size: .95rem; font-weight: 300; color: var(--text-mid); line-height: 1.8; }
+    .s-sub.light { color: rgba(250,250,248,.5); }
+
+    /* ── ÁREAS ── */
+    #areas { padding: 120px 5vw; background: var(--cream); }
+    .areas-top {
+      max-width: 1200px; margin: 0 auto 4rem;
+      display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .areas-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5px;
+      background: var(--cream-3); border: 1.5px solid var(--cream-3);
+      border-radius: var(--r); overflow: hidden;
+    }
+    .area-card {
+      background: var(--cream); padding: 2.5rem;
+      position: relative; overflow: hidden;
+      transition: background .3s;
+      text-decoration: none; display: block; cursor: pointer;
+    }
+    .area-card:last-child {
+      grid-column: 1 / -1;
+      display: flex; align-items: center; justify-content: space-between; gap: 3rem;
+    }
+    .area-card:last-child .ac-desc { margin-bottom: 0; max-width: 520px; }
+    .area-card:last-child .ac-arrow { flex-shrink: 0; font-size: 1.5rem; margin-top: 0; }
+    .area-card:last-child::before { font-size: 8rem; top: -1.5rem; }
+    .ac-card-left { flex: 1; }
+    .area-card::before {
+      content: attr(data-n);
+      position: absolute; top: -.8rem; right: 1.25rem;
+      font-family: 'Syne', sans-serif; font-size: 5.5rem; font-weight: 600;
+      color: var(--forest); opacity: .04; line-height: 1;
+    }
+    .area-card:hover { background: var(--forest); }
+    .area-card:hover .ac-title { color: var(--cream); }
+    .area-card:hover .ac-desc  { color: rgba(250,250,248,.6); }
+    .area-card:hover .ac-arrow { color: var(--gold); transform: translateX(5px); }
+    .area-card:hover .ac-num   { color: var(--gold-light); }
+    .ac-num   { font-size: .62rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; transition: color .3s; }
+    .ac-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: .75rem; transition: color .3s; }
+    .ac-desc  { font-size: .875rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 1.5rem; transition: color .3s; }
+    .ac-arrow { font-size: 1.2rem; color: var(--text-light); display: inline-block; transition: color .3s, transform .3s; }
+
+    /* ── SOBRE ── */
+    #sobre { background: var(--forest-deep); padding: 120px 5vw; }
+    .sobre-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: start;
+    }
+    .sobre-left p { font-size: .95rem; font-weight: 300; color: rgba(250,250,248,.55); line-height: 1.85; margin-bottom: 1.1rem; }
+    .sobre-values { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2rem; }
+    .v-chip { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,.3); padding: .35rem .9rem; border-radius: 30px; }
+    .sqc { background: rgba(19,63,59,.3); border: 1px solid rgba(201,168,76,.15); border-radius: var(--r); padding: 2.5rem; margin-bottom: 1.5rem; position: relative; }
+    .sqc-mark { font-family: 'Syne', sans-serif; font-size: 4.5rem; line-height: .8; color: var(--gold); opacity: .2; position: absolute; top: 1.5rem; left: 2rem; }
+    .sqc-text { font-family: 'Syne', sans-serif; font-size: clamp(.95rem,1.6vw,1.2rem); font-style: normal; font-weight: 400; color: rgba(250,250,248,.8); line-height: 1.85; position: relative; z-index: 1; margin-bottom: 1.5rem; padding-top: 1.75rem; }
+    .sqc-cite { font-size: .75rem; font-weight: 500; letter-spacing: .06em; color: var(--gold); }
+    .sobre-mini { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.1); border-radius: 10px; overflow: hidden; }
+    .smi { padding: 1.25rem; background: rgba(19,63,59,.2); text-align: center; }
+    .smi strong { display: block; font-family: 'Syne', sans-serif; font-size: 1.5rem; color: var(--gold); font-weight: 400; }
+    .smi span { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(250,250,248,.35); }
+
+    /* ── EQUIPE ── */
+    #equipe { padding: 120px 5vw; background: var(--cream-2); }
+    .equipe-top { max-width: 1200px; margin: 0 auto 3.5rem; }
+    #equipe-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; gap: 1.5rem;
+    }
+    #equipe-grid[data-cols="1"] { grid-template-columns: 1fr; }
+    #equipe-grid[data-cols="2"] { grid-template-columns: repeat(2,1fr); }
+    #equipe-grid[data-cols="3"] { grid-template-columns: repeat(3,1fr); }
+    #equipe-grid[data-cols="4"] { grid-template-columns: repeat(4,1fr); }
+    .membro { cursor: default; }
+    .membro-photo {
+      position: relative; overflow: hidden; border-radius: var(--r);
+      margin-bottom: 1.1rem; aspect-ratio: 3/4;
+      background: linear-gradient(145deg, var(--forest-dark), var(--forest-deep));
+    }
+    .photo-init {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 3.5rem; color: rgba(201,168,76,.3);
+    }
+    .photo-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,26,24,.95) 0%, rgba(8,26,24,.4) 60%, transparent 100%);
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem;
+      opacity: 0; transition: opacity .35s;
+    }
+    .membro:hover .photo-ov { opacity: 1; }
+    .photo-ov p { font-size: .82rem; color: rgba(250,250,248,.82); line-height: 1.6; transform: translateY(8px); transition: transform .35s; }
+    .membro:hover .photo-ov p { transform: translateY(0); }
+    .membro-name { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--text); margin-bottom: .2rem; }
+    .membro-role { font-size: .68rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+
+    /* ── MISSÃO VISÃO VALORES ── */
+    #mvv { padding: 120px 5vw; background: var(--cream); }
+    .mvv-inner { max-width: 1200px; margin: 0 auto; }
+    .mvv-top-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 5rem;
+    }
+    .mvv-card {
+      background: var(--forest-deep); border-radius: 16px; padding: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .mvv-card::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,.12), transparent 70%);
+      pointer-events: none;
+    }
+    .mvv-card-label {
+      font-size: .6rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .mvv-card-label::before { content: ''; width: 18px; height: 1px; background: var(--gold); }
+    .mvv-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 600;
+      color: var(--cream); margin-bottom: 1rem; line-height: 1.2;
+    }
+    .mvv-card p { font-size: .9rem; color: rgba(250,250,248,.5); line-height: 1.85; font-weight: 300; }
+
+    .mvv-valores-header { margin-bottom: 2.5rem; }
+    .mvv-valores-header h3 {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 600; color: var(--text); margin-bottom: .6rem;
+    }
+    .mvv-valores-header p { font-size: .9rem; color: var(--text-mid); max-width: 560px; line-height: 1.75; }
+    .mvv-valores-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+    }
+    .mvv-valor {
+      background: var(--cream-2); border-radius: 14px; padding: 1.75rem;
+      border-left: 3px solid var(--gold); transition: box-shadow .25s, transform .25s;
+    }
+    .mvv-valor:hover { box-shadow: 0 6px 24px rgba(0,0,0,.07); transform: translateY(-3px); }
+    .mvv-valor-name {
+      font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 600;
+      color: var(--text); margin-bottom: .6rem;
+    }
+    .mvv-valor p { font-size: .85rem; color: var(--text-mid); line-height: 1.75; }
+
+    @media (max-width: 900px) {
+      .mvv-top-grid { grid-template-columns: 1fr; }
+      .mvv-valores-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      #mvv { padding: 72px 5vw; }
+      .mvv-valores-grid { grid-template-columns: 1fr; }
+      .mvv-card { padding: 1.75rem; }
+    }
+
+    /* ── DEPOIMENTOS: INFINITE MARQUEE ── */
+    #depoimentos { padding: 120px 0; background: var(--forest-deep); overflow: hidden; }
+    .depo-header { padding: 0 5vw; margin-bottom: 3.5rem; }
+    .depo-marquee-wrap { overflow: hidden; }
+    .depo-marquee {
+      display: flex; gap: 1.5rem;
+      width: max-content;
+      animation: depoScroll 38s linear infinite;
+    }
+    .depo-marquee:hover { animation-play-state: paused; }
+    .depo-card {
+      width: 380px; flex-shrink: 0;
+      background: rgba(19,63,59,.28);
+      border: 1px solid rgba(201,168,76,.12);
+      border-radius: 16px; padding: 2rem;
+      transition: border-color .3s, background .3s;
+    }
+    .depo-card:hover { border-color: rgba(201,168,76,.3); background: rgba(19,63,59,.4); }
+    .stars { color: var(--gold); font-size: .85rem; letter-spacing: .08em; margin-bottom: 1.1rem; }
+    .depo-card > p {
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem; font-style: normal; font-weight: 300;
+      color: rgba(250,250,248,.75); line-height: 1.85; margin-bottom: 1.5rem;
+    }
+    .depo-author { display: flex; align-items: center; gap: .85rem; }
+    .depo-av {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: var(--forest); border: 1px solid rgba(201,168,76,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 600; color: var(--gold);
+    }
+    .depo-name  { font-size: .875rem; font-weight: 600; color: var(--cream); }
+    .depo-role  { font-size: .72rem; color: rgba(250,250,248,.35); }
+    @keyframes depoScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── GOOGLE RATING BADGE ── */
+    .depo-grating {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: rgba(19,63,59,.4); border: 1px solid rgba(201,168,76,.15);
+      border-radius: 30px; padding: .5rem 1.1rem; margin-top: 1.25rem;
+    }
+    .depo-gscore { font-family: 'Syne', sans-serif; font-size: 1.1rem; color: var(--cream); font-weight: 600; }
+    .depo-gstars { color: #FBBC05; font-size: .85rem; letter-spacing: .04em; }
+    .depo-gcount { font-size: .72rem; color: rgba(250,250,248,.45); letter-spacing: .04em; }
+
+    /* ── CONTATO: info only ── */
+    #contato { padding: 100px 5vw; background: var(--cream); }
+    .contato-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: start;
+    }
+    .ci-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .ci-card {
+      background: var(--cream-2); border: 1px solid var(--cream-3);
+      border-radius: var(--r); padding: 1.5rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .ci-card:hover { border-color: rgba(19,63,59,.25); box-shadow: var(--shadow-lg); }
+    .ci-icon { display: flex; align-items: center; margin-bottom: .75rem; color: var(--gold); }
+    .ci-label { font-size: .62rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
+    .ci-val { font-size: .875rem; color: var(--text-mid); line-height: 1.5; }
+    .ci-val a { color: inherit; text-decoration: none; transition: color .2s; }
+    .ci-val a:hover { color: var(--forest); }
+    .contato-map {
+      background: linear-gradient(145deg, var(--forest-dark), var(--forest-deep));
+      border-radius: var(--r); height: 100%; min-height: 340px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; border: 1px solid rgba(201,168,76,.15);
+    }
+    .map-icon { color: var(--gold); opacity: .7; }
+    .map-addr {
+      text-align: center; font-size: .875rem;
+      color: rgba(250,250,248,.6); line-height: 1.7;
+    }
+    .map-link {
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none;
+      border: 1px solid rgba(201,168,76,.3); padding: .5rem 1.1rem; border-radius: 4px;
+      transition: background .2s;
+    }
+    .map-link:hover { background: var(--gold-dim); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--forest-deep); border-top: 1px solid rgba(201,168,76,.1); }
+    .footer-top {
+      max-width: 1200px; margin: 0 auto;
+      padding: 60px 5vw 48px;
+      display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 4vw;
+    }
+    .f-logo { margin-bottom: .75rem; }
+    .f-logo img { height: 80px; width: auto; }
+    .footer-brand p { font-size: .84rem; color: rgba(250,250,248,.3); line-height: 1.75; max-width: 280px; }
+    .f-col h4 { font-size: .62rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem; }
+    .f-col ul { list-style: none; }
+    .f-col li { font-size: .84rem; color: rgba(250,250,248,.3); margin-bottom: .5rem; }
+    .f-col a { color: rgba(250,250,248,.3); text-decoration: none; transition: color .2s; }
+    .f-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid rgba(201,168,76,.08);
+      padding: 1.4rem 5vw;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem;
+    }
+    .footer-bottom span { font-size: .7rem; color: rgba(250,250,248,.2); letter-spacing: .04em; }
+    .footer-bottom a { color: rgba(250,250,248,.2); text-decoration: none; transition: color .2s; }
+    .footer-bottom a:hover { color: var(--gold); }
+
+    /* ── INIT OPACITY STATES (for GSAP) ── */
+    .gs0 { opacity: 0; }
+
+    /* Esconder logo mobile no desktop */
+    .logo-mobile { display: none; }
+    .logo-desktop { display: block; }
+
+    /* Botão CTA do menu mobile — oculto no desktop */
+    .mob-menu-cta { display: none; }
+
+    /* ═══════════════════════════════════════
+       TABLET (900px)
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; padding: 100px 5vw 0; align-items: end; }
+      .hero-left { padding-bottom: 50px; }
+      .hero-img { position: relative; right: auto; bottom: auto; height: clamp(260px, 65vw, 440px); display: block; margin: 0 auto; }
+      .hero-h1  { font-size: clamp(2rem, 7vw, 3.5rem); }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(3) { border-top: 1px solid var(--cream-3); }
+      .stat-item:nth-child(4) { border-top: 1px solid var(--cream-3); border-right: none; }
+      .sobre-inner, .contato-inner { grid-template-columns: 1fr; }
+      #equipe-grid { grid-template-columns: repeat(2,1fr); }
+      .areas-grid { grid-template-columns: 1fr; }
+      .area-card:last-child { flex-direction: column; gap: 1rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1/-1; }
+      .modal-box { padding: 1.75rem; }
+      .mvv-top-grid { grid-template-columns: 1fr; }
+      .mvv-valores-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE (600px)
+    ═══════════════════════════════════════ */
+    @media (max-width: 600px) {
+
+      /* Prevenir overflow horizontal */
+      html, body { overflow-x: hidden; }
+
+      /* ── NAV ── */
+      #nav { height: 62px; padding: 0 4vw; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-burger { display: flex; padding: 8px; margin: -8px; }
+      .logo-desktop { display: none; }
+      .logo-mobile { display: block; height: 50px; width: auto; }
+
+      /* ── MENU MOBILE ── */
+      #mob-menu { padding: 0 6vw 3rem; justify-content: center; flex-direction: column; gap: 2rem; }
+      #mob-menu ul { margin: 0; }
+      #mob-menu li { margin-bottom: .75rem; }
+      #mob-menu a { font-size: clamp(1.8rem, 9vw, 2.8rem); }
+      .mob-menu-cta {
+        display: inline-flex; align-items: center; justify-content: center;
+        background: var(--gold); color: var(--forest-deep);
+        font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 700;
+        letter-spacing: .1em; text-transform: uppercase;
+        padding: 1rem 2rem; border-radius: 6px; border: none; cursor: pointer;
+        box-shadow: 0 0 22px rgba(201,168,76,.45); width: 100%; max-width: 280px;
+        position: relative; overflow: hidden;
+      }
+
+      /* ── HERO ── */
+      #hero { grid-template-columns: 1fr; padding: 78px 4vw 0; min-height: auto; }
+      .hero-left { padding-bottom: 32px; }
+      .hero-eyebrow { font-size: .52rem; letter-spacing: .1em; margin-bottom: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .hero-h1 { font-size: clamp(2rem, 9.5vw, 3rem); line-height: 1.08; margin-bottom: 1rem; }
+      .hero-sub { font-size: .84rem; line-height: 1.7; margin-bottom: 0; max-width: 100%; }
+      .hero-rating { margin-top: .7rem; margin-bottom: 1rem; padding: .3rem .75rem; }
+      .hr-score { font-size: .72rem; }
+      .hr-stars { font-size: .62rem; }
+      .hr-count { font-size: .58rem; }
+      #heroCtaBtn { width: 100%; justify-content: center; padding: .95rem 1.5rem; font-size: .76rem; }
+      .hero-img { position: relative; right: auto; bottom: auto; height: clamp(200px, 58vw, 320px); display: block; margin: 0 auto; }
+      .hero-scroll { display: none; }
+      .hero-glow { display: none; }
+
+      /* ── TICKER ── */
+      .ticker { height: 34px; }
+      .ticker-track span { font-size: .58rem; letter-spacing: .12em; }
+
+      /* ── STATS ── */
+      #stats { padding: 40px 4vw; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); gap: 0; }
+      .stat-item { padding: 1.5rem 1rem; border-right: 1px solid var(--cream-3); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(3) { border-top: 1px solid var(--cream-3); }
+      .stat-item:nth-child(4) { border-top: 1px solid var(--cream-3); border-right: none; }
+      .stat-num { font-size: clamp(1.8rem, 9vw, 2.6rem); }
+      .stat-sfx { font-size: 1rem; }
+      .stat-label { font-size: .58rem; letter-spacing: .1em; }
+
+      /* ── ÁREAS ── */
+      #areas { padding: 56px 4vw; }
+      .areas-top { margin-bottom: 2rem; flex-direction: column; align-items: flex-start; }
+      .areas-top .s-sub { display: none; }
+      .areas-grid { grid-template-columns: 1fr; }
+      .area-card { padding: 1.4rem; }
+      .area-card:last-child { flex-direction: column; gap: .5rem; }
+      .ac-title { font-size: 1.1rem; }
+      .ac-desc { font-size: .82rem; line-height: 1.6; margin-bottom: 1rem; }
+
+      /* ── SOBRE ── */
+      #sobre { padding: 56px 4vw; }
+      .sobre-inner { gap: 2.5rem; }
+      .sobre-mini { gap: 0; }
+      .smi { padding: .75rem 0; }
+
+      /* ── MVV ── */
+      #mvv { padding: 56px 4vw; }
+      .mvv-top-grid { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2.5rem; }
+      .mvv-card { padding: 1.5rem; }
+      .mvv-card h3 { font-size: 1.2rem; }
+      .mvv-card p { font-size: .82rem; }
+      .mvv-valores-grid { grid-template-columns: 1fr; gap: .75rem; }
+      .mvv-valor { padding: 1.1rem 1.25rem; }
+      .mvv-valor-name { font-size: .95rem; }
+      .mvv-valor p { font-size: .82rem; }
+
+      /* ── DEPOIMENTOS ── */
+      #depoimentos { padding: 56px 0; }
+      .depo-header { padding: 0 4vw; margin-bottom: 2rem; }
+      .depo-card { min-width: 270px; padding: 1.25rem; }
+      .depo-card > p { font-size: .8rem; }
+
+      /* ── EQUIPE ── */
+      #equipe { padding: 56px 4vw; }
+      #equipe-grid[data-cols],
+      #equipe-grid[data-cols="1"],
+      #equipe-grid[data-cols="2"],
+      #equipe-grid[data-cols="3"],
+      #equipe-grid[data-cols="4"] { grid-template-columns: repeat(2,1fr); gap: 1rem; }
+      .membro-photo { height: 140px; }
+      .membro-name { font-size: .82rem; line-height: 1.3; }
+      .membro-role { font-size: .58rem; letter-spacing: .05em; }
+
+      /* ── CONTATO ── */
+      #contato { padding: 56px 4vw; }
+      .ci-grid { grid-template-columns: 1fr; gap: .75rem; }
+      .ci-card { padding: 1rem 1.1rem; }
+      .ci-val { font-size: .88rem; word-break: break-word; }
+      .ci-val a { word-break: break-all; }
+
+      /* ── FOOTER ── */
+      footer { padding: 0; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; padding: 44px 4vw; }
+      .footer-brand { grid-column: auto; }
+      .f-logo img { height: 72px; }
+      .footer-brand p { font-size: .8rem; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: .5rem; padding: 1.1rem 4vw; font-size: .62rem; }
+
+      /* ── MODAL (sheet de baixo para cima) ── */
+      .modal-overlay { align-items: flex-end; padding: 0; }
+      .modal-box {
+        width: 100%; max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+        max-height: 92dvh; overflow-y: auto;
+      }
+      .modal-title { font-size: 1.2rem; }
+      .m-field input, .m-field textarea { font-size: 16px; } /* Evita zoom no iOS */
+      .m-field textarea { height: 100px; }
+      .modal-next { padding: .9rem; font-size: .78rem; }
+      .btn-wpp { padding: .9rem; font-size: .75rem; }
+      .modal-back-solo { font-size: .75rem; padding: .7rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="pre-logo"><img src="logo-symbol-gold.png" alt="Theodoro & Porto" /></div>
+    <div class="pre-prog"><div class="pre-bar" id="preBar"></div></div>
+  </div>
+
+  <!-- MODAL: Fale sobre seu caso -->
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+
+      <!-- Progresso -->
+      <div class="modal-progress">
+        <div class="mp-dot active" id="mpd1"></div>
+        <div class="mp-line" id="mpl1"></div>
+        <div class="mp-dot" id="mpd2"></div>
+        <div class="mp-line" id="mpl2"></div>
+        <div class="mp-dot" id="mpd3"></div>
+      </div>
+
+      <!-- Etapa 1: Nome -->
+      <div class="modal-step active" id="mStep1">
+        <div class="modal-tag">Consulta Gratuita</div>
+        <h2 class="modal-title">Como podemos<br><em>te chamar?</em></h2>
+        <div class="m-field">
+          <label>Seu nome</label>
+          <input type="text" id="mNome" placeholder="Nome completo" autocomplete="given-name" />
+        </div>
+        <button class="modal-next" id="mNext1">Continuar →</button>
+      </div>
+
+      <!-- Etapa 2: Descrição -->
+      <div class="modal-step" id="mStep2">
+        <div class="modal-tag">Conte seu caso</div>
+        <h2 class="modal-title" id="mTitle2">Olá! Descreva<br><em>sua situação</em></h2>
+        <div class="m-field">
+          <label>O que está acontecendo?</label>
+          <textarea id="mCaso" placeholder="Ex: fui demitido sem justa causa, quero me aposentar, estou passando por um divórcio..."></textarea>
+        </div>
+        <div class="modal-nav">
+          <button class="modal-back" id="mBack2">← Voltar</button>
+          <button class="modal-next" id="mNext2">Analisar caso →</button>
+        </div>
+      </div>
+
+      <!-- Etapa 3: Análise + WhatsApp -->
+      <div class="modal-step" id="mStep3">
+        <div class="modal-tag">Análise do Caso</div>
+        <div class="modal-analysis" id="mAnalysis"></div>
+        <a class="btn-wpp" id="mWppBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Falar pelo WhatsApp
+        </a>
+        <button class="modal-back modal-back-solo" id="mBack3">← Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">
+      <img class="logo-desktop" src="logo-gold.png" alt="Theodoro & Porto" />
+      <img class="logo-mobile" src="logo-symbol-gold.png" alt="T&P" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#areas">Áreas</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#mvv">Valores</a></li>
+      <li><a href="#equipe">Equipe</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <a href="#" class="nav-cta" id="navCta">Fale sobre seu caso</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mob-menu">
+    <ul>
+      <li><a href="#areas"   class="ml">Áreas</a></li>
+      <li><a href="#sobre"   class="ml">Sobre</a></li>
+      <li><a href="#mvv"     class="ml">Valores</a></li>
+      <li><a href="#equipe"  class="ml">Equipe</a></li>
+      <li><a href="#contato" class="ml">Contato</a></li>
+    </ul>
+    <button class="mob-menu-cta" id="mobMenuCta">Fale sobre seu caso →</button>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-left">
+      <p class="hero-eyebrow">
+        <span class="lm"><span>Advocacia &amp; Consultoria Jurídica · Rondonópolis – MT</span></span>
+      </p>
+      <h1 class="hero-h1">
+        <span class="lm"><span>Defendemos</span></span>
+        <span class="lm"><span>o que é <em>seu</em></span></span>
+        <span class="lm"><span>com excelência</span></span>
+      </h1>
+      <p class="hero-sub">
+        <span class="lm"><span>Protegendo os interesses de nossos clientes desde 2012,</span></span>
+        <span class="lm"><span>com rigor técnico, ética e resultados concretos.</span></span>
+      </p>
+      <div class="hero-rating">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <span class="hr-score" id="heroScore">4,9</span>
+        <span class="hr-stars">★★★★★</span>
+        <span class="hr-sep">·</span>
+        <span class="hr-count" id="heroCount">297 avaliações</span>
+      </div>
+      <button class="btn-modal magnetic" id="heroCtaBtn">
+        <span>Fale sobre seu caso</span>
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="hero-right">
+      <img src="group.png" alt="Dra. Ana Theodoro e Dr. Marcos Porto" class="hero-img" />
+    </div>
+
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="s-line"></div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack">
+      <div class="ticker-item">
+        <span>Direito Previdenciário</span><span class="sep">✦</span>
+        <span>Direito do Trabalho</span><span class="sep">✦</span>
+        <span>Direito Civil</span><span class="sep">✦</span>
+        <span>Direito de Família e Sucessões</span><span class="sep">✦</span>
+        <span>Direito do Consumidor</span><span class="sep">✦</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item gs0">
+        <div class="stat-top"><span class="stat-num" id="anosExp">0</span><span class="stat-sfx">+</span></div>
+        <span class="stat-label">Anos de Experiência</span>
+      </div>
+      <div class="stat-item gs0">
+        <div class="stat-top"><span class="stat-num" data-target="2400">0</span></div>
+        <span class="stat-label">Casos Concluídos</span>
+      </div>
+      <div class="stat-item gs0">
+        <div class="stat-top"><span class="stat-num" data-target="98">0</span><span class="stat-sfx">%</span></div>
+        <span class="stat-label">Clientes Satisfeitos</span>
+      </div>
+      <div class="stat-item gs0">
+        <div class="stat-top"><span class="stat-num" data-target="12">0</span><span class="stat-sfx">+</span></div>
+        <span class="stat-label">Advogados</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÁREAS -->
+  <section id="areas">
+    <div class="areas-top">
+      <div>
+        <div class="s-label gs0"><span class="s-lline"></span>Especialidades</div>
+        <h2 class="s-title gs0">Áreas de <em>Atuação</em></h2>
+      </div>
+      <p class="s-sub gs0" style="max-width:340px">Equipes especializadas e dedicadas para cada demanda jurídica.</p>
+    </div>
+    <div class="areas-grid">
+      <a href="area-previdenciario.html" class="area-card gs0" data-n="01">
+        <div class="ac-num">01</div>
+        <h3 class="ac-title">Direito Previdenciário</h3>
+        <p class="ac-desc">Aposentadorias, pensões, benefícios por incapacidade, revisões de benefícios e recursos junto ao INSS e à Justiça Federal.</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="area-trabalhista.html" class="area-card gs0" data-n="02">
+        <div class="ac-num">02</div>
+        <h3 class="ac-title">Direito do Trabalho</h3>
+        <p class="ac-desc">Defesa de empregados e empregadores em reclamações trabalhistas, verbas rescisórias, assédio moral e acordos coletivos.</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="area-civil.html" class="area-card gs0" data-n="03">
+        <div class="ac-num">03</div>
+        <h3 class="ac-title">Direito Civil</h3>
+        <p class="ac-desc">Contratos, responsabilidade civil, indenizações, cobranças, direito do consumidor e demais demandas cíveis.</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="area-familia.html" class="area-card gs0" data-n="04">
+        <div class="ac-num">04</div>
+        <h3 class="ac-title">Direito de Família e Sucessões</h3>
+        <p class="ac-desc">Divórcios, guarda de filhos, alimentos, inventários, testamentos e partilha de bens com discrição e sensibilidade.</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="area-consumidor.html" class="area-card gs0" data-n="05">
+        <div class="ac-card-left">
+          <div class="ac-num">05</div>
+          <h3 class="ac-title">Direito do Consumidor</h3>
+          <p class="ac-desc">Defesa contra cobranças indevidas, produtos defeituosos, práticas abusivas e violações ao Código de Defesa do Consumidor.</p>
+        </div>
+        <span class="ac-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="sobre-inner">
+      <div class="sobre-left">
+        <div class="s-label gs0"><span class="s-lline"></span>Sobre o Escritório</div>
+        <h2 class="s-title light gs0">Uma história construída sobre <em>confiança</em></h2>
+        <p class="gs0">Fundado em 2012, o escritório nasceu da convicção de que advocacia de qualidade deve ser acessível, transparente e efetiva para todos.</p>
+        <p class="gs0">Com sede em Rondonópolis – MT e unidade comercial no Prime Centro Empresarial, consolidamos nossa presença no coração do Mato Grosso com uma equipe multidisciplinar de alto nível, combinando profundo conhecimento técnico com atenção individualizada a cada cliente.</p>
+        <div class="sobre-values gs0">
+          <span class="v-chip">Ética</span>
+          <span class="v-chip">Transparência</span>
+          <span class="v-chip">Excelência</span>
+          <span class="v-chip">Comprometimento</span>
+          <span class="v-chip">Sigilo</span>
+        </div>
+      </div>
+      <div class="sobre-right">
+        <div class="sqc gs0">
+          <div class="sqc-mark">"</div>
+          <p class="sqc-text">O direito não é apenas uma profissão. É o compromisso diário com a justiça e com as pessoas que dependem de nós.</p>
+          <span class="sqc-cite">— Dra. Ana Porto, Sócia-Fundadora</span>
+        </div>
+        <div class="sobre-mini gs0">
+          <div class="smi"><strong>2012</strong><span>Fundação</span></div>
+          <div class="smi"><strong>MT</strong><span>Mato Grosso</span></div>
+          <div class="smi"><strong id="smLawyers">12+</strong><span>Advogados</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPE -->
+  <section id="equipe">
+    <div class="equipe-top">
+      <div class="s-label gs0"><span class="s-lline"></span>Nossos Profissionais</div>
+      <h2 class="s-title gs0">Conheça a <em>Equipe</em></h2>
+    </div>
+    <div id="equipe-grid"><!-- rendered by JS --></div>
+  </section>
+
+  <!-- MISSÃO VISÃO VALORES -->
+  <section id="mvv">
+    <div class="mvv-inner">
+      <div style="margin-bottom:3.5rem">
+        <div class="s-label gs0"><span class="s-lline"></span>Sobre o Escritório</div>
+        <h2 class="s-title gs0">Missão, Visão e <em>Valores</em></h2>
+      </div>
+      <div class="mvv-top-grid">
+        <div class="mvv-card gs0">
+          <div class="mvv-card-label">Nossa Missão</div>
+          <h3>Excelência a serviço da justiça</h3>
+          <p>Oferecer serviços e consultoria jurídica com excelência, protegendo os direitos e interesses de nossos clientes por meio de conhecimento, inovação e tecnologia. Buscamos sempre alcançar resultados positivos, com dedicação e compromisso em cada atendimento.</p>
+        </div>
+        <div class="mvv-card gs0">
+          <div class="mvv-card-label">Nossa Visão</div>
+          <h3>Referência nacional em advocacia</h3>
+          <p>Ser um escritório referência em âmbito nacional, reconhecido pela atuação sólida nas áreas de Direito Previdenciário, Civil, Trabalhista e do Consumidor. Queremos ser lembrados pela eficiência, agilidade e qualidade na entrega de resultados.</p>
+        </div>
+      </div>
+
+      <div class="mvv-valores-header">
+        <div class="s-label gs0"><span class="s-lline"></span>Nossos Valores</div>
+        <h3 class="gs0">Princípios que guiam nossa atuação</h3>
+        <p class="gs0">Nossa atuação é guiada por princípios que refletem quem somos e como trabalhamos todos os dias.</p>
+      </div>
+
+      <div class="mvv-valores-grid">
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Honestidade</div>
+          <p>Agimos com verdade, transparência e sinceridade em todas as relações, seja com clientes ou colegas. Valorizamos o diálogo respeitoso e a confiança mútua, independentemente das circunstâncias.</p>
+        </div>
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Humildade</div>
+          <p>Sabemos ouvir, respeitamos opiniões e reconhecemos que sempre há espaço para aprender. Valorizamos o trabalho em equipe e priorizamos o coletivo acima do individual.</p>
+        </div>
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Disciplina</div>
+          <p>Cumprimos compromissos com responsabilidade e pontualidade. Atuamos com foco, organização e eficiência, sempre buscando entregar resultados concretos.</p>
+        </div>
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Ética</div>
+          <p>Trabalhamos com integridade, respeito e responsabilidade. Garantimos transparência em nossos serviços e seguimos rigorosamente normas e princípios profissionais.</p>
+        </div>
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Persistência</div>
+          <p>Somos determinados e comprometidos com resultados. Buscamos soluções, superamos desafios e mantemos atitude proativa diante de qualquer situação.</p>
+        </div>
+        <div class="mvv-valor gs0">
+          <div class="mvv-valor-name">Amor ao Próximo</div>
+          <p>Atuamos com empatia, cuidado e respeito. Valorizamos relações humanas, escuta ativa e o bem-estar de todos ao nosso redor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTOS: infinite marquee -->
+  <section id="depoimentos">
+    <div class="depo-header">
+      <div class="s-label gs0"><span class="s-lline"></span>Depoimentos</div>
+      <h2 class="s-title light gs0">O que nossos <em>clientes</em> dizem</h2>
+      <div class="depo-grating gs0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <span class="depo-gscore" id="depoScore">4,9</span>
+        <span class="depo-gstars">★★★★★</span>
+        <span class="depo-gcount" id="depoCount">297 avaliações no Google</span>
+      </div>
+    </div>
+    <div class="depo-marquee-wrap">
+      <div class="depo-marquee" id="depoMarquee">
+        <!-- set 1 -->
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Achei que o processo andou rápido, apesar de ter dito alguma dificuldade de comunicação com a atendente. As demais, fico contente em ter contratado o escritório para me ajudar a conseguir esse benefício."</p><div class="depo-author"><div class="depo-av">LN</div><div><div class="depo-name">Lucelia Nogueira</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Foi uma experiência muito boa, eu estava desacreditado mas me indicaram o escritório, eu vim, meu processo deu tudo certo graças a Deus. Pessoas excelentes."</p><div class="depo-author"><div class="depo-av">AD</div><div><div class="depo-name">Alexandre Dias Ferreira</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Foi tudo bem graças a Deus, atendimento muito bom, estou muito feliz. Meu processo foi muito rápido."</p><div class="depo-author"><div class="depo-av">WG</div><div><div class="depo-name">Welinton Gimarez</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Um excelente equipe e bom atendimento, estou muito satisfeito, super indico. Está de parabéns com toda família Theodoro &amp; Porto."</p><div class="depo-author"><div class="depo-av">NA</div><div><div class="depo-name">Nivaldo Almeida</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Estou satisfeita com o processo, tudo muito bom. Atendimento nota 10. Indico sempre que me perguntam."</p><div class="depo-author"><div class="depo-av">LC</div><div><div class="depo-name">Leonia Correa</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Estou muito satisfeito, deu tudo certo como foi na minha primeira conversa com a Dra. Estou feliz com o resultado. Indico para todo mundo."</p><div class="depo-author"><div class="depo-av">NS</div><div><div class="depo-name">Nilson Soares</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Agradeço à equipe Theodoro e Porto, o atendimento sempre foi excelente e os resultados foram positivos. Estou satisfeito e indico para amigos, familiares e conhecidos."</p><div class="depo-author"><div class="depo-av">PR</div><div><div class="depo-name">Pedro Rodrigues</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Atendimento 100% maravilha, tô muito satisfeito. Indico sempre clientes e vou indicar sempre. Todo mundo me ajudou."</p><div class="depo-author"><div class="depo-av">RP</div><div><div class="depo-name">Reginaldo Pinheiro Nascimento</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Resolveu meu problema, estou muito contente, graças a Deus deu tudo certo, atendimento com a excelência."</p><div class="depo-author"><div class="depo-av">SS</div><div><div class="depo-name">Suelia Souza</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <!-- set 2 (duplicate for seamless loop) -->
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Achei que o processo andou rápido, apesar de ter dito alguma dificuldade de comunicação com a atendente. As demais, fico contente em ter contratado o escritório para me ajudar a conseguir esse benefício."</p><div class="depo-author"><div class="depo-av">LN</div><div><div class="depo-name">Lucelia Nogueira</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Foi uma experiência muito boa, eu estava desacreditado mas me indicaram o escritório, eu vim, meu processo deu tudo certo graças a Deus. Pessoas excelentes."</p><div class="depo-author"><div class="depo-av">AD</div><div><div class="depo-name">Alexandre Dias Ferreira</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Foi tudo bem graças a Deus, atendimento muito bom, estou muito feliz. Meu processo foi muito rápido."</p><div class="depo-author"><div class="depo-av">WG</div><div><div class="depo-name">Welinton Gimarez</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Um excelente equipe e bom atendimento, estou muito satisfeito, super indico. Está de parabéns com toda família Theodoro &amp; Porto."</p><div class="depo-author"><div class="depo-av">NA</div><div><div class="depo-name">Nivaldo Almeida</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Estou satisfeita com o processo, tudo muito bom. Atendimento nota 10. Indico sempre que me perguntam."</p><div class="depo-author"><div class="depo-av">LC</div><div><div class="depo-name">Leonia Correa</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Estou muito satisfeito, deu tudo certo como foi na minha primeira conversa com a Dra. Estou feliz com o resultado. Indico para todo mundo."</p><div class="depo-author"><div class="depo-av">NS</div><div><div class="depo-name">Nilson Soares</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Agradeço à equipe Theodoro e Porto, o atendimento sempre foi excelente e os resultados foram positivos. Estou satisfeito e indico para amigos, familiares e conhecidos."</p><div class="depo-author"><div class="depo-av">PR</div><div><div class="depo-name">Pedro Rodrigues</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Atendimento 100% maravilha, tô muito satisfeito. Indico sempre clientes e vou indicar sempre. Todo mundo me ajudou."</p><div class="depo-author"><div class="depo-av">RP</div><div><div class="depo-name">Reginaldo Pinheiro Nascimento</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+        <div class="depo-card"><div class="stars">★★★★★</div><p>"Resolveu meu problema, estou muito contente, graças a Deus deu tudo certo, atendimento com a excelência."</p><div class="depo-author"><div class="depo-av">SS</div><div><div class="depo-name">Suelia Souza</div><div class="depo-role">Google · Avaliação verificada</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO: info only -->
+  <section id="contato">
+    <div class="contato-inner">
+      <div>
+        <div class="s-label gs0"><span class="s-lline"></span>Fale Conosco</div>
+        <h2 class="s-title gs0">Entre em <em>contato</em></h2>
+        <p class="s-sub gs0" style="margin-bottom:0">A primeira consulta é gratuita. Nossa equipe retornará em até 24 horas. Ou fale diretamente pelo WhatsApp clicando no botão acima.</p>
+        <div class="ci-grid">
+          <div class="ci-card gs0">
+            <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div class="ci-label">Telefone</div>
+            <div class="ci-val"><a href="tel:+5566999843063" id="ci-phone">+55 (66) 99984-3063</a></div>
+          </div>
+          <div class="ci-card gs0">
+            <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+            <div class="ci-label">E-mail</div>
+            <div class="ci-val"><a href="mailto:contato@theodoroeporto.adv.br" id="ci-email">contato@theodoroeporto.adv.br</a></div>
+          </div>
+          <div class="ci-card gs0">
+            <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="ci-label">Horário</div>
+            <div class="ci-val" id="ci-hours">Segunda a Sexta: 7h às 17h</div>
+          </div>
+          <div class="ci-card gs0">
+            <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+            <div class="ci-label">CNPJ</div>
+            <div class="ci-val">31.598.704/0001-31</div>
+          </div>
+        </div>
+      </div>
+      <div class="contato-map gs0" style="gap:1.5rem;padding:2rem;">
+        <div style="width:100%;text-align:left;">
+          <div style="font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;">Matriz</div>
+          <div class="map-addr" id="ci-address" style="text-align:left;font-size:.82rem;">
+            Rua Arnaldo Estevão de Figueiredo, 874<br>
+            Centro — Rondonópolis – MT, 78.700-150
+          </div>
+          <a href="https://maps.google.com/?q=Rua+Arnaldo+Estev%C3%A3o+de+Figueiredo+874+Rondon%C3%B3polis+MT" target="_blank" class="map-link" style="margin-top:.75rem;display:inline-block;">Ver no mapa →</a>
+        </div>
+        <div style="width:100%;height:1px;background:rgba(201,168,76,.12);"></div>
+        <div style="width:100%;text-align:left;">
+          <div style="font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;">Unidade Comercial</div>
+          <div class="map-addr" style="text-align:left;font-size:.82rem;">
+            Prime Centro Empresarial<br>
+            Av. Tiradentes, 1841 — 15º andar, Salas 1505 e 1506<br>
+            Centro — Rondonópolis – MT, 78.700-028
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="f-logo"><img src="logo-gold.png" alt="Theodoro & Porto" /></div>
+        <p>Advocacia de excelência em Rondonópolis – MT. Comprometidos com a justiça e com os nossos clientes desde 2012.</p>
+      </div>
+      <div class="f-col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#areas">Áreas de Atuação</a></li>
+          <li><a href="#sobre">Sobre o Escritório</a></li>
+          <li><a href="#equipe">Nossa Equipe</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Contato</h4>
+        <ul>
+          <li id="f-phone">+55 (66) 99984-3063</li>
+          <li id="f-email">contato@theodoroeporto.adv.br</li>
+          <li id="f-addr">R. Arnaldo E. de Figueiredo, 874</li>
+          <li>Rondonópolis – MT</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear"></span> Teodoro e Porto Advocacia. CNPJ 31.598.704/0001-31. Todos os direitos reservados. · Desenvolvido por <a href="https://www.instagram.com/ianeichler" target="_blank" rel="noopener" style="font-weight:700;color:rgba(250,250,248,.4)"><strong>Ian Eichler</strong></a></span>
+      <a href="admin.html">Área Administrativa</a>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    /* ─────────────────────────────────────────
+       DATA: localStorage → defaults
+    ───────────────────────────────────────── */
+    const DEFAULT_DATA = {
+      stats:   { years: 14, cases: 2400, satisfaction: 98, lawyers: 12 },
+      google:  { score: '4,9', count: 297 },
+      contact: { phone: '+55 (66) 99984-3063', email: 'contato@theodoroeporto.adv.br', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', hours: 'Segunda a Sexta: 7h às 17h' },
+      whatsapp: '5566999843063',
+      team: [
+        { id: '1', initials: 'AT', name: 'Dra. Ana Theodoro',  role: 'Sócia-Fundadora · Civil &amp; Família',             bio: 'Mestre em Direito Civil pela USP. Especialista em mediação e resolução de conflitos familiares.' },
+        { id: '2', initials: 'MP', name: 'Dr. Marcos Porto',   role: 'Sócio-Fundador · Trabalhista &amp; Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
+        { id: '3', initials: 'LC', name: 'Dr. Lucas Carvalho', role: 'Associado Sênior · Trabalhista',                     bio: 'Pós-graduado em Direito do Trabalho pela PUC-SP. Expert em compliance e reclamações trabalhistas.' },
+        { id: '4', initials: 'FR', name: 'Dra. Fernanda Rocha',role: 'Associada · Civil &amp; Sucessões',                 bio: 'Especialista em Direito Civil e Sucessório. Ampla experiência em inventários e partilha de bens.' },
+      ]
+    };
+
+    function loadData() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('tp_data') || '{}');
+        return {
+          stats:    { ...DEFAULT_DATA.stats,   ...(saved.stats   || {}) },
+          contact:  { ...DEFAULT_DATA.contact, ...(saved.contact || {}) },
+          google:   { ...DEFAULT_DATA.google,  ...(saved.google  || {}) },
+          whatsapp:   saved.whatsapp  || DEFAULT_DATA.whatsapp,
+          team:       saved.team      || DEFAULT_DATA.team,
+        };
+      } catch(e) { return DEFAULT_DATA; }
+    }
+
+    const DATA = loadData();
+
+    /* Apply data to DOM */
+    function applyData() {
+      // Stats
+      const nums = document.querySelectorAll('.stat-num');
+      const targets = [DATA.stats.years, DATA.stats.cases, DATA.stats.satisfaction, DATA.stats.lawyers];
+      nums.forEach((el, i) => el.dataset.target = targets[i]);
+
+      // Contact
+      const ph = DATA.contact.phone;
+      const em = DATA.contact.email;
+      const ad = DATA.contact.address.replace('\n','<br>');
+      const hr = DATA.contact.hours;
+      document.getElementById('ci-phone').textContent   = ph;
+      document.getElementById('ci-phone').href          = 'tel:' + ph.replace(/\D/g,'');
+      document.getElementById('ci-email').textContent   = em;
+      document.getElementById('ci-email').href          = 'mailto:' + em;
+      document.getElementById('ci-address').innerHTML   = ad;
+      document.getElementById('ci-hours').textContent   = hr;
+      document.getElementById('f-phone').textContent    = ph;
+      document.getElementById('f-email').textContent    = em;
+      document.getElementById('f-addr').textContent     = DATA.contact.address.split('\n')[0];
+      document.getElementById('smLawyers').textContent  = DATA.stats.lawyers + '+';
+      document.getElementById('depoScore').textContent  = DATA.google.score;
+      document.getElementById('depoCount').textContent  = DATA.google.count + ' avaliações no Google';
+      document.getElementById('heroScore').textContent  = DATA.google.score;
+      document.getElementById('heroCount').textContent  = DATA.google.count + ' avaliações';
+
+      // Team
+      renderTeam(DATA.team);
+    }
+
+    function renderTeam(team) {
+      const VISIBLE = 4;
+      const grid = document.getElementById('equipe-grid');
+      const makeCard = m => `
+        <div class="membro gs0">
+          <div class="membro-photo">
+            <div class="photo-init">${m.initials}</div>
+            <div class="photo-ov"><p>${m.bio}</p></div>
+          </div>
+          <div class="membro-name">${m.name}</div>
+          <div class="membro-role">${m.role}</div>
+        </div>`;
+      const visible = team.slice(0, VISIBLE);
+      const hidden  = team.slice(VISIBLE);
+      const cols = Math.min(team.length, 4);
+      grid.style.cssText = `max-width:1200px;margin:0 auto;display:grid;gap:1.5rem;`;
+      grid.dataset.cols = cols;
+      grid.innerHTML = visible.map(makeCard).join('');
+      if (hidden.length > 0) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'max-width:1200px;margin:1.5rem auto 0;text-align:center;';
+        const btn = document.createElement('button');
+        btn.textContent = 'Ver mais';
+        btn.style.cssText = 'background:none;border:1px solid var(--cream-3);border-radius:8px;padding:.7rem 2rem;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);cursor:pointer;transition:border-color .2s,color .2s;';
+        btn.onmouseenter = () => { btn.style.borderColor='var(--forest)'; btn.style.color='var(--forest)'; };
+        btn.onmouseleave = () => { btn.style.borderColor='var(--cream-3)'; btn.style.color='var(--text-mid)'; };
+        btn.addEventListener('click', () => {
+          grid.innerHTML += hidden.map(makeCard).join('');
+          grid.dataset.cols = Math.min(team.length, 4);
+          wrap.remove();
+        });
+        wrap.appendChild(btn);
+        grid.parentNode.insertBefore(wrap, grid.nextSibling);
+      }
+    }
+
+    applyData();
+
+    // Ano automático
+    const anoAtual = new Date().getFullYear();
+    document.getElementById('footerYear').textContent = anoAtual;
+    const anosExp = anoAtual - 2012;
+    const elAnosExp = document.getElementById('anosExp');
+    if (elAnosExp) { elAnosExp.textContent = anosExp; elAnosExp.setAttribute('data-target', anosExp); }
+
+    /* ─────────────────────────────────────────
+       GSAP + LENIS
+    ───────────────────────────────────────── */
+    /* ── TICKER JS ── */
+    window.addEventListener('load', function() {
+      const track = document.getElementById('tickerTrack');
+      const item  = track.querySelector('.ticker-item');
+      for (let i = 0; i < 3; i++) track.appendChild(item.cloneNode(true));
+      let x = 0;
+      const speed = 0.7;
+      const w = item.offsetWidth;
+      function loop() {
+        x -= speed;
+        if (x <= -w) x += w;
+        track.style.transform = 'translateX(' + x + 'px)';
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    });
+
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ limitCallbacks: true });
+    gsap.ticker.lagSmoothing(0);
+
+    /* ─────────────────────────────────────────
+       PRELOADER
+    ───────────────────────────────────────── */
+    /* ─── Restaurar posição ao voltar de página de área ─── */
+    const savedScroll = sessionStorage.getItem('areaScrollPos');
+    if (savedScroll) {
+      sessionStorage.removeItem('areaScrollPos');
+      document.getElementById('preloader').style.display = 'none';
+      window.scrollTo(0, parseInt(savedScroll));
+    } else {
+      gsap.to('#preBar', {
+        scaleX: 1, duration: 0.6, ease: 'power2.inOut',
+        onComplete() {
+          gsap.to('#preloader', { opacity: 0, duration: .25, delay: .05, onComplete() {
+            document.getElementById('preloader').style.display = 'none';
+            heroReveal();
+          }});
+        }
+      });
+    }
+
+    /* Salvar posição ao clicar em card de área */
+    document.querySelectorAll('.area-card').forEach(card => {
+      card.addEventListener('click', () => {
+        sessionStorage.setItem('areaScrollPos', window.scrollY);
+      });
+    });
+
+    function heroReveal() {
+      const tl = gsap.timeline();
+      tl.to('.hero-eyebrow .lm > span', { y:'0%', duration:1,    ease:'power4.out' })
+        .to('.hero-h1 .lm > span',       { y:'0%', duration:1.1,  stagger:.12, ease:'power4.out' }, '-=.6')
+        .to('.hero-sub .lm > span',       { y:'0%', duration:.9,   stagger:.08, ease:'power3.out' }, '-=.6')
+        .fromTo('#heroCtaBtn',  { opacity:0, y:20 }, { opacity:1, y:0, duration:.7, ease:'power3.out' }, '-=.4')
+        .fromTo('.hero-scroll', { opacity:0 }, { opacity:1, duration:.5 }, '-=.3')
+        .fromTo('.hero-img',    { opacity:0, y:40, scale:.97 }, { opacity:1, y:0, scale:1, duration:1.1, ease:'power3.out' }, '-=.8');
+    }
+
+    /* ─────────────────────────────────────────
+       SMOOTH SCROLL
+    ───────────────────────────────────────── */
+    function smoothScrollTo(targetY, duration) {
+      const start = window.scrollY;
+      const distance = targetY - start;
+      const startTime = performance.now();
+      function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        window.scrollTo(0, start + distance * ease(progress));
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    document.querySelectorAll('a[href^="#"], button[data-href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const href = link.getAttribute('href') || link.dataset.href;
+        if (!href || href === '#') return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        const navH = document.getElementById('nav').offsetHeight;
+        const targetY = target.getBoundingClientRect().top + window.scrollY - navH;
+        smoothScrollTo(targetY, 900);
+      });
+    });
+
+    /* ─────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────── */
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    const burger = document.getElementById('navBurger');
+    const mobMenu = document.getElementById('mob-menu');
+    let menuOpen = false;
+    burger.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobMenu.classList.toggle('open', menuOpen);
+      const s = burger.querySelectorAll('span');
+      gsap.to(s[0], menuOpen ? { rotate:45, y:7.5, duration:.3 } : { rotate:0, y:0, duration:.3 });
+      gsap.to(s[1], menuOpen ? { rotate:-45, y:-7.5, duration:.3 } : { rotate:0, y:0, duration:.3 });
+    });
+    document.querySelectorAll('.ml').forEach(a => a.addEventListener('click', () => {
+      menuOpen = false; mobMenu.classList.remove('open');
+      gsap.to(burger.querySelectorAll('span'), { rotate:0, y:0, duration:.3 });
+    }));
+    document.getElementById('mobMenuCta').addEventListener('click', () => {
+      menuOpen = false; mobMenu.classList.remove('open');
+      gsap.to(burger.querySelectorAll('span'), { rotate:0, y:0, duration:.3 });
+      setTimeout(openModal, 350);
+    });
+
+    /* ─────────────────────────────────────────
+       SCROLL ANIMATIONS
+    ───────────────────────────────────────── */
+    function revealEl(el, extras = {}) {
+      gsap.fromTo(el, { opacity:0, y: extras.y ?? 30 }, {
+        opacity:1, y:0, duration: extras.duration ?? .8, ease:'power3.out',
+        stagger: extras.stagger ?? 0,
+        scrollTrigger: { trigger: extras.trigger ?? el, start:'top 84%', once:true }
+      });
+    }
+
+    document.querySelectorAll('.s-label, .s-title, .s-sub').forEach(el => revealEl(el));
+    revealEl('.stat-item', { stagger:.1, trigger:'.stats-grid' });
+    revealEl('.area-card', { stagger:.1, trigger:'.areas-grid', y:50 });
+    revealEl('.sobre-left p', { stagger:.12, trigger:'.sobre-inner' });
+    revealEl('.sobre-values', { trigger:'.sobre-left' });
+    revealEl('.sqc',        { trigger:'.sobre-right' });
+    revealEl('.sobre-mini', { trigger:'.sobre-right', y:20 });
+    revealEl('.mvv-card',       { stagger:.15, trigger:'.mvv-top-grid', y:40 });
+    revealEl('.mvv-valores-header .gs0', { stagger:.1, trigger:'.mvv-valores-header' });
+    revealEl('.mvv-valor',      { stagger:.08, trigger:'.mvv-valores-grid', y:30 });
+    revealEl('.depo-header .s-label');
+    revealEl('.depo-header .s-title');
+    revealEl('.ci-card',    { stagger:.1, trigger:'.ci-grid' });
+    revealEl('.contato-map',{ trigger:'.contato-inner' });
+
+    // Equipe: observe dynamically since it's rendered by JS
+    const equipeObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          gsap.fromTo('#equipe-grid .membro', { opacity:0, y:60 }, { opacity:1, y:0, duration:.7, stagger:.1, ease:'power3.out' });
+          equipeObs.disconnect();
+        }
+      });
+    }, { threshold: .1 });
+    equipeObs.observe(document.getElementById('equipe-grid'));
+
+    /* ─────────────────────────────────────────
+       COUNTERS
+    ───────────────────────────────────────── */
+    document.querySelectorAll('.stat-num').forEach(el => {
+      ScrollTrigger.create({ trigger: el, start:'top 85%', once:true, onEnter() {
+        const obj = { v: 0 };
+        gsap.to(obj, { v: +el.dataset.target, duration:2.2, ease:'power2.out',
+          onUpdate: () => el.textContent = Math.floor(obj.v).toLocaleString('pt-BR') });
+      }});
+    });
+
+
+
+    /* ─────────────────────────────────────────
+       HERO MOUSE PARALLAX
+    ───────────────────────────────────────── */
+    window.addEventListener('mousemove', e => {
+      const x = (e.clientX/window.innerWidth  - .5) * 25;
+      const y = (e.clientY/window.innerHeight - .5) * 18;
+      gsap.to('.hero-glow', { x, y, duration:1.8, ease:'power1.out' });
+    }, { passive:true });
+
+    /* ─────────────────────────────────────────
+       MODAL MULTI-STEP
+    ───────────────────────────────────────── */
+    const AREAS_STEMS = [
+      {
+        name: 'Direito Previdenciário',
+        stems: [
+          'aposent','inss','previdenc','benefic','incapacidad','bpc','loas',
+          'auxilio','auxílio','pensao por morte','pensão por morte',
+          'revisao de benefic','revisão de benefic','salario de benefic',
+          'negaram meu benefic','bloquearam','suspenderam meu benefic',
+          'aposentadoria','aposentei','me aposentar','quero me aposentar',
+          'nao consigo me aposentar','não consigo me aposentar',
+          'beneficio negado','benefício negado','tempo de contribuicao',
+          'tempo de contribuição','pericia medica','perícia médica',
+        ]
+      },
+      {
+        name: 'Direito do Trabalho',
+        stems: [
+          'demit','rescis','trabalhist','fgts','clt','hora extra','horas extra',
+          'assedio moral','assédio moral','carteira assinada','aviso previo',
+          'aviso prévio','ferias','férias','decimo terceiro','décimo terceiro',
+          '13 salario','13° salario','acidente de trabalho','insalubrid',
+          'periculosidad','adicional noturno','jornada de trabalho',
+          'mandado embora','mandaram embora','fui mandado','me mandaram',
+          'demitiram','demitido','fui demitido','nao recebi salario',
+          'não recebi salario','verbas rescis','nao pagaram','não pagaram',
+          'empregador','empregado','contrato de trabalho','registro em carteira',
+          'sem carteira','trabalho informal','salario atrasado','salário atrasado',
+          'horas nao pagas','horas não pagas',
+        ]
+      },
+      {
+        name: 'Direito Civil',
+        stems: [
+          'contrat','indeniza','dano moral','dano material','consumidor',
+          'cobranc','cobrança','divida','dívida','aluguel','imovel','imóvel',
+          'locacao','locação','acidente de transito','acidente de carro',
+          'acidente de moto','seguro','fraude','me enganaram','nao me pagaram',
+          'não me pagaram','me devem','empresa nao pagou','banco me cobrou',
+          'cobranca indevida','cobrança indevida','negativac','negativação',
+          'serasa','spc','nome sujo','nome no serasa','compra e venda',
+          'rescisao de contrato','rescisão de contrato','distrato',
+          'responsabilidad','produto com defeito','servico nao prestado',
+          'serviço não prestado','me cobrar','cobraram indevido',
+          'emprestimo','empréstimo','financiamento',
+        ]
+      },
+      {
+        name: 'Direito de Família e Sucessões',
+        stems: [
+          'divorc','guarda','pensao alimenticia','pensão alimentícia',
+          'heranca','herança','inventari','testamento','separac','separação',
+          'casamento','partilha','uniao estavel','união estável','adocao','adoção',
+          'tutela','curatela','meu ex','ex-marido','ex-mulher','ex marido',
+          'ex mulher','pai nao paga','pai não paga','mae nao paga','mãe não paga',
+          'guarda do filho','guarda da filha','guarda dos filhos',
+          'filhos','filho menor','pensao para filho','alimentos para',
+          'regulamentar visita','regime de visita','partilha de bens',
+          'bens do casal','dissolucao','dissolução','reconhecimento de paternidade',
+          'paternidade','registro do filho','inventario','divorcio','divórcio',
+        ]
+      },
+    ];
+
+    function detectArea(texto) {
+      const normalize = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      const t = normalize(texto);
+      let best = null, bestScore = 0;
+      for (const area of AREAS_STEMS) {
+        const score = area.stems.reduce((acc, stem) => {
+          const s = normalize(stem);
+          return acc + (t.includes(s) ? 1 : 0);
+        }, 0);
+        if (score > bestScore) { bestScore = score; best = area.name; }
+      }
+      return bestScore > 0 ? best : null;
+    }
+
+    let currentStep = 1;
+
+    function setStep(n) {
+      [1,2,3].forEach(i => {
+        document.getElementById('mStep' + i).classList.toggle('active', i === n);
+        const dot = document.getElementById('mpd' + i);
+        dot.classList.toggle('active', i === n);
+        dot.classList.toggle('done', i < n);
+      });
+      [1,2].forEach(i => {
+        document.getElementById('mpl' + i).classList.toggle('done', i < n);
+      });
+      currentStep = n;
+    }
+
+    function openModal() {
+      setStep(1);
+      document.getElementById('mNome').value = '';
+      document.getElementById('mCaso').value = '';
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('mNome').focus(), 350);
+    }
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('mNext1').addEventListener('click', () => {
+      const nome = document.getElementById('mNome').value.trim();
+      if (!nome) { document.getElementById('mNome').focus(); return; }
+      document.getElementById('mTitle2').innerHTML = `Olá, <em>${nome.split(' ')[0]}!</em><br>Descreva sua situação`;
+      setStep(2);
+      setTimeout(() => document.getElementById('mCaso').focus(), 50);
+    });
+
+    document.getElementById('mBack2').addEventListener('click', () => setStep(1));
+
+    document.getElementById('mNext2').addEventListener('click', () => {
+      const caso = document.getElementById('mCaso').value.trim();
+      if (!caso) { document.getElementById('mCaso').focus(); return; }
+
+      const nome   = document.getElementById('mNome').value.trim();
+      const area   = detectArea(caso);
+      const box    = document.getElementById('mAnalysis');
+      const wppBtn = document.getElementById('mWppBtn');
+
+      if (area) {
+        box.className = 'modal-analysis match';
+        box.innerHTML = `
+          <div class="ma-icon">✅</div>
+          <div class="ma-label">Atendemos esse tipo de caso</div>
+          <div class="ma-title">${area}</div>
+          <div class="ma-desc">Seu caso se enquadra em uma das nossas especialidades. Clique abaixo para falar diretamente com a nossa equipe.</div>`;
+      } else {
+        box.className = 'modal-analysis nomatch';
+        box.innerHTML = `
+          <div class="ma-icon">📋</div>
+          <div class="ma-label">Vamos analisar juntos</div>
+          <div class="ma-title">Consulta com nossos especialistas</div>
+          <div class="ma-desc">Não identificamos a área automaticamente, mas nossa equipe pode avaliar seu caso e indicar o melhor caminho.</div>`;
+      }
+
+      const msg = encodeURIComponent(
+        `Oi, tudo bem? Me chamo *${nome}*.\n\n${caso}\n\nGostaria de agendar uma consulta com o escritório Theodoro & Porto.`
+      );
+      wppBtn.href = `https://wa.me/${DATA.whatsapp}?text=${msg}`;
+
+      setStep(3);
+    });
+
+    document.getElementById('mBack3').addEventListener('click', () => setStep(2));
+
+    document.getElementById('heroCtaBtn').addEventListener('click', openModal);
+    document.getElementById('navCta').addEventListener('click', e => { e.preventDefault(); openModal(); });
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('mNome').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('mNext1').click(); });
+    document.getElementById('mCaso').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) document.getElementById('mNext2').click(); });
+  </script>
+</body>
+</html>
