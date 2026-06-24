@@ -1059,7 +1059,7 @@
       <li><a href="#areas">Áreas</a></li>
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#mvv">Valores</a></li>
-      <li><a href="#equipe">Equipe</a></li>
+      <li id="nav-equipe-item"><a href="#equipe">Equipe</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
     <a href="#" class="nav-cta" id="navCta">Fale sobre seu caso</a>
@@ -1074,7 +1074,7 @@
       <li><a href="#areas"   class="ml">Áreas</a></li>
       <li><a href="#sobre"   class="ml">Sobre</a></li>
       <li><a href="#mvv"     class="ml">Valores</a></li>
-      <li><a href="#equipe"  class="ml">Equipe</a></li>
+      <li id="mob-equipe-item"><a href="#equipe"  class="ml">Equipe</a></li>
       <li><a href="#contato" class="ml">Contato</a></li>
     </ul>
     <button class="mob-menu-cta" id="mobMenuCta">Fale sobre seu caso →</button>
@@ -1393,7 +1393,7 @@
         <ul>
           <li><a href="#areas">Áreas de Atuação</a></li>
           <li><a href="#sobre">Sobre o Escritório</a></li>
-          <li><a href="#equipe">Nossa Equipe</a></li>
+          <li id="footer-equipe-item"><a href="#equipe">Nossa Equipe</a></li>
           <li><a href="#contato">Contato</a></li>
         </ul>
       </div>
@@ -1413,6 +1413,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -1454,7 +1455,25 @@
       } catch(e) { return DEFAULT_DATA; }
     }
 
-    const DATA = loadData();
+    /* ── SUPABASE ── */
+    const _sb = supabase.createClient(
+      'https://wmzfehnczvdraeninzcf.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY'
+    );
+
+    let DATA = loadData(); // carrega do localStorage imediatamente
+
+    // Busca dados atualizados do Supabase em background
+    (async () => {
+      try {
+        const { data, error } = await _sb.from('site_config').select('data').eq('id', 1).single();
+        if (!error && data?.data && Object.keys(data.data).length > 0) {
+          localStorage.setItem('tp_data', JSON.stringify(data.data));
+          DATA = loadData();
+          applyData(); // re-aplica com dados atualizados
+        }
+      } catch(e) { /* usa localStorage como fallback */ }
+    })();
 
     /* Apply data to DOM */
     function applyData() {
@@ -1485,7 +1504,12 @@
 
       // Team section visibility
       const equipeSection = document.getElementById('equipe');
-      if (equipeSection) equipeSection.style.display = DATA.teamVisible === false ? 'none' : '';
+      const show = DATA.teamVisible !== false;
+      if (equipeSection) equipeSection.style.display = show ? '' : 'none';
+      ['nav-equipe-item','mob-equipe-item','footer-equipe-item'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = show ? '' : 'none';
+      });
       renderTeam(DATA.team);
 
       // Addresses

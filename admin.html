@@ -1024,7 +1024,30 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+  /* ══════════════════════════════════════
+     SUPABASE
+  ══════════════════════════════════════ */
+  const SB_URL = 'https://wmzfehnczvdraeninzcf.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
+  const sb = supabase.createClient(SB_URL, SB_KEY);
+
+  async function loadFromSupabase() {
+    try {
+      const { data, error } = await sb.from('site_config').select('data').eq('id', 1).single();
+      if (!error && data?.data && Object.keys(data.data).length > 0) {
+        localStorage.setItem(DATA_KEY, JSON.stringify(data.data));
+      }
+    } catch(e) { console.warn('Supabase load failed, using localStorage', e); }
+  }
+
+  async function saveToSupabase(dataObj) {
+    try {
+      await sb.from('site_config').upsert({ id: 1, data: dataObj, updated_at: new Date().toISOString() });
+    } catch(e) { console.warn('Supabase save failed', e); }
+  }
+
   /* ══════════════════════════════════════
      DATA
   ══════════════════════════════════════ */
@@ -1066,7 +1089,10 @@
     } catch(e) { return structuredClone ? structuredClone(DEFAULT_DATA) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
   }
 
-  function persist() { localStorage.setItem(DATA_KEY, JSON.stringify(DATA)); }
+  function persist() {
+    localStorage.setItem(DATA_KEY, JSON.stringify(DATA));
+    saveToSupabase(DATA);
+  }
   function getPwd()  { return localStorage.getItem(PWD_KEY) || DEFAULT_PWD; }
 
   let DATA  = loadData();
@@ -1094,9 +1120,17 @@
   function doLogin() {
     const pwd = document.getElementById('loginPwd').value;
     if (pwd === getPwd()) {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      init();
+      const btn = document.querySelector('.login-btn');
+      btn.textContent = 'Carregando...';
+      btn.disabled = true;
+      loadFromSupabase().then(() => {
+        DATA = loadData();
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        btn.textContent = 'Entrar';
+        btn.disabled = false;
+        init();
+      });
     } else {
       document.getElementById('loginErr').style.display = 'block';
       document.getElementById('loginPwd').value = '';
