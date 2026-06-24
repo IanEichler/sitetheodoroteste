@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo-symbol-gold.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Theodoro & Porto — Advocacia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,11 +40,7 @@
     }
 
     /* ── PRELOADER ── */
-    #preloader {
-      position: fixed; inset: 0; z-index: 10000;
-      background: var(--forest-deep);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
-    }
+    #preloader { display: none !important; }
     .pre-logo { display: flex; align-items: center; justify-content: center; }
     .pre-logo img { height: clamp(80px, 18vw, 130px); width: auto; }
     .pre-prog { width: 180px; height: 1px; background: rgba(201,168,76,.2); }
@@ -119,7 +116,13 @@
       min-height: 100vh;
       display: grid; grid-template-columns: 1.05fr .95fr;
       align-items: center; gap: 4vw;
-      background: var(--forest-deep);
+      background-color: var(--forest-deep);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(201,168,76,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.08) 1px, transparent 1px);
+      background-size: 200px 200px, 40px 40px, 40px 40px;
+      background-blend-mode: soft-light, normal, normal;
       padding: 120px 5vw 80px; overflow: hidden; position: relative;
     }
     .hero-grid {
@@ -130,28 +133,26 @@
       background-size: 72px 72px;
       mask-image: radial-gradient(ellipse 90% 90% at 30% 50%, black, transparent);
     }
-    .hero-glow {
-      position: absolute; top: 40%; left: 25%; transform: translate(-50%,-50%);
-      width: 500px; height: 400px; pointer-events: none;
-      background: radial-gradient(ellipse, rgba(19,63,59,.55), transparent 70%);
-      filter: blur(70px);
-    }
+    .hero-glow { display: none; }
     /* LEFT */
-    .hero-left { position: relative; z-index: 1; }
+    .hero-left { position: relative; z-index: 2; }
     .hero-eyebrow {
       font-size: .68rem; font-weight: 600; letter-spacing: .25em;
       text-transform: uppercase; color: var(--gold); margin-bottom: 1.75rem;
+      text-shadow: 0 2px 16px rgba(8,26,24,.8);
     }
     .hero-h1 {
       font-family: 'Syne', sans-serif;
       font-size: clamp(2.8rem, 5.5vw, 5.2rem);
       font-weight: 400; color: var(--cream);
+      text-shadow: 0 4px 32px rgba(8,26,24,.7), 0 1px 8px rgba(8,26,24,.5);
       line-height: 1.08; margin-bottom: 1.5rem;
     }
     .hero-h1 em { font-style: normal; color: var(--gold); font-weight: 800; }
     .hero-sub {
       font-size: clamp(.9rem,1.2vw,1rem); font-weight: 300;
       color: rgba(250,250,248,.5); max-width: 480px; margin-bottom: 2.5rem; line-height: 1.8;
+      text-shadow: 0 2px 20px rgba(8,26,24,.9);
     }
     /* Google rating badge no hero */
     .hero-rating {
@@ -422,12 +423,21 @@
     .ac-arrow { font-size: 1.2rem; color: var(--text-light); display: inline-block; transition: color .3s, transform .3s; }
 
     /* ── SOBRE ── */
-    #sobre { background: var(--forest-deep); padding: 120px 5vw; }
+    #sobre {
+      background-color: var(--forest-deep);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(201,168,76,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.08) 1px, transparent 1px);
+      background-size: 200px 200px, 40px 40px, 40px 40px;
+      background-blend-mode: soft-light, normal, normal;
+      padding: 120px 5vw;
+    }
     .sobre-inner {
       max-width: 1200px; margin: 0 auto;
       display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: start;
     }
-    .sobre-left p { font-size: .95rem; font-weight: 300; color: rgba(250,250,248,.55); line-height: 1.85; margin-bottom: 1.1rem; }
+    .sobre-left p { font-size: .95rem; font-weight: 300; color: rgba(250,250,248,.55); line-height: 1.85; margin-bottom: 1.1rem; text-align: justify; }
     .sobre-values { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2rem; }
     .v-chip { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,.3); padding: .35rem .9rem; border-radius: 30px; }
     .sqc { background: rgba(19,63,59,.3); border: 1px solid rgba(201,168,76,.15); border-radius: var(--r); padding: 2.5rem; margin-bottom: 1.5rem; position: relative; }
@@ -442,15 +452,38 @@
     /* ── EQUIPE ── */
     #equipe { padding: 120px 5vw; background: var(--cream-2); }
     .equipe-top { max-width: 1200px; margin: 0 auto 3.5rem; }
+
+    /* Equipe grid */
+    .equipe-carousel { max-width: 1200px; margin: 0 auto; }
     #equipe-grid {
-      max-width: 1200px; margin: 0 auto;
       display: grid; gap: 1.5rem;
+      grid-template-columns: repeat(4, 1fr);
     }
-    #equipe-grid[data-cols="1"] { grid-template-columns: 1fr; }
-    #equipe-grid[data-cols="2"] { grid-template-columns: repeat(2,1fr); }
-    #equipe-grid[data-cols="3"] { grid-template-columns: repeat(3,1fr); }
-    #equipe-grid[data-cols="4"] { grid-template-columns: repeat(4,1fr); }
     .membro { cursor: default; }
+    .equipe-more-wrap { text-align: center; margin-top: 2.5rem; }
+    .equipe-more-btn {
+      display: inline-flex; align-items: center; gap: .65rem;
+      font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 600;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-mid); background: transparent;
+      border: 1px solid var(--cream-3); border-radius: 4px;
+      padding: .8rem 2rem; cursor: pointer;
+      transition: border-color .25s, color .25s, background .25s;
+    }
+    .equipe-more-btn:hover { border-color: var(--forest); color: var(--forest); background: rgba(19,63,59,.04); }
+    .equipe-more-btn svg { transition: transform .3s; }
+    .equipe-more-btn.open svg { transform: rotate(180deg); }
+    .equipe-hidden { display: none; }
+    .equipe-hidden.visible {
+      display: block;
+      animation: memberIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes memberIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 900px) { #equipe-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 480px) { #equipe-grid { grid-template-columns: 1fr; } }
     .membro-photo {
       position: relative; overflow: hidden; border-radius: var(--r);
       margin-bottom: 1.1rem; aspect-ratio: 3/4;
@@ -468,10 +501,10 @@
       opacity: 0; transition: opacity .35s;
     }
     .membro:hover .photo-ov { opacity: 1; }
-    .photo-ov p { font-size: .82rem; color: rgba(250,250,248,.82); line-height: 1.6; transform: translateY(8px); transition: transform .35s; }
+    .photo-ov p { font-size: .82rem; color: rgba(250,250,248,.82); line-height: 1.6; transform: translateY(8px); transition: transform .35s; text-align: justify; }
     .membro:hover .photo-ov p { transform: translateY(0); }
-    .membro-name { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--text); margin-bottom: .2rem; }
-    .membro-role { font-size: .68rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+    .membro-name { font-family: 'Syne', sans-serif; font-size: 1.25rem; color: var(--text); margin-bottom: .2rem; text-align: center; }
+    .membro-role { font-size: .68rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); text-align: center; }
 
     /* ── MISSÃO VISÃO VALORES ── */
     #mvv { padding: 120px 5vw; background: var(--cream); }
@@ -480,7 +513,14 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 5rem;
     }
     .mvv-card {
-      background: var(--forest-deep); border-radius: 16px; padding: 2.5rem;
+      background-color: var(--forest-deep);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(201,168,76,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.08) 1px, transparent 1px);
+      background-size: 200px 200px, 40px 40px, 40px 40px;
+      background-blend-mode: soft-light, normal, normal;
+      border-radius: 16px; padding: 2.5rem;
       position: relative; overflow: hidden;
     }
     .mvv-card::before {
@@ -498,7 +538,7 @@
       font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 600;
       color: var(--cream); margin-bottom: 1rem; line-height: 1.2;
     }
-    .mvv-card p { font-size: .9rem; color: rgba(250,250,248,.5); line-height: 1.85; font-weight: 300; }
+    .mvv-card p { font-size: .9rem; color: rgba(250,250,248,.5); line-height: 1.85; font-weight: 300; text-align: justify; }
 
     .mvv-valores-header { margin-bottom: 2.5rem; }
     .mvv-valores-header h3 {
@@ -518,7 +558,7 @@
       font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 600;
       color: var(--text); margin-bottom: .6rem;
     }
-    .mvv-valor p { font-size: .85rem; color: var(--text-mid); line-height: 1.75; }
+    .mvv-valor p { font-size: .85rem; color: var(--text-mid); line-height: 1.75; text-align: justify; }
 
     @media (max-width: 900px) {
       .mvv-top-grid { grid-template-columns: 1fr; }
@@ -531,7 +571,16 @@
     }
 
     /* ── DEPOIMENTOS: INFINITE MARQUEE ── */
-    #depoimentos { padding: 120px 0; background: var(--forest-deep); overflow: hidden; }
+    #depoimentos {
+      padding: 120px 0; overflow: hidden;
+      background-color: var(--forest-deep);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"),
+        linear-gradient(rgba(201,168,76,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.08) 1px, transparent 1px);
+      background-size: 200px 200px, 40px 40px, 40px 40px;
+      background-blend-mode: soft-light, normal, normal;
+    }
     .depo-header { padding: 0 5vw; margin-bottom: 3.5rem; }
     .depo-marquee-wrap { overflow: hidden; }
     .depo-marquee {
@@ -932,7 +981,7 @@
       <img src="group.png" alt="Dra. Ana Theodoro e Dr. Marcos Porto" class="hero-img" />
     </div>
 
-    <div class="hero-scroll">
+    <div class="hero-scroll" style="display:none">
       <span>Scroll</span>
       <div class="s-line"></div>
     </div>
@@ -1038,7 +1087,7 @@
         <div class="sqc gs0">
           <div class="sqc-mark">"</div>
           <p class="sqc-text">O direito não é apenas uma profissão. É o compromisso diário com a justiça e com as pessoas que dependem de nós.</p>
-          <span class="sqc-cite">— Dra. Ana Porto, Sócia-Fundadora</span>
+          <span class="sqc-cite">— Dra. Aline Porto, Sócia-Fundadora</span>
         </div>
         <div class="sobre-mini gs0">
           <div class="smi"><strong>2012</strong><span>Fundação</span></div>
@@ -1055,7 +1104,15 @@
       <div class="s-label gs0"><span class="s-lline"></span>Nossos Profissionais</div>
       <h2 class="s-title gs0">Conheça a <em>Equipe</em></h2>
     </div>
-    <div id="equipe-grid"><!-- rendered by JS --></div>
+    <div class="equipe-carousel">
+      <div id="equipe-grid"><!-- rendered by JS --></div>
+      <div class="equipe-more-wrap" id="equipe-more-wrap" style="display:none">
+        <button class="equipe-more-btn" id="equipe-more-btn" onclick="toggleEquipeMore()">
+          <span id="equipe-more-label">Ver restante da equipe</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </div>
   </section>
 
   <!-- MISSÃO VISÃO VALORES -->
@@ -1181,25 +1238,7 @@
           </div>
         </div>
       </div>
-      <div class="contato-map gs0" style="gap:1.5rem;padding:2rem;">
-        <div style="width:100%;text-align:left;">
-          <div style="font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;">Matriz</div>
-          <div class="map-addr" id="ci-address" style="text-align:left;font-size:.82rem;">
-            Rua Arnaldo Estevão de Figueiredo, 874<br>
-            Centro — Rondonópolis – MT, 78.700-150
-          </div>
-          <a href="https://maps.google.com/?q=Rua+Arnaldo+Estev%C3%A3o+de+Figueiredo+874+Rondon%C3%B3polis+MT" target="_blank" class="map-link" style="margin-top:.75rem;display:inline-block;">Ver no mapa →</a>
-        </div>
-        <div style="width:100%;height:1px;background:rgba(201,168,76,.12);"></div>
-        <div style="width:100%;text-align:left;">
-          <div style="font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;">Unidade Comercial</div>
-          <div class="map-addr" style="text-align:left;font-size:.82rem;">
-            Prime Centro Empresarial<br>
-            Av. Tiradentes, 1841 — 15º andar, Salas 1505 e 1506<br>
-            Centro — Rondonópolis – MT, 78.700-028
-          </div>
-        </div>
-      </div>
+      <div class="contato-map gs0" style="gap:1.5rem;padding:2rem;" id="addresses-container"><!-- renderizado por JS --></div>
     </div>
   </section>
 
@@ -1237,6 +1276,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
   <script>
     /* ─────────────────────────────────────────
        DATA: localStorage → defaults
@@ -1246,6 +1286,12 @@
       google:  { score: '4,9', count: 297 },
       contact: { phone: '+55 (66) 99984-3063', email: 'contato@theodoroeporto.adv.br', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', hours: 'Segunda a Sexta: 7h às 17h' },
       whatsapp: '5566999843063',
+      teamVisible: true,
+      addresses: [
+        { id: '1', label: 'Matriz', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', mapUrl: 'https://maps.google.com/?q=Rua+Arnaldo+Estev%C3%A3o+de+Figueiredo+874+Rondon%C3%B3polis+MT', main: true },
+        { id: '2', label: 'Unidade Comercial', address: 'Prime Centro Empresarial\nAv. Tiradentes, 1841 — 15º andar, Salas 1505 e 1506\nCentro — Rondonópolis – MT, 78.700-028', mapUrl: 'https://maps.google.com/?q=Avenida+Tiradentes+1841+Rondon%C3%B3polis+MT', main: false },
+        { id: '3', label: 'Primavera do Leste', address: 'Av. Cuiabá, 894\nCidade Primavera I — Primavera do Leste – MT', mapUrl: 'https://maps.google.com/?q=Avenida+Cuiab%C3%A1+894+Primavera+do+Leste+MT', main: false },
+      ],
       team: [
         { id: '1', initials: 'AT', name: 'Dra. Ana Theodoro',  role: 'Sócia-Fundadora · Civil &amp; Família',             bio: 'Mestre em Direito Civil pela USP. Especialista em mediação e resolução de conflitos familiares.' },
         { id: '2', initials: 'MP', name: 'Dr. Marcos Porto',   role: 'Sócio-Fundador · Trabalhista &amp; Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
@@ -1261,8 +1307,10 @@
           stats:    { ...DEFAULT_DATA.stats,   ...(saved.stats   || {}) },
           contact:  { ...DEFAULT_DATA.contact, ...(saved.contact || {}) },
           google:   { ...DEFAULT_DATA.google,  ...(saved.google  || {}) },
-          whatsapp:   saved.whatsapp  || DEFAULT_DATA.whatsapp,
-          team:       saved.team      || DEFAULT_DATA.team,
+          whatsapp:    saved.whatsapp   || DEFAULT_DATA.whatsapp,
+          teamVisible: saved.teamVisible !== undefined ? saved.teamVisible : DEFAULT_DATA.teamVisible,
+          addresses:   saved.addresses  || DEFAULT_DATA.addresses,
+          team:        saved.team       || DEFAULT_DATA.team,
         };
       } catch(e) { return DEFAULT_DATA; }
     }
@@ -1285,7 +1333,7 @@
       document.getElementById('ci-phone').href          = 'tel:' + ph.replace(/\D/g,'');
       document.getElementById('ci-email').textContent   = em;
       document.getElementById('ci-email').href          = 'mailto:' + em;
-      document.getElementById('ci-address').innerHTML   = ad;
+      // ci-address now rendered by renderAddresses()
       document.getElementById('ci-hours').textContent   = hr;
       document.getElementById('f-phone').textContent    = ph;
       document.getElementById('f-email').textContent    = em;
@@ -1296,43 +1344,82 @@
       document.getElementById('heroScore').textContent  = DATA.google.score;
       document.getElementById('heroCount').textContent  = DATA.google.count + ' avaliações';
 
-      // Team
+      // Team section visibility
+      const equipeSection = document.getElementById('equipe');
+      if (equipeSection) equipeSection.style.display = DATA.teamVisible === false ? 'none' : '';
       renderTeam(DATA.team);
+
+      // Addresses
+      renderAddresses(DATA.addresses);
+    }
+
+    function renderAddresses(addresses) {
+      const container = document.getElementById('addresses-container');
+      if (!container || !addresses || !addresses.length) return;
+      const parts = [];
+      addresses.forEach((a, i) => {
+        if (i > 0) parts.push('<div style="width:100%;height:1px;background:rgba(201,168,76,.12);"></div>');
+        const addrLines = a.address.replace(/\n/g, '<br>');
+        const mainBadge = a.main ? '<span style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--gold);color:var(--forest-deep);padding:.15rem .45rem;border-radius:3px;">Principal</span>' : '';
+        const border = a.main ? 'border-left:2px solid var(--gold);padding-left:1rem;' : '';
+        parts.push(`
+          <div style="width:100%;text-align:left;${border}">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;">
+              <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);">${a.label}</div>
+              ${mainBadge}
+            </div>
+            <div class="map-addr" style="text-align:left;font-size:.82rem;">${addrLines}</div>
+            ${a.mapUrl ? `<a href="${a.mapUrl}" target="_blank" class="map-link" style="margin-top:.75rem;display:inline-block;">Ver no mapa →</a>` : ''}
+          </div>`);
+      });
+      container.innerHTML = parts.join('');
     }
 
     function renderTeam(team) {
-      const VISIBLE = 4;
+      team = team.filter(m => m.active !== false);
       const grid = document.getElementById('equipe-grid');
-      const makeCard = m => `
-        <div class="membro gs0">
+      const moreWrap = document.getElementById('equipe-more-wrap');
+      if (!grid || !team.length) return;
+
+      const makeCard = (m, hidden) => `
+        <div class="membro${hidden ? ' equipe-hidden' : ''}">
           <div class="membro-photo">
-            <div class="photo-init">${m.initials}</div>
+            ${m.photo ? `<img src="${m.photo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" />` : `<div class="photo-init">${m.initials}</div>`}
             <div class="photo-ov"><p>${m.bio}</p></div>
           </div>
           <div class="membro-name">${m.name}</div>
           <div class="membro-role">${m.role}</div>
         </div>`;
+
+      const VISIBLE = 4;
       const visible = team.slice(0, VISIBLE);
       const hidden  = team.slice(VISIBLE);
-      const cols = Math.min(team.length, 4);
-      grid.style.cssText = `max-width:1200px;margin:0 auto;display:grid;gap:1.5rem;`;
-      grid.dataset.cols = cols;
-      grid.innerHTML = visible.map(makeCard).join('');
-      if (hidden.length > 0) {
-        const wrap = document.createElement('div');
-        wrap.style.cssText = 'max-width:1200px;margin:1.5rem auto 0;text-align:center;';
-        const btn = document.createElement('button');
-        btn.textContent = 'Ver mais';
-        btn.style.cssText = 'background:none;border:1px solid var(--cream-3);border-radius:8px;padding:.7rem 2rem;font-family:Inter,sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);cursor:pointer;transition:border-color .2s,color .2s;';
-        btn.onmouseenter = () => { btn.style.borderColor='var(--forest)'; btn.style.color='var(--forest)'; };
-        btn.onmouseleave = () => { btn.style.borderColor='var(--cream-3)'; btn.style.color='var(--text-mid)'; };
-        btn.addEventListener('click', () => {
-          grid.innerHTML += hidden.map(makeCard).join('');
-          grid.dataset.cols = Math.min(team.length, 4);
-          wrap.remove();
-        });
-        wrap.appendChild(btn);
-        grid.parentNode.insertBefore(wrap, grid.nextSibling);
+
+      grid.innerHTML = visible.map(m => makeCard(m, false)).join('') +
+                       hidden.map(m => makeCard(m, true)).join('');
+
+      if (hidden.length > 0) moreWrap.style.display = 'block';
+    }
+
+    let _equipeOpen = false;
+    function toggleEquipeMore() {
+      _equipeOpen = !_equipeOpen;
+      const hidden = document.querySelectorAll('.membro.equipe-hidden');
+      const btn    = document.getElementById('equipe-more-btn');
+      const label  = document.getElementById('equipe-more-label');
+      hidden.forEach((el, i) => {
+        if (_equipeOpen) {
+          el.style.animationDelay = `${i * 0.08}s`;
+          el.classList.add('visible');
+        } else {
+          el.classList.remove('visible');
+          el.style.animationDelay = '';
+        }
+      });
+      btn.classList.toggle('open', _equipeOpen);
+      label.textContent = _equipeOpen ? 'Ocultar equipe' : 'Ver restante da equipe';
+      if (!_equipeOpen) {
+        document.getElementById('equipe').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
@@ -1369,25 +1456,38 @@
     ScrollTrigger.config({ limitCallbacks: true });
     gsap.ticker.lagSmoothing(0);
 
+    /* ── LENIS SMOOTH SCROLL ── */
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+    });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(time => lenis.raf(time * 1000));
+
+    // Smooth scroll nos links internos
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -76 }); }
+      });
+    });
+
     /* ─────────────────────────────────────────
        PRELOADER
     ───────────────────────────────────────── */
     /* ─── Restaurar posição ao voltar de página de área ─── */
+    /* Esconde preloader imediatamente, sem animação de entrada */
+    document.getElementById('preloader').style.display = 'none';
+    document.querySelectorAll('.lm > span').forEach(el => el.style.transform = 'translateY(0)');
+    document.getElementById('heroCtaBtn') && (document.getElementById('heroCtaBtn').style.opacity = '1');
+    document.querySelector('.hero-scroll') && (document.querySelector('.hero-scroll').style.opacity = '1');
+    document.querySelector('.hero-img')   && Object.assign(document.querySelector('.hero-img').style, { opacity:'1', transform:'none' });
+
     const savedScroll = sessionStorage.getItem('areaScrollPos');
     if (savedScroll) {
       sessionStorage.removeItem('areaScrollPos');
-      document.getElementById('preloader').style.display = 'none';
       window.scrollTo(0, parseInt(savedScroll));
-    } else {
-      gsap.to('#preBar', {
-        scaleX: 1, duration: 0.6, ease: 'power2.inOut',
-        onComplete() {
-          gsap.to('#preloader', { opacity: 0, duration: .25, delay: .05, onComplete() {
-            document.getElementById('preloader').style.display = 'none';
-            heroReveal();
-          }});
-        }
-      });
     }
 
     /* Salvar posição ao clicar em card de área */
@@ -1396,16 +1496,6 @@
         sessionStorage.setItem('areaScrollPos', window.scrollY);
       });
     });
-
-    function heroReveal() {
-      const tl = gsap.timeline();
-      tl.to('.hero-eyebrow .lm > span', { y:'0%', duration:1,    ease:'power4.out' })
-        .to('.hero-h1 .lm > span',       { y:'0%', duration:1.1,  stagger:.12, ease:'power4.out' }, '-=.6')
-        .to('.hero-sub .lm > span',       { y:'0%', duration:.9,   stagger:.08, ease:'power3.out' }, '-=.6')
-        .fromTo('#heroCtaBtn',  { opacity:0, y:20 }, { opacity:1, y:0, duration:.7, ease:'power3.out' }, '-=.4')
-        .fromTo('.hero-scroll', { opacity:0 }, { opacity:1, duration:.5 }, '-=.3')
-        .fromTo('.hero-img',    { opacity:0, y:40, scale:.97 }, { opacity:1, y:0, scale:1, duration:1.1, ease:'power3.out' }, '-=.8');
-    }
 
     /* ─────────────────────────────────────────
        SMOOTH SCROLL
@@ -1520,7 +1610,8 @@
     window.addEventListener('mousemove', e => {
       const x = (e.clientX/window.innerWidth  - .5) * 25;
       const y = (e.clientY/window.innerHeight - .5) * 18;
-      gsap.to('.hero-glow', { x, y, duration:1.8, ease:'power1.out' });
+      // glow stays fixed on the right side — only the image moves
+      gsap.to('.hero-img', { x: x * 0.4, y: y * 0.3, duration:1.8, ease:'power1.out' });
     }, { passive:true });
 
     /* ─────────────────────────────────────────

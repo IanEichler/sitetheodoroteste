@@ -2,692 +2,1536 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo-symbol-gold.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — Theodoro & Porto</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --forest:      #2b501a;
-      --forest-dark: #1a3010;
-      --forest-deep: #0e1e09;
+      /* Brand */
+      --forest:      #133F3B;
+      --forest-dark: #0d2e2b;
+      --forest-deep: #081a18;
       --gold:        #C9A84C;
       --gold-light:  #E2C068;
-      --cream:       #FAFAF8;
-      --cream-2:     #F3F0E8;
-      --cream-3:     #E8E4D8;
-      --text:        #1A1A1A;
-      --text-mid:    #5A574F;
-      --text-light:  #908C84;
-      --danger:      #DC2626;
-      --success:     #16A34A;
-      --r:           10px;
+      /* Semantic */
+      --blue:        #2563EB;
+      --blue-dark:   #1d4ed8;
+      --green:       #10B981;
+      --green-dark:  #059669;
+      --red:         #EF4444;
+      --red-dark:    #DC2626;
+      --yellow:      #F59E0B;
+      --gray:        #6B7280;
+      /* UI */
+      --bg:          #F3F4F6;
+      --surface:     #FFFFFF;
+      --border:      #E5E7EB;
+      --border-dark: #D1D5DB;
+      --text:        #111827;
+      --text-mid:    #4B5563;
+      --text-light:  #9CA3AF;
+      --r:           8px;
+      --shadow:      0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md:   0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+      --shadow-lg:   0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
     }
-    body { font-family: 'Inter', sans-serif; background: var(--cream-2); color: var(--text); min-height: 100vh; }
 
-    /* ── LOGIN ── */
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+
+    /* ════════════════════════════════
+       LOGIN
+    ════════════════════════════════ */
     #login-screen {
-      position: fixed; inset: 0; z-index: 100;
+      position: fixed; inset: 0; z-index: 200;
       background: var(--forest-deep);
       display: flex; align-items: center; justify-content: center;
     }
     .login-box {
-      background: var(--cream); border-radius: 16px;
-      padding: 3rem 2.5rem; width: 90%; max-width: 380px;
-      text-align: center;
+      background: var(--surface); border-radius: 16px;
+      padding: 2.5rem; width: 90%; max-width: 400px;
+      text-align: center; box-shadow: var(--shadow-lg);
     }
-    .login-logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; color: var(--forest); margin-bottom: .25rem; }
-    .login-logo em { color: var(--gold); font-style: normal; }
-    .login-sub { font-size: .8rem; color: var(--text-light); margin-bottom: 2rem; }
-    .login-field { text-align: left; margin-bottom: 1rem; }
-    .login-field label { display: block; font-size: .65rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--text-light); margin-bottom: .4rem; }
+    .login-logo-img { height: 56px; width: auto; margin-bottom: 1.25rem; }
+    .login-brand { font-family: 'Syne', sans-serif; font-size: 1.35rem; color: var(--forest); margin-bottom: .25rem; }
+    .login-brand em { color: var(--gold); font-style: normal; }
+    .login-sub { font-size: 13px; color: var(--text-light); margin-bottom: 2rem; }
+    .login-field { text-align: left; margin-bottom: 1rem; position: relative; }
+    .login-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: .4rem; }
     .login-field input {
-      width: 100%; background: var(--cream-2); border: 1px solid var(--cream-3);
-      border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif;
-      font-size: .9rem; padding: .7rem 1rem; outline: none; transition: border-color .2s;
+      width: 100%; border: 1px solid var(--border-dark); border-radius: var(--r);
+      color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px;
+      padding: .65rem 2.5rem .65rem .85rem; outline: none; transition: border-color .2s, box-shadow .2s;
+      background: var(--surface);
     }
-    .login-field input:focus { border-color: var(--forest); }
+    .login-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+    .pwd-eye {
+      position: absolute; right: .7rem; bottom: .65rem;
+      background: none; border: none; cursor: pointer; color: var(--text-light);
+      display: flex; align-items: center; padding: 0; transition: color .2s;
+    }
+    .pwd-eye:hover { color: var(--text); }
     .login-btn {
-      width: 100%; background: var(--forest); color: var(--cream); border: none;
-      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .82rem;
-      font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      padding: .85rem; cursor: pointer; transition: background .2s; margin-top: .25rem;
+      width: 100%; background: var(--forest); color: #fff; border: none;
+      border-radius: var(--r); font-family: 'Inter', sans-serif; font-size: 14px;
+      font-weight: 600; padding: .75rem; cursor: pointer; transition: background .2s;
+      margin-top: .5rem;
     }
     .login-btn:hover { background: var(--forest-dark); }
-    .login-err { font-size: .78rem; color: var(--danger); margin-top: .75rem; display: none; }
+    .login-err { font-size: 13px; color: var(--red); margin-top: .6rem; display: none; }
 
-    /* ── LAYOUT ── */
+    /* ════════════════════════════════
+       APP SHELL
+    ════════════════════════════════ */
     #app { display: none; }
-    header.adm-header {
-      background: var(--forest-deep); height: 64px;
+    .app-header {
+      background: var(--forest-deep); height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2rem; border-bottom: 1px solid rgba(201,168,76,.1);
-      position: sticky; top: 0; z-index: 50;
+      padding: 0 1.5rem; border-bottom: 1px solid rgba(201,168,76,.1);
+      position: sticky; top: 0; z-index: 100; gap: 1rem;
     }
-    .adm-logo { font-family: 'Syne', sans-serif; font-size: 1rem; color: var(--cream); }
-    .adm-logo em { color: var(--gold); font-style: normal; }
-    .adm-badge { font-size: .65rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.2); padding: .25rem .75rem; border-radius: 20px; }
-    .adm-logout { font-size: .72rem; font-weight: 500; color: rgba(250,250,248,.4); background: none; border: none; cursor: pointer; transition: color .2s; }
-    .adm-logout:hover { color: var(--gold); }
-
-    .adm-body { display: flex; }
-    .adm-sidebar {
-      width: 220px; flex-shrink: 0;
-      background: var(--cream); border-right: 1px solid var(--cream-3);
-      min-height: calc(100vh - 64px); padding: 1.5rem 1rem;
+    .header-brand { font-family: 'Syne', sans-serif; font-size: 1rem; color: #fff; white-space: nowrap; }
+    .header-brand em { color: var(--gold); font-style: normal; }
+    .header-right { display: flex; align-items: center; gap: .75rem; }
+    .header-badge { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.2); padding: .2rem .6rem; border-radius: 20px; }
+    .header-last-saved { font-size: 12px; color: rgba(255,255,255,.4); display: flex; align-items: center; gap: .35rem; }
+    .header-last-saved-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+    .header-view {
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6);
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px; padding: .3rem .7rem; cursor: pointer; transition: all .2s;
+      text-decoration: none; display: flex; align-items: center; gap: .35rem;
     }
-    .sidebar-section { margin-bottom: 1.75rem; }
-    .sidebar-label { font-size: .6rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text-light); margin-bottom: .5rem; padding: 0 .5rem; }
-    .sidebar-link {
-      display: flex; align-items: center; gap: .65rem;
-      padding: .6rem .75rem; border-radius: 7px;
-      font-size: .84rem; font-weight: 500; color: var(--text-mid);
-      cursor: pointer; transition: background .15s, color .15s; border: none; background: none;
-      width: 100%; text-align: left;
+    .header-view:hover { background: rgba(201,168,76,.15); color: var(--gold); border-color: rgba(201,168,76,.25); }
+    .header-logout { font-size: 13px; color: rgba(255,255,255,.35); background: none; border: none; cursor: pointer; transition: color .2s; }
+    .header-logout:hover { color: var(--red); }
+
+    .app-body { display: flex; min-height: calc(100vh - 60px); }
+
+    /* ════════════════════════════════
+       SIDEBAR
+    ════════════════════════════════ */
+    .sidebar {
+      width: 240px; flex-shrink: 0; background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: sticky; top: 60px; height: calc(100vh - 60px);
+      overflow-y: auto; padding: 1rem .75rem;
+      display: flex; flex-direction: column; gap: .25rem;
     }
-    .sidebar-link:hover   { background: var(--cream-2); color: var(--text); }
-    .sidebar-link.active  { background: rgba(43,80,26,.1); color: var(--forest); font-weight: 600; }
-    .sidebar-link svg { flex-shrink: 0; opacity: .7; }
+    .sidebar-group { margin-bottom: .5rem; }
+    .sidebar-group-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--text-light); padding: .5rem .75rem .3rem; display: block;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: .7rem;
+      height: 48px; padding: 0 .75rem; border-radius: var(--r);
+      font-size: 14px; font-weight: 500; color: var(--text-mid);
+      cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+      transition: background .15s, color .15s; text-decoration: none;
+    }
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active { background: rgba(19,63,59,.1); color: var(--forest); font-weight: 600; }
+    .nav-item.active .nav-icon { color: var(--forest); opacity: 1; }
+    .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .6; }
 
-    .adm-content { flex: 1; padding: 2rem; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    /* ════════════════════════════════
+       MAIN CONTENT
+    ════════════════════════════════ */
+    .main { flex: 1; padding: 2rem; max-width: 960px; }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    /* ── CARDS ── */
-    .page-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
-    .page-sub { font-size: .85rem; color: var(--text-light); margin-bottom: 2rem; }
+    .breadcrumb { font-size: 13px; color: var(--text-light); margin-bottom: 1.5rem; display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--text-mid); text-decoration: none; cursor: pointer; }
+    .breadcrumb a:hover { color: var(--forest); }
+    .breadcrumb-sep { color: var(--text-light); }
+    .breadcrumb-current { color: var(--text); font-weight: 500; }
+
+    .page-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 400; color: var(--text); margin-bottom: .4rem; }
+    .page-sub { font-size: 14px; color: var(--text-light); margin-bottom: 2rem; }
+
+    /* ════════════════════════════════
+       CARDS
+    ════════════════════════════════ */
     .card {
-      background: var(--cream); border: 1px solid var(--cream-3);
-      border-radius: var(--r); padding: 1.75rem; margin-bottom: 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.5rem; margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
     }
-    .card-title { font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--forest); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .5rem; }
-    .card-title::before { content: ''; width: 20px; height: 2px; background: var(--gold); }
+    .card-title {
+      font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text-mid); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .card-title-bar { width: 16px; height: 2px; background: var(--gold); flex-shrink: 0; }
+    .card-title-text { color: var(--forest); }
 
-    /* ── FORM ELEMENTS ── */
-    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    .f-group { margin-bottom: 1rem; }
-    .f-group label { display: block; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--text-light); margin-bottom: .4rem; }
-    .f-group input, .f-group textarea, .f-group select {
-      width: 100%; background: var(--cream-2); border: 1px solid var(--cream-3);
-      border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif;
-      font-size: .88rem; padding: .65rem .9rem; outline: none; transition: border-color .2s;
+    /* ════════════════════════════════
+       DASHBOARD
+    ════════════════════════════════ */
+    .dash-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 1.5rem; display: flex; align-items: flex-start; gap: 1rem;
+      box-shadow: var(--shadow); transition: box-shadow .2s, transform .2s; cursor: default;
     }
-    .f-group input:focus, .f-group textarea:focus, .f-group select:focus { border-color: var(--forest); }
-    .f-group textarea { resize: vertical; min-height: 80px; }
-
-    /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex; align-items: center; gap: .45rem;
-      padding: .6rem 1.25rem; border-radius: 7px; border: none;
-      font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: background .2s;
-    }
-    .btn-primary { background: var(--forest); color: var(--cream); }
-    .btn-primary:hover { background: var(--forest-dark); }
-    .btn-gold { background: var(--gold); color: var(--forest-deep); }
-    .btn-gold:hover { background: var(--gold-light); }
-    .btn-danger { background: rgba(220,38,38,.1); color: var(--danger); border: 1px solid rgba(220,38,38,.2); }
-    .btn-danger:hover { background: rgba(220,38,38,.18); }
-    .btn-outline { background: transparent; color: var(--text-mid); border: 1px solid var(--cream-3); }
-    .btn-outline:hover { background: var(--cream-2); }
-    .btn-sm { padding: .4rem .85rem; font-size: .7rem; }
-
-    /* ── SAVE BAR ── */
-    .save-bar {
-      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-      background: var(--forest-deep); border: 1px solid rgba(201,168,76,.2);
-      border-radius: 40px; padding: .75rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-      box-shadow: 0 8px 32px rgba(0,0,0,.25);
-      opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
-      transform: translateX(-50%) translateY(10px);
-      z-index: 200;
-    }
-    .save-bar.show { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
-    .save-bar span { font-size: .78rem; color: rgba(250,250,248,.7); }
-    .save-bar .btn { padding: .5rem 1.1rem; }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999;
-      background: var(--forest); color: var(--cream); border-radius: 8px;
-      padding: .8rem 1.25rem; font-size: .82rem; font-weight: 500;
-      display: flex; align-items: center; gap: .6rem;
-      transform: translateX(120%); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-      box-shadow: 0 8px 24px rgba(0,0,0,.2);
-    }
-    .toast.show { transform: translateX(0); }
-    .toast.error { background: var(--danger); }
-
-    /* ── TEAM MEMBERS ── */
-    .team-list { display: flex; flex-direction: column; gap: .85rem; }
-    .team-member-card {
-      background: var(--cream); border: 1px solid var(--cream-3);
-      border-radius: var(--r); padding: 1.1rem 1.25rem;
-      display: flex; align-items: center; gap: 1rem;
-    }
-    .tm-initials {
-      width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--forest-dark), var(--forest-deep));
-      border: 1px solid rgba(201,168,76,.25);
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; font-weight: 600; color: rgba(201,168,76,.6);
     }
-    .tm-info { flex: 1; }
-    .tm-name { font-size: .9rem; font-weight: 600; color: var(--text); }
-    .tm-role { font-size: .72rem; color: var(--text-light); }
-    .tm-actions { display: flex; gap: .5rem; }
+    .stat-icon svg { width: 20px; height: 20px; }
+    .stat-icon.green  { background: rgba(16,185,129,.12); color: var(--green); }
+    .stat-icon.blue   { background: rgba(37,99,235,.12);  color: var(--blue);  }
+    .stat-icon.yellow { background: rgba(245,158,11,.12); color: var(--yellow);}
+    .stat-icon.forest { background: rgba(19,63,59,.1);    color: var(--forest);}
+    .stat-body { flex: 1; }
+    .stat-label { font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: .08em; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.1; margin-top: .2rem; }
 
-    /* ── MEMBER FORM (inline) ── */
-    .member-form {
-      background: var(--cream-2); border: 1px solid var(--cream-3);
-      border-radius: var(--r); padding: 1.5rem; margin-top: 1rem; display: none;
+    /* ════════════════════════════════
+       TABS (Dados do Site)
+    ════════════════════════════════ */
+    .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      font-size: 14px; font-weight: 500; color: var(--text-light);
+      background: none; border: none; padding: .75rem 1rem; cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color .2s, border-color .2s;
     }
-    .member-form.open { display: block; }
-    .member-form-title { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--forest); margin-bottom: 1.25rem; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--forest); border-bottom-color: var(--forest); font-weight: 600; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    /* ── STAT GRID ── */
-    .stat-edit-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
-
-    /* ── PREVIEW ── */
-    .preview-link {
-      display: inline-flex; align-items: center; gap: .5rem;
-      font-size: .78rem; color: var(--forest); font-weight: 500; text-decoration: none;
-      border: 1px solid rgba(43,80,26,.2); padding: .4rem .9rem; border-radius: 6px;
-      transition: background .2s;
+    /* ════════════════════════════════
+       FORMS
+    ════════════════════════════════ */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .f { margin-bottom: 1rem; }
+    .f label {
+      display: flex; align-items: center; gap: .35rem;
+      font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: .4rem;
     }
-    .preview-link:hover { background: rgba(43,80,26,.06); }
+    .f input, .f textarea, .f select {
+      width: 100%; border: 1px solid var(--border-dark); border-radius: var(--r);
+      color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px;
+      padding: .6rem .85rem; outline: none; transition: border-color .2s, box-shadow .2s;
+      background: var(--surface);
+    }
+    .f input:focus, .f textarea:focus, .f select:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .f input.error, .f textarea.error { border-color: var(--red); }
+    .f input.error:focus, .f textarea.error:focus { box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+    .f-error { font-size: 12px; color: var(--red); margin-top: .3rem; }
+    .f-hint { font-size: 12px; color: var(--text-light); margin-top: .3rem; }
+    .f textarea { resize: vertical; min-height: 80px; }
+    .f-char { font-size: 12px; color: var(--text-light); text-align: right; margin-top: .3rem; }
+    .char-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: .5rem; overflow: hidden; }
+    .char-bar { height: 100%; background: var(--green); border-radius: 2px; transition: width .2s, background .2s; }
+    .char-bar.warn { background: var(--yellow); }
+    .char-bar.over { background: var(--red); }
+    .f-checkbox { display: flex; align-items: center; gap: .5rem; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-mid); }
+    .f-checkbox input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--forest); cursor: pointer; }
+
+    /* ════════════════════════════════
+       BUTTONS
+    ════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .55rem 1.1rem; border-radius: var(--r); border: none;
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background .15s, box-shadow .15s, transform .1s; white-space: nowrap;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .btn-primary   { background: var(--forest); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--forest-dark); box-shadow: 0 2px 8px rgba(19,63,59,.25); }
+    .btn-blue      { background: var(--blue);  color: #fff; }
+    .btn-blue:hover:not(:disabled)    { background: var(--blue-dark);   box-shadow: 0 2px 8px rgba(37,99,235,.25); }
+    .btn-green     { background: var(--green); color: #fff; }
+    .btn-green:hover:not(:disabled)   { background: var(--green-dark);  box-shadow: 0 2px 8px rgba(16,185,129,.25); }
+    .btn-red       { background: var(--red);   color: #fff; }
+    .btn-red:hover:not(:disabled)     { background: var(--red-dark);    box-shadow: 0 2px 8px rgba(239,68,68,.25); }
+    .btn-outline   { background: transparent; color: var(--text-mid); border: 1px solid var(--border-dark); }
+    .btn-outline:hover:not(:disabled) { background: var(--bg); }
+    .btn-ghost     { background: transparent; color: var(--text-mid); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-danger-ghost { background: rgba(239,68,68,.08); color: var(--red); border: 1px solid rgba(239,68,68,.2); }
+    .btn-danger-ghost:hover { background: rgba(239,68,68,.14); }
+    .btn-sm { padding: .38rem .75rem; font-size: 12px; }
+    .btn-lg { padding: .75rem 1.5rem; font-size: 15px; }
+    .btn-icon { padding: .45rem; }
+    .btn-spinner { animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+
+    /* ════════════════════════════════
+       TEAM PAGE
+    ════════════════════════════════ */
+    .section-toggle-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .section-toggle-info h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: .15rem; }
+    .section-toggle-info p  { font-size: 13px; color: var(--text-light); }
+
+    .member-cards { display: flex; flex-direction: column; gap: .75rem; }
+    .member-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 1rem 1.1rem; display: flex; align-items: center; gap: .85rem;
+      box-shadow: var(--shadow); transition: box-shadow .2s;
+    }
+    .member-card:hover { box-shadow: var(--shadow-md); }
+    .member-order { display: flex; flex-direction: column; gap: .2rem; }
+    .order-btn {
+      width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text-light); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 11px;
+      transition: all .15s; padding: 0;
+    }
+    .order-btn:hover:not(:disabled) { background: var(--surface); color: var(--forest); border-color: var(--forest); }
+    .order-btn:disabled { opacity: .3; cursor: default; }
+    .member-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--forest-dark), var(--forest-deep));
+      border: 2px solid rgba(201,168,76,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: rgba(201,168,76,.8); letter-spacing: .05em;
+      overflow: hidden;
+    }
+    .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Photo upload */
+    .photo-upload-area {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
+      padding: 1rem; background: var(--bg); border: 1px dashed var(--border-dark); border-radius: var(--r);
+    }
+    .photo-preview {
+      width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--forest-dark), var(--forest-deep));
+      border: 2px solid rgba(201,168,76,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: rgba(201,168,76,.8);
+      overflow: hidden;
+    }
+    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-upload-info { flex: 1; }
+    .photo-upload-info p { font-size: 13px; color: var(--text-mid); margin-bottom: .5rem; }
+    .photo-upload-info small { font-size: 12px; color: var(--text-light); }
+    .photo-file-input { display: none; }
+    .member-info { flex: 1; min-width: 0; }
+    .member-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .member-role { font-size: 12px; color: var(--text-light); margin-top: .1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .member-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+
+    .add-member-form { padding-top: 1.25rem; border-top: 1px solid var(--border); margin-top: 1.25rem; }
+    .add-member-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 1.1rem; }
+
+    /* ════════════════════════════════
+       ADDRESSES
+    ════════════════════════════════ */
+    .addr-cards { display: flex; flex-direction: column; gap: .75rem; }
+    .addr-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 1rem 1.1rem; display: flex; align-items: flex-start; gap: .85rem;
+      box-shadow: var(--shadow);
+    }
+    .addr-pin { color: var(--text-light); flex-shrink: 0; margin-top: .1rem; }
+    .addr-body { flex: 1; min-width: 0; }
+    .addr-label-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .25rem; }
+    .addr-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .addr-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; background: var(--gold); color: var(--forest-deep); padding: .1rem .4rem; border-radius: 4px; }
+    .addr-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; white-space: pre-line; }
+    .addr-actions { display: flex; gap: .4rem; flex-shrink: 0; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* ════════════════════════════════
+       SETTINGS
+    ════════════════════════════════ */
+    .danger-zone {
+      border: 1px solid rgba(239,68,68,.25); border-radius: var(--r);
+      padding: 1.5rem; background: rgba(239,68,68,.03);
+    }
+    .danger-zone .card-title-text { color: var(--red); }
+
+    /* ════════════════════════════════
+       MODALS
+    ════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,.45); backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border-radius: 12px; width: 90%; max-width: 480px;
+      box-shadow: var(--shadow-lg); transform: scale(.96); transition: transform .2s;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 18px; font-weight: 600; color: var(--text); }
+    .modal-close { background: none; border: none; cursor: pointer; color: var(--text-light); padding: .25rem; border-radius: 6px; transition: all .15s; }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .75rem; }
+
+    .confirm-icon { font-size: 2.5rem; text-align: center; margin-bottom: .75rem; }
+    .confirm-title { font-size: 18px; font-weight: 600; color: var(--text); text-align: center; margin-bottom: .5rem; }
+    .confirm-desc { font-size: 14px; color: var(--text-mid); text-align: center; line-height: 1.6; margin-bottom: 1.25rem; }
+    .confirm-list { font-size: 13px; color: var(--text-mid); list-style: none; margin-bottom: 1rem; }
+    .confirm-list li { padding: .3rem 0; display: flex; gap: .5rem; align-items: flex-start; }
+    .confirm-list li::before { content: '•'; color: var(--red); flex-shrink: 0; }
+    .confirm-warn { font-size: 13px; color: var(--red); font-weight: 500; text-align: center; }
+
+    /* ════════════════════════════════
+       UNSAVED BAR
+    ════════════════════════════════ */
+    .unsaved-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+      background: var(--forest-deep); border-top: 1px solid rgba(201,168,76,.15);
+      padding: .75rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; transform: translateY(100%); transition: transform .3s;
+    }
+    .unsaved-bar.show { transform: translateY(0); }
+    .unsaved-bar-text { font-size: 13px; color: rgba(255,255,255,.7); display: flex; align-items: center; gap: .5rem; }
+    .unsaved-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .unsaved-actions { display: flex; gap: .75rem; }
+
+    /* ════════════════════════════════
+       TOAST
+    ════════════════════════════════ */
+    #toast-container {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+      display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
+    }
+    .toast-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: .75rem 1rem;
+      display: flex; align-items: flex-start; gap: .6rem;
+      box-shadow: var(--shadow-lg); min-width: 280px; max-width: 360px;
+      pointer-events: all; transform: translateX(120%); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    }
+    .toast-item.show { transform: translateX(0); }
+    .toast-item.hide { transform: translateX(120%); }
+    .toast-icon-wrap { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: .05rem; }
+    .toast-icon-wrap.success { background: rgba(16,185,129,.15); color: var(--green); }
+    .toast-icon-wrap.error   { background: rgba(239,68,68,.15);  color: var(--red);   }
+    .toast-icon-wrap.info    { background: rgba(37,99,235,.15);  color: var(--blue);  }
+    .toast-icon-wrap.warn    { background: rgba(245,158,11,.15); color: var(--yellow);}
+    .toast-body { flex: 1; }
+    .toast-msg { font-size: 13px; color: var(--text); font-weight: 500; }
+    .toast-close { background: none; border: none; cursor: pointer; color: var(--text-light); padding: 0; line-height: 1; font-size: 16px; transition: color .15s; margin-top: -.1rem; }
+    .toast-close:hover { color: var(--text); }
+
+    /* ════════════════════════════════
+       MISC
+    ════════════════════════════════ */
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    .info-box { background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.2); border-radius: var(--r); padding: .75rem 1rem; font-size: 13px; color: var(--blue); margin-top: .75rem; }
+    .preview-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--forest-deep); color: var(--gold);
+      border-radius: 6px; padding: .4rem .8rem; font-size: 13px; font-weight: 500;
+    }
+    .preview-stars { color: var(--gold); font-size: 1rem; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 1rem; }
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .dash-stats { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="login-screen">
-    <div class="login-box">
-      <div class="login-logo">Theodoro <em>&amp;</em> Porto</div>
-      <div class="login-sub">Área Administrativa</div>
-      <div class="login-field">
-        <label>Senha</label>
-        <input type="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password" />
+<!-- ════ LOGIN ════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="logo-gold.png" alt="Theodoro & Porto" class="login-logo-img" onerror="this.style.display='none'" />
+    <div class="login-brand">Theodoro <em>&amp;</em> Porto</div>
+    <div class="login-sub">Área Administrativa</div>
+    <div class="login-field">
+      <label for="loginPwd">Senha</label>
+      <input type="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password" aria-label="Senha de acesso" />
+      <button class="pwd-eye" type="button" onclick="toggleEye('loginPwd',this)" aria-label="Mostrar/ocultar senha">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
+  </div>
+</div>
+
+<!-- ════ TOAST CONTAINER ════ -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ════ UNSAVED BAR ════ -->
+<div class="unsaved-bar" id="unsavedBar" role="alert">
+  <span class="unsaved-bar-text"><span class="unsaved-dot"></span> Alterações não salvas</span>
+  <div class="unsaved-actions">
+    <button class="btn btn-outline btn-sm" onclick="discardChanges()" style="color:#fff;border-color:rgba(255,255,255,.2)">Descartar</button>
+    <button class="btn btn-green btn-sm" id="saveBtn" onclick="saveAll()">Salvar alterações</button>
+  </div>
+</div>
+
+<!-- ════ MODALS ════ -->
+
+<!-- Edit Member Modal -->
+<div class="modal-overlay" id="editMemberModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="editModalTitle">Editar Membro</div>
+      <button class="modal-close" onclick="closeModal('editMemberModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-m-id" />
+      <div class="form-grid-2">
+        <div class="f">
+          <label for="edit-m-name">Nome completo</label>
+          <input type="text" id="edit-m-name" />
+        </div>
+        <div class="f">
+          <label for="edit-m-init">Iniciais (2-3 letras)</label>
+          <input type="text" id="edit-m-init" maxlength="3" style="text-transform:uppercase" />
+        </div>
       </div>
-      <button class="login-btn" onclick="doLogin()">Entrar</button>
-      <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
+      <div class="f">
+        <label for="edit-m-role">Cargo / Especialidade</label>
+        <input type="text" id="edit-m-role" />
+      </div>
+      <div class="photo-upload-area">
+        <div class="photo-preview" id="edit-photo-preview">—</div>
+        <div class="photo-upload-info">
+          <p>Foto do membro</p>
+          <small>Recomendado: 1080×1440px (formato retrato) · JPG ou PNG</small>
+          <div style="display:flex;gap:.5rem;margin-top:.6rem">
+            <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-photo-input').click()">📷 Escolher foto</button>
+            <button class="btn btn-danger-ghost btn-sm" type="button" id="edit-photo-remove" onclick="removeEditPhoto()" style="display:none">Remover</button>
+          </div>
+        </div>
+        <input type="file" id="edit-photo-input" class="photo-file-input" accept="image/*" onchange="handleEditPhoto(this)" />
+      </div>
+      <div class="f">
+        <label for="edit-m-bio">Bio <span style="font-weight:400;color:var(--text-light)">(aparece no hover)</span></label>
+        <textarea id="edit-m-bio" maxlength="200" rows="3" oninput="updateBioBar('edit-m-bio','edit-bio-bar','edit-bio-count')"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.3rem">
+          <div class="char-bar-wrap" style="flex:1;margin-right:.75rem"><div class="char-bar" id="edit-bio-bar" style="width:0%"></div></div>
+          <span class="f-char"><span id="edit-bio-count">0</span>/200</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editMemberModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveMember()">Salvar alterações</button>
     </div>
   </div>
+</div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
-
-  <!-- SAVE BAR -->
-  <div class="save-bar" id="saveBar">
-    <span>Há alterações não salvas</span>
-    <button class="btn btn-gold" onclick="saveAll()">Salvar alterações</button>
-    <button class="btn btn-outline btn-sm" onclick="discardChanges()">Descartar</button>
-  </div>
-
-  <!-- APP -->
-  <div id="app">
-    <header class="adm-header">
-      <div class="adm-logo">Theodoro <em>&amp;</em> Porto</div>
-      <div style="display:flex;align-items:center;gap:1rem">
-        <span class="adm-badge">Administrador</span>
-        <button class="adm-logout" onclick="logout()">Sair →</button>
+<!-- Edit Address Modal -->
+<div class="modal-overlay" id="editAddrModal" role="dialog" aria-modal="true" aria-labelledby="editAddrTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="editAddrTitle">Editar Endereço</div>
+      <button class="modal-close" onclick="closeModal('editAddrModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-a-id" />
+      <div class="f">
+        <label for="edit-a-label">Nome / Identificação</label>
+        <input type="text" id="edit-a-label" placeholder="Ex: Matriz, Filial" />
       </div>
-    </header>
+      <label class="f-checkbox" style="margin-bottom:1rem">
+        <input type="checkbox" id="edit-a-main" /> Marcar como endereço principal
+      </label>
+      <div class="f">
+        <label for="edit-a-text">Endereço completo</label>
+        <textarea id="edit-a-text" rows="3"></textarea>
+      </div>
+      <div class="f">
+        <label for="edit-a-map">Link do Google Maps (opcional)</label>
+        <input type="text" id="edit-a-map" placeholder="https://maps.google.com/?q=..." />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editAddrModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveAddress()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
 
-    <div class="adm-body">
-      <!-- SIDEBAR -->
-      <aside class="adm-sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-label">Conteúdo</div>
-          <button class="sidebar-link active" onclick="showTab('stats', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg> Dados do Site</button>
-          <button class="sidebar-link" onclick="showTab('team', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Equipe</button>
-          <button class="sidebar-link" onclick="showTab('contact', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Contato</button>
-          <button class="sidebar-link" onclick="showTab('settings', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Configurações</button>
-        </div>
-        <div class="sidebar-section">
-          <div class="sidebar-label">Atalhos</div>
-          <a class="sidebar-link" href="index.html" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Ver Site</a>
-        </div>
-      </aside>
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-body" style="padding:1.75rem">
+      <div class="confirm-icon" id="confirmIcon"></div>
+      <div class="confirm-title" id="confirmTitle"></div>
+      <div class="confirm-desc" id="confirmDesc"></div>
+      <div class="confirm-warn" id="confirmWarn" style="display:none"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancelar</button>
+      <button class="btn btn-red" id="confirmOkBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
 
-      <!-- CONTENT -->
-      <main class="adm-content">
+<!-- Reset Confirm Modal -->
+<div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--red)">⚠️ Redefinir para Padrão</div>
+      <button class="modal-close" onclick="closeModal('resetModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:1rem">Esta ação irá:</p>
+      <ul class="confirm-list">
+        <li>Apagar todos os membros da equipe</li>
+        <li>Resetar todas as estatísticas para o padrão</li>
+        <li>Apagar todos os endereços cadastrados</li>
+        <li>Restaurar informações de contato originais</li>
+      </ul>
+      <p class="confirm-warn" style="display:block;margin-bottom:1.25rem">Esta ação não pode ser desfeita.</p>
+      <div class="f">
+        <label for="resetConfirmInput">Digite <strong>EU ENTENDO</strong> para confirmar</label>
+        <input type="text" id="resetConfirmInput" placeholder="EU ENTENDO" oninput="checkResetConfirm()" autocomplete="off" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('resetModal')">Cancelar</button>
+      <button class="btn btn-red" id="resetConfirmBtn" disabled onclick="doReset()">Redefinir</button>
+    </div>
+  </div>
+</div>
 
-        <!-- TAB: STATS -->
-        <div class="tab-panel active" id="tab-stats">
-          <div class="page-title">Dados Institucionais</div>
-          <div class="page-sub">Esses números aparecem na seção de estatísticas do site.</div>
-          <div class="card">
-            <div class="card-title">Estatísticas</div>
-            <div class="stat-edit-grid">
-              <div class="f-group">
-                <label>Anos de Experiência</label>
-                <input type="number" id="st-years" min="1" />
-              </div>
-              <div class="f-group">
-                <label>Casos Concluídos</label>
-                <input type="number" id="st-cases" min="0" />
-              </div>
-              <div class="f-group">
-                <label>Clientes Satisfeitos (%)</label>
-                <input type="number" id="st-satisfaction" min="0" max="100" />
-              </div>
-              <div class="f-group">
-                <label>Número de Advogados</label>
-                <input type="number" id="st-lawyers" min="1" />
-              </div>
+<!-- ════ APP ════ -->
+<div id="app">
+  <header class="app-header">
+    <div class="header-brand">Theodoro <em>&amp;</em> Porto</div>
+    <div class="header-right">
+      <span class="header-last-saved" id="lastSaved" style="display:none">
+        <span class="header-last-saved-dot"></span>
+        <span id="lastSavedText"></span>
+      </span>
+      <span class="header-badge">Administrador</span>
+      <a class="header-view" href="index.html" target="_blank" rel="noopener">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        Ver Site
+      </a>
+      <button class="header-logout" onclick="logout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <aside class="sidebar" aria-label="Navegação">
+      <div class="sidebar-group">
+        <span class="sidebar-group-label">Painel</span>
+        <button class="nav-item active" data-page="dashboard" onclick="goTo('dashboard',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+      </div>
+      <div class="sidebar-group">
+        <span class="sidebar-group-label">Gerenciamento</span>
+        <button class="nav-item" data-page="dados" onclick="goTo('dados',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+          Dados do Site
+        </button>
+        <button class="nav-item" data-page="equipe" onclick="goTo('equipe',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Equipe
+        </button>
+        <button class="nav-item" data-page="contato" onclick="goTo('contato',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Contato &amp; Endereços
+        </button>
+      </div>
+      <div class="sidebar-group">
+        <span class="sidebar-group-label">Sistema</span>
+        <button class="nav-item" data-page="config" onclick="goTo('config',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Configurações
+        </button>
+      </div>
+    </aside>
+
+    <main class="main" role="main">
+
+      <!-- ── DASHBOARD ── -->
+      <section class="page active" id="page-dashboard">
+        <nav class="breadcrumb" aria-label="Localização"><span class="breadcrumb-current">Dashboard</span></nav>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub" id="dashGreeting">Bem-vindo ao painel.</div>
+        <div class="dash-stats">
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Anos de Experiência</div>
+              <div class="stat-value" id="d-years">—</div>
             </div>
           </div>
-          <div class="card" style="margin-top:1.25rem">
-            <div class="card-title">Avaliações Google</div>
-            <div class="stat-edit-grid">
-              <div class="f-group">
-                <label>Nota (ex: 4,9)</label>
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Casos Concluídos</div>
+              <div class="stat-value" id="d-cases">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Satisfação</div>
+              <div class="stat-value" id="d-satisfaction">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon forest">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="stat-body">
+              <div class="stat-label">Membros da Equipe</div>
+              <div class="stat-value" id="d-team">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── DADOS DO SITE ── -->
+      <section class="page" id="page-dados">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Dados do Site</span></nav>
+        <div class="page-title">Dados do Site</div>
+        <div class="page-sub">Estatísticas e avaliações exibidas no site.</div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'dados-tab-stats')">Estatísticas Institucionais</button>
+          <button class="tab-btn" onclick="switchTab(this,'dados-tab-google')">Avaliações Google</button>
+        </div>
+        <div class="tab-content active" id="dados-tab-stats">
+          <div class="card">
+            <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Estatísticas</span></div>
+            <div class="form-grid-2">
+              <div class="f">
+                <label for="st-years">Anos de Experiência</label>
+                <input type="number" id="st-years" min="1" />
+                <div class="f-hint">Fundado em 2012</div>
+              </div>
+              <div class="f">
+                <label for="st-cases">Casos Concluídos</label>
+                <input type="number" id="st-cases" min="0" />
+              </div>
+              <div class="f">
+                <label for="st-satisfaction">Clientes Satisfeitos (%)</label>
+                <input type="number" id="st-satisfaction" min="0" max="100" />
+              </div>
+              <div class="f">
+                <label for="st-lawyers">Número de Advogados</label>
+                <input type="number" id="st-lawyers" min="1" />
+                <div class="f-hint">Sincronize com a equipe cadastrada</div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveStats()">Salvar Estatísticas</button>
+              <button class="btn btn-outline" onclick="resetStats()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+        <div class="tab-content" id="dados-tab-google">
+          <div class="card">
+            <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Avaliações Google</span></div>
+            <div class="form-grid-2">
+              <div class="f">
+                <label for="gl-score">Nota</label>
                 <input type="text" id="gl-score" maxlength="5" placeholder="4,9" />
               </div>
-              <div class="f-group">
-                <label>Número de Avaliações</label>
+              <div class="f">
+                <label for="gl-count">Número de Avaliações</label>
                 <input type="number" id="gl-count" min="0" />
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- TAB: TEAM -->
-        <div class="tab-panel" id="tab-team">
-          <div class="page-title">Gerenciar Equipe</div>
-          <div class="page-sub">Adicione, edite ou remova membros da equipe exibida no site.</div>
-
-          <div class="card">
-            <div class="card-title">Membros Atuais</div>
-            <div class="team-list" id="teamList"></div>
-          </div>
-
-          <!-- Add member -->
-          <div class="card">
-            <div class="card-title">Adicionar Novo Membro</div>
-            <div id="addMemberForm">
-              <div class="form-row">
-                <div class="f-group">
-                  <label>Nome completo</label>
-                  <input type="text" id="new-name" placeholder="Dr. Nome Sobrenome" />
-                </div>
-                <div class="f-group">
-                  <label>Iniciais (2 letras)</label>
-                  <input type="text" id="new-initials" placeholder="NS" maxlength="3" style="text-transform:uppercase" />
-                </div>
-              </div>
-              <div class="f-group">
-                <label>Cargo / Especialidade</label>
-                <input type="text" id="new-role" placeholder="Associado · Direito Civil" />
-              </div>
-              <div class="f-group">
-                <label>Bio (aparece no hover)</label>
-                <textarea id="new-bio" placeholder="Breve descrição profissional..."></textarea>
-              </div>
-              <button class="btn btn-primary" onclick="addMember()">+ Adicionar Membro</button>
+            <div class="info-box">
+              Preview: <span id="gl-preview-stars" class="preview-stars">★★★★★</span>
+              <strong id="gl-preview-score">4,9</strong> · <span id="gl-preview-count">297</span> avaliações
             </div>
-          </div>
-
-          <!-- Edit modal (inline) -->
-          <div class="member-form" id="editMemberForm">
-            <div class="member-form-title">Editar Membro</div>
-            <input type="hidden" id="edit-id" />
-            <div class="form-row">
-              <div class="f-group">
-                <label>Nome completo</label>
-                <input type="text" id="edit-name" />
-              </div>
-              <div class="f-group">
-                <label>Iniciais</label>
-                <input type="text" id="edit-initials" maxlength="3" style="text-transform:uppercase" />
-              </div>
-            </div>
-            <div class="f-group">
-              <label>Cargo / Especialidade</label>
-              <input type="text" id="edit-role" />
-            </div>
-            <div class="f-group">
-              <label>Bio</label>
-              <textarea id="edit-bio"></textarea>
-            </div>
-            <div style="display:flex;gap:.75rem;margin-top:.5rem">
-              <button class="btn btn-primary" onclick="saveMember()">Salvar</button>
-              <button class="btn btn-outline" onclick="cancelEdit()">Cancelar</button>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveGoogle()">Salvar Avaliações</button>
+              <button class="btn btn-outline" onclick="resetGoogle()">Cancelar</button>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- TAB: CONTACT -->
-        <div class="tab-panel" id="tab-contact">
-          <div class="page-title">Informações de Contato</div>
-          <div class="page-sub">Dados exibidos na seção de contato e no rodapé do site.</div>
-          <div class="card">
-            <div class="card-title">Contato</div>
-            <div class="form-row">
-              <div class="f-group">
-                <label>Telefone</label>
-                <input type="text" id="ct-phone" placeholder="(11) 3456-7890" />
+      <!-- ── EQUIPE ── -->
+      <section class="page" id="page-equipe">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Equipe</span></nav>
+        <div class="page-title">Gerenciar Equipe</div>
+        <div class="page-sub">Adicione, edite ou remova membros. Use ▲▼ para reordenar.</div>
+
+        <div class="section-toggle-bar">
+          <div class="section-toggle-info">
+            <h4>Seção "Nossa Equipe" no site</h4>
+            <p>Quando desativada, a seção some completamente do site.</p>
+          </div>
+          <button id="teamToggleBtn" class="btn" onclick="toggleTeamSection()">…</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Membros Atuais</span></div>
+          <div class="member-cards" id="memberList"></div>
+        </div>
+
+        <div class="card">
+          <div class="add-member-title">Adicionar Novo Membro</div>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="new-m-name">Nome completo <span style="color:var(--red)">*</span></label>
+              <input type="text" id="new-m-name" placeholder="Dr. Nome Sobrenome" oninput="validateAddForm()" />
+            </div>
+            <div class="f">
+              <label for="new-m-init">Iniciais (2-3 letras) <span style="color:var(--red)">*</span></label>
+              <input type="text" id="new-m-init" placeholder="NS" maxlength="3" style="text-transform:uppercase" oninput="validateAddForm()" />
+            </div>
+          </div>
+          <div class="f">
+            <label for="new-m-role">Cargo / Especialidade <span style="color:var(--red)">*</span></label>
+            <input type="text" id="new-m-role" placeholder="Associado · Direito Civil" oninput="validateAddForm()" />
+          </div>
+          <div class="photo-upload-area">
+            <div class="photo-preview" id="new-photo-preview">—</div>
+            <div class="photo-upload-info">
+              <p>Foto do membro</p>
+              <small>Recomendado: 1080×1440px (formato retrato) · JPG ou PNG</small>
+              <div style="display:flex;gap:.5rem;margin-top:.6rem">
+                <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-photo-input').click()">📷 Escolher foto</button>
+                <button class="btn btn-danger-ghost btn-sm" type="button" id="new-photo-remove" onclick="removeNewPhoto()" style="display:none">Remover</button>
               </div>
-              <div class="f-group">
-                <label>E-mail</label>
-                <input type="email" id="ct-email" placeholder="contato@escritorio.adv.br" />
-              </div>
             </div>
-            <div class="f-group">
-              <label>Endereço (aparece no mapa)</label>
-              <textarea id="ct-address" rows="2"></textarea>
+            <input type="file" id="new-photo-input" class="photo-file-input" accept="image/*" onchange="handleNewPhoto(this)" />
+          </div>
+          <div class="f">
+            <label for="new-m-bio">Bio <span style="font-weight:400;color:var(--text-light)">(aparece no hover)</span></label>
+            <textarea id="new-m-bio" placeholder="Breve descrição profissional..." maxlength="200" rows="3" oninput="updateBioBar('new-m-bio','new-bio-bar','new-bio-count')"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.3rem">
+              <div class="char-bar-wrap" style="flex:1;margin-right:.75rem"><div class="char-bar" id="new-bio-bar" style="width:0%"></div></div>
+              <span class="f-char"><span id="new-bio-count">0</span>/200</span>
             </div>
-            <div class="f-group">
-              <label>Horário de Atendimento</label>
-              <input type="text" id="ct-hours" placeholder="Segunda a Sexta: 8h às 18h" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-green" id="addMemberBtn" onclick="addMember()" disabled>+ Adicionar Membro</button>
+            <button class="btn btn-outline" onclick="clearAddForm()">Limpar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CONTATO ── -->
+      <section class="page" id="page-contato">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Contato &amp; Endereços</span></nav>
+        <div class="page-title">Contato &amp; Endereços</div>
+        <div class="page-sub">Informações exibidas na seção de contato e rodapé do site.</div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Informações de Contato</span></div>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="ct-phone">📞 Telefone</label>
+              <input type="text" id="ct-phone" placeholder="(66) 99984-3063" />
             </div>
+            <div class="f">
+              <label for="ct-email">📧 E-mail</label>
+              <input type="email" id="ct-email" placeholder="contato@escritorio.adv.br" />
+            </div>
+          </div>
+          <div class="f">
+            <label for="ct-address">📍 Endereço Principal</label>
+            <textarea id="ct-address" rows="2"></textarea>
+          </div>
+          <div class="f">
+            <label for="ct-hours">🕐 Horário de Atendimento</label>
+            <input type="text" id="ct-hours" placeholder="Segunda a Sexta: 8h às 18h" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="saveContact()">Salvar Contato</button>
+            <button class="btn btn-outline" onclick="resetContact()">Cancelar</button>
           </div>
         </div>
 
-        <!-- TAB: SETTINGS -->
-        <div class="tab-panel" id="tab-settings">
-          <div class="page-title">Configurações</div>
-          <div class="page-sub">Configure integrações e preferências do site.</div>
-          <div class="card">
-            <div class="card-title">WhatsApp</div>
-            <div class="f-group">
-              <label>Número WhatsApp (com DDI e DDD, sem espaços ou traços)</label>
-              <input type="text" id="cfg-wpp" placeholder="5511999999999" />
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Endereços Cadastrados</span></div>
+          <div class="addr-cards" id="addrList"></div>
+          <div class="divider"></div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:1.1rem">Adicionar Novo Endereço</div>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="new-a-label">Nome / Identificação <span style="color:var(--red)">*</span></label>
+              <input type="text" id="new-a-label" placeholder="Ex: Matriz, Filial" />
             </div>
-            <p style="font-size:.78rem;color:var(--text-light);margin-top:.25rem">Exemplo: 5511987654321 → Brasil (+55) + DDD (11) + número</p>
+            <div class="f" style="display:flex;align-items:flex-end;padding-bottom:1rem">
+              <label class="f-checkbox">
+                <input type="checkbox" id="new-a-main" /> Marcar como principal
+              </label>
+            </div>
           </div>
-          <div class="card">
-            <div class="card-title">Segurança</div>
-            <div class="f-group">
-              <label>Nova senha de acesso</label>
-              <input type="password" id="cfg-newpwd" placeholder="Deixe em branco para manter a atual" />
-            </div>
-            <div class="f-group">
-              <label>Confirmar nova senha</label>
-              <input type="password" id="cfg-confirmpwd" placeholder="Confirme a nova senha" />
-            </div>
-            <button class="btn btn-primary" onclick="changePassword()" style="margin-top:.25rem">Alterar Senha</button>
+          <div class="f">
+            <label for="new-a-text">Endereço completo <span style="color:var(--red)">*</span></label>
+            <textarea id="new-a-text" rows="3" placeholder="Rua Exemplo, 123&#10;Bairro — Cidade – UF, CEP"></textarea>
           </div>
-          <div class="card">
-            <div class="card-title">Dados</div>
-            <p style="font-size:.84rem;color:var(--text-mid);margin-bottom:1rem">Redefinir todos os dados do site para os valores padrão. Esta ação não pode ser desfeita.</p>
-            <button class="btn btn-danger" onclick="confirmReset()">Redefinir para padrão</button>
+          <div class="f">
+            <label for="new-a-map">Link do Google Maps <span style="font-weight:400;color:var(--text-light)">(opcional)</span></label>
+            <input type="text" id="new-a-map" placeholder="https://maps.google.com/?q=..." />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-green" onclick="addAddress()">+ Adicionar Endereço</button>
+            <button class="btn btn-outline" onclick="clearAddrForm()">Limpar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CONFIGURAÇÕES ── -->
+      <section class="page" id="page-config">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Configurações</span></nav>
+        <div class="page-title">Configurações</div>
+        <div class="page-sub">Integrações, segurança e dados do sistema.</div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Integrações</span></div>
+          <div class="f">
+            <label for="cfg-wpp">Número WhatsApp</label>
+            <input type="text" id="cfg-wpp" placeholder="5566999999999" />
+            <div class="f-hint">Exemplo: 5566987654321 → Brasil (+55) + DDD (66) + número</div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="saveWhatsapp()">Salvar</button>
+            <button class="btn btn-outline" onclick="resetWhatsapp()">Cancelar</button>
           </div>
         </div>
 
-      </main>
-    </div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Segurança</span></div>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="cfg-newpwd">Nova Senha</label>
+              <div style="position:relative">
+                <input type="password" id="cfg-newpwd" placeholder="Nova senha (mín. 8 caracteres)" style="padding-right:2.5rem" />
+                <button class="pwd-eye" type="button" onclick="toggleEye('cfg-newpwd',this)" aria-label="Mostrar/ocultar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="f">
+              <label for="cfg-confirmpwd">Confirmar Nova Senha</label>
+              <input type="password" id="cfg-confirmpwd" placeholder="Repita a senha" />
+            </div>
+          </div>
+          <div class="info-box">Senhas devem ter no mínimo 8 caracteres.</div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="changePassword()">Alterar Senha</button>
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <div class="card-title"><span class="card-title-bar" style="background:var(--red)"></span><span class="card-title-text">Zona de Perigo</span></div>
+          <p style="font-size:14px;color:var(--text-mid);margin-bottom:1rem">Restaura todos os dados originais do site. <strong>Esta ação não pode ser desfeita.</strong></p>
+          <button class="btn btn-danger-ghost" onclick="openResetModal()">🗑️ Redefinir para Padrão</button>
+        </div>
+      </section>
+
+    </main>
   </div>
+</div>
 
-  <script>
-    /* ─────────────────────────────────────────
-       STORAGE KEYS
-    ───────────────────────────────────────── */
-    const DATA_KEY = 'tp_data';
-    const PWD_KEY  = 'tp_admin_pwd';
-    const DEFAULT_PWD = 'tp2024';
+<script>
+  /* ══════════════════════════════════════
+     DATA
+  ══════════════════════════════════════ */
+  const DATA_KEY = 'tp_data';
+  const PWD_KEY  = 'tp_admin_pwd';
+  const DEFAULT_PWD = 'TheodoroPortoIan2026##';
 
-    const DEFAULT_DATA = {
-      stats:   { years: 14, cases: 2400, satisfaction: 98, lawyers: 12 },
-      google:  { score: '4,9', count: 297 },
-      contact: { phone: '(11) 3456-7890', email: 'contato@theodoroeporto.adv.br', address: 'Av. Paulista, 1578 — 10º andar\nSão Paulo — SP, 01310-200', hours: 'Segunda a Sexta: 8h às 18h' },
-      whatsapp: '5511999999999',
-      team: [
-        { id: '1', initials: 'AT', name: 'Dra. Ana Theodoro',  role: 'Sócia-Fundadora · Civil & Família',             bio: 'Mestre em Direito Civil pela USP. Especialista em mediação e resolução de conflitos familiares.' },
-        { id: '2', initials: 'MP', name: 'Dr. Marcos Porto',   role: 'Sócio-Fundador · Trabalhista & Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
-        { id: '3', initials: 'LC', name: 'Dr. Lucas Carvalho', role: 'Associado Sênior · Trabalhista',                 bio: 'Pós-graduado em Direito do Trabalho pela PUC-SP. Expert em compliance e reclamações trabalhistas.' },
-        { id: '4', initials: 'FR', name: 'Dra. Fernanda Rocha',role: 'Associada · Civil & Sucessões',                 bio: 'Especialista em Direito Civil e Sucessório. Ampla experiência em inventários e partilha de bens.' },
-      ]
-    };
+  const DEFAULT_DATA = {
+    stats:   { years: 14, cases: 2400, satisfaction: 98, lawyers: 12 },
+    google:  { score: '4,9', count: 297 },
+    contact: { phone: '+55 (66) 99984-3063', email: 'contato@theodoroeporto.adv.br', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', hours: 'Segunda a Sexta: 7h às 17h' },
+    whatsapp: '5566999843063',
+    teamVisible: true,
+    addresses: [
+      { id: '1', label: 'Matriz', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', mapUrl: 'https://maps.google.com/?q=Rua+Arnaldo+Estev%C3%A3o+de+Figueiredo+874+Rondon%C3%B3polis+MT', main: true },
+      { id: '2', label: 'Unidade Comercial', address: 'Prime Centro Empresarial\nAv. Tiradentes, 1841 — 15º andar, Salas 1505 e 1506\nCentro — Rondonópolis – MT, 78.700-028', mapUrl: 'https://maps.google.com/?q=Avenida+Tiradentes+1841+Rondon%C3%B3polis+MT', main: false },
+      { id: '3', label: 'Primavera do Leste', address: 'Av. Cuiabá, 894\nCidade Primavera I — Primavera do Leste – MT', mapUrl: 'https://maps.google.com/?q=Avenida+Cuiab%C3%A1+894+Primavera+do+Leste+MT', main: false },
+    ],
+    team: [
+      { id: '1', initials: 'AT', name: 'Dra. Ana Theodoro',   role: 'Sócia-Fundadora · Civil & Família',             bio: 'Mestre em Direito Civil pela USP. Especialista em mediação e resolução de conflitos familiares.' },
+      { id: '2', initials: 'AP', name: 'Dra. Aline Porto',    role: 'Sócia-Fundadora · Trabalhista & Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
+      { id: '3', initials: 'LC', name: 'Dr. Lucas Carvalho',  role: 'Associado Sênior · Trabalhista',                 bio: 'Pós-graduado em Direito do Trabalho pela PUC-SP. Expert em compliance e reclamações trabalhistas.' },
+      { id: '4', initials: 'FR', name: 'Dra. Fernanda Rocha', role: 'Associada · Civil & Sucessões',                  bio: 'Especialista em Direito Civil e Sucessório. Ampla experiência em inventários e partilha de bens.' },
+    ]
+  };
 
-    function loadData() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(DATA_KEY) || '{}');
-        return {
-          ...DEFAULT_DATA, ...saved,
-          stats:  { ...DEFAULT_DATA.stats,  ...(saved.stats  || {}) },
-          google: { ...DEFAULT_DATA.google, ...(saved.google || {}) },
-          contact:{ ...DEFAULT_DATA.contact,...(saved.contact|| {}) },
-        };
-      } catch(e) { return { ...DEFAULT_DATA }; }
-    }
-    function saveData(data) { localStorage.setItem(DATA_KEY, JSON.stringify(data)); }
-    function getPassword() { return localStorage.getItem(PWD_KEY) || DEFAULT_PWD; }
+  function loadData() {
+    try {
+      const s = JSON.parse(localStorage.getItem(DATA_KEY) || '{}');
+      return {
+        stats:       { ...DEFAULT_DATA.stats,   ...(s.stats   || {}) },
+        google:      { ...DEFAULT_DATA.google,  ...(s.google  || {}) },
+        contact:     { ...DEFAULT_DATA.contact, ...(s.contact || {}) },
+        whatsapp:    s.whatsapp    || DEFAULT_DATA.whatsapp,
+        teamVisible: s.teamVisible !== undefined ? s.teamVisible : DEFAULT_DATA.teamVisible,
+        addresses:   s.addresses   || DEFAULT_DATA.addresses,
+        team:        s.team        || DEFAULT_DATA.team,
+      };
+    } catch(e) { return structuredClone ? structuredClone(DEFAULT_DATA) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+  }
 
-    let DATA = loadData();
-    let dirty = false;
+  function persist() { localStorage.setItem(DATA_KEY, JSON.stringify(DATA)); }
+  function getPwd()  { return localStorage.getItem(PWD_KEY) || DEFAULT_PWD; }
 
-    /* ─────────────────────────────────────────
-       LOGIN
-    ───────────────────────────────────────── */
-    document.getElementById('loginPwd').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doLogin();
-    });
+  let DATA  = loadData();
+  let dirty = false;
 
-    function doLogin() {
-      const pwd = document.getElementById('loginPwd').value;
-      if (pwd === getPassword()) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        populateForms();
-      } else {
-        document.getElementById('loginErr').style.display = 'block';
-        document.getElementById('loginPwd').value = '';
-        document.getElementById('loginPwd').focus();
-      }
-    }
+  /* ══════════════════════════════════════
+     LOGIN
+  ══════════════════════════════════════ */
+  document.getElementById('loginPwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
-    function logout() {
-      if (dirty && !confirm('Há alterações não salvas. Deseja sair mesmo assim?')) return;
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('app').style.display = 'none';
+  function doLogin() {
+    const pwd = document.getElementById('loginPwd').value;
+    if (pwd === getPwd()) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      init();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
       document.getElementById('loginPwd').value = '';
-      dirty = false;
-      hideSaveBar();
+      document.getElementById('loginPwd').focus();
     }
+  }
 
-    /* ─────────────────────────────────────────
-       TABS
-    ───────────────────────────────────────── */
-    function showTab(id, btn) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      btn.classList.add('active');
+  function logout() {
+    if (dirty) {
+      openConfirm('⚠️','Sair sem salvar?','Há alterações não salvas. Se sair agora elas serão perdidas.', 'Sair mesmo assim', doLogout);
+      return;
     }
+    doLogout();
+  }
 
-    /* ─────────────────────────────────────────
-       POPULATE FORMS
-    ───────────────────────────────────────── */
-    function populateForms() {
-      // Stats
-      document.getElementById('st-years').value        = DATA.stats.years;
-      document.getElementById('st-cases').value        = DATA.stats.cases;
-      document.getElementById('st-satisfaction').value = DATA.stats.satisfaction;
-      document.getElementById('st-lawyers').value      = DATA.stats.lawyers;
-      document.getElementById('gl-score').value        = DATA.google.score;
-      document.getElementById('gl-count').value        = DATA.google.count;
-      // Contact
-      document.getElementById('ct-phone').value   = DATA.contact.phone;
-      document.getElementById('ct-email').value   = DATA.contact.email;
-      document.getElementById('ct-address').value = DATA.contact.address;
-      document.getElementById('ct-hours').value   = DATA.contact.hours;
-      // Settings
-      document.getElementById('cfg-wpp').value = DATA.whatsapp;
-      // Team
-      renderTeamList();
+  function doLogout() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginPwd').value = '';
+    dirty = false; hideUnsaved();
+  }
 
-      // Watch for changes
-      attachChangeListeners();
+  function toggleEye(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.innerHTML = inp.type === 'text'
+      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" x2="23" y1="1" y2="23"/></svg>'
+      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  }
+
+  /* ══════════════════════════════════════
+     NAVIGATION
+  ══════════════════════════════════════ */
+  function goTo(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  /* ══════════════════════════════════════
+     TABS
+  ══════════════════════════════════════ */
+  function switchTab(btn, contentId) {
+    const parent = btn.closest('.page');
+    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(contentId).classList.add('active');
+    updateGooglePreview();
+  }
+
+  /* ══════════════════════════════════════
+     INIT
+  ══════════════════════════════════════ */
+  function init() {
+    const h = new Date().getHours();
+    const g = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+    document.getElementById('dashGreeting').textContent = g + '! Aqui está o resumo do seu painel.';
+    populateForms();
+    updateDashboard();
+    updateTeamToggleBtn();
+  }
+
+  function populateForms() {
+    // Stats
+    document.getElementById('st-years').value        = DATA.stats.years;
+    document.getElementById('st-cases').value        = DATA.stats.cases;
+    document.getElementById('st-satisfaction').value = DATA.stats.satisfaction;
+    document.getElementById('st-lawyers').value      = DATA.stats.lawyers;
+    // Google
+    document.getElementById('gl-score').value = DATA.google.score;
+    document.getElementById('gl-count').value = DATA.google.count;
+    updateGooglePreview();
+    // Contact
+    document.getElementById('ct-phone').value   = DATA.contact.phone;
+    document.getElementById('ct-email').value   = DATA.contact.email;
+    document.getElementById('ct-address').value = DATA.contact.address;
+    document.getElementById('ct-hours').value   = DATA.contact.hours;
+    // WhatsApp
+    document.getElementById('cfg-wpp').value = DATA.whatsapp;
+    // Lists
+    renderMemberList();
+    renderAddrList();
+  }
+
+  function updateDashboard() {
+    document.getElementById('d-years').textContent        = DATA.stats.years;
+    document.getElementById('d-cases').textContent        = DATA.stats.cases.toLocaleString('pt-BR');
+    document.getElementById('d-satisfaction').textContent = DATA.stats.satisfaction + '%';
+    document.getElementById('d-team').textContent         = DATA.team.length;
+  }
+
+  function updateGooglePreview() {
+    const score = document.getElementById('gl-score')?.value || DATA.google.score;
+    const count = document.getElementById('gl-count')?.value || DATA.google.count;
+    const el1 = document.getElementById('gl-preview-score');
+    const el2 = document.getElementById('gl-preview-count');
+    if (el1) el1.textContent = score;
+    if (el2) el2.textContent = count;
+  }
+
+  document.getElementById('gl-score')?.addEventListener('input', updateGooglePreview);
+  document.getElementById('gl-count')?.addEventListener('input', updateGooglePreview);
+
+  /* ══════════════════════════════════════
+     SAVE SECTIONS
+  ══════════════════════════════════════ */
+  function saveStats() {
+    DATA.stats = {
+      years:        parseInt(document.getElementById('st-years').value)        || DEFAULT_DATA.stats.years,
+      cases:        parseInt(document.getElementById('st-cases').value)        || DEFAULT_DATA.stats.cases,
+      satisfaction: parseInt(document.getElementById('st-satisfaction').value) || DEFAULT_DATA.stats.satisfaction,
+      lawyers:      parseInt(document.getElementById('st-lawyers').value)      || DEFAULT_DATA.stats.lawyers,
+    };
+    persist(); updateDashboard(); showLastSaved();
+    toast('Estatísticas atualizadas', 'success');
+  }
+  function resetStats() { populateForms(); }
+
+  function saveGoogle() {
+    DATA.google = {
+      score: document.getElementById('gl-score').value.trim() || DEFAULT_DATA.google.score,
+      count: parseInt(document.getElementById('gl-count').value) || DEFAULT_DATA.google.count,
+    };
+    persist(); showLastSaved();
+    toast('Avaliações atualizadas', 'success');
+  }
+  function resetGoogle() { populateForms(); }
+
+  function saveContact() {
+    DATA.contact = {
+      phone:   document.getElementById('ct-phone').value.trim()   || DEFAULT_DATA.contact.phone,
+      email:   document.getElementById('ct-email').value.trim()   || DEFAULT_DATA.contact.email,
+      address: document.getElementById('ct-address').value.trim() || DEFAULT_DATA.contact.address,
+      hours:   document.getElementById('ct-hours').value.trim()   || DEFAULT_DATA.contact.hours,
+    };
+    persist(); showLastSaved();
+    toast('Contato atualizado', 'success');
+  }
+  function resetContact() { populateForms(); }
+
+  function saveWhatsapp() {
+    DATA.whatsapp = document.getElementById('cfg-wpp').value.trim().replace(/\D/g,'') || DEFAULT_DATA.whatsapp;
+    persist(); showLastSaved();
+    toast('WhatsApp atualizado', 'success');
+  }
+  function resetWhatsapp() { document.getElementById('cfg-wpp').value = DATA.whatsapp; }
+
+  /* ══════════════════════════════════════
+     UNSAVED BAR (for legacy compat)
+  ══════════════════════════════════════ */
+  function markDirty() { dirty = true; document.getElementById('unsavedBar').classList.add('show'); }
+  function hideUnsaved() { dirty = false; document.getElementById('unsavedBar').classList.remove('show'); }
+  function saveAll() { saveStats(); saveGoogle(); saveContact(); saveWhatsapp(); hideUnsaved(); }
+  function discardChanges() { DATA = loadData(); populateForms(); hideUnsaved(); toast('Alterações descartadas', 'info'); }
+
+  function showLastSaved() {
+    const t = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('lastSavedText').textContent = 'Salvo às ' + t;
+    document.getElementById('lastSaved').style.display = 'flex';
+  }
+
+  /* ══════════════════════════════════════
+     TEAM
+  ══════════════════════════════════════ */
+  function updateTeamToggleBtn() {
+    const btn = document.getElementById('teamToggleBtn');
+    if (!btn) return;
+    const on = DATA.teamVisible !== false;
+    btn.textContent  = on ? '● Seção Ativa' : '○ Seção Inativa';
+    btn.className    = on ? 'btn btn-green' : 'btn btn-danger-ghost';
+  }
+
+  function toggleTeamSection() {
+    DATA.teamVisible = DATA.teamVisible === false ? true : false;
+    persist(); updateTeamToggleBtn(); showLastSaved();
+    toast(DATA.teamVisible ? 'Seção da equipe ativada no site.' : 'Seção da equipe desativada no site.', DATA.teamVisible ? 'success' : 'warn');
+  }
+
+  function renderMemberList() {
+    const list = document.getElementById('memberList');
+    if (!DATA.team.length) {
+      list.innerHTML = '<p style="font-size:14px;color:var(--text-light);text-align:center;padding:1.5rem 0">Nenhum membro cadastrado.</p>';
+      return;
     }
-
-    function attachChangeListeners() {
-      const inputs = document.querySelectorAll('#tab-stats input, #tab-contact input, #tab-contact textarea, #cfg-wpp');
-      inputs.forEach(el => el.addEventListener('input', markDirty));
-    }
-
-    /* ─────────────────────────────────────────
-       TEAM LIST
-    ───────────────────────────────────────── */
-    function renderTeamList() {
-      const list = document.getElementById('teamList');
-      if (!DATA.team.length) {
-        list.innerHTML = '<p style="font-size:.84rem;color:var(--text-light);text-align:center;padding:1rem">Nenhum membro cadastrado.</p>';
-        return;
-      }
-      list.innerHTML = DATA.team.map(m => `
-        <div class="team-member-card" id="tm-${m.id}">
-          <div class="tm-initials">${m.initials}</div>
-          <div class="tm-info">
-            <div class="tm-name">${m.name}</div>
-            <div class="tm-role">${m.role}</div>
-          </div>
-          <div class="tm-actions">
-            <button class="btn btn-outline btn-sm" onclick="editMember('${m.id}')">Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="removeMember('${m.id}')">Remover</button>
-          </div>
+    list.innerHTML = DATA.team.map((m, i) => `
+      <div class="member-card" id="mc-${m.id}">
+        <div class="member-order">
+          <button class="order-btn" onclick="moveTeam('${m.id}',-1)" ${i===0?'disabled':''} aria-label="Mover para cima">▲</button>
+          <button class="order-btn" onclick="moveTeam('${m.id}',1)"  ${i===DATA.team.length-1?'disabled':''} aria-label="Mover para baixo">▼</button>
         </div>
-      `).join('');
-    }
+        <div class="member-avatar">${m.photo ? `<img src="${m.photo}" alt="${m.name}" />` : m.initials}</div>
+        <div class="member-info">
+          <div class="member-name">${m.name}</div>
+          <div class="member-role">${m.role}</div>
+        </div>
+        <div class="member-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditMember('${m.id}')">✏️ Editar</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="confirmRemoveMember('${m.id}')">🗑️ Remover</button>
+        </div>
+      </div>`).join('');
+    updateDashboard();
+  }
 
-    function addMember() {
-      const name     = document.getElementById('new-name').value.trim();
-      const initials = document.getElementById('new-initials').value.trim().toUpperCase();
-      const role     = document.getElementById('new-role').value.trim();
-      const bio      = document.getElementById('new-bio').value.trim();
-      if (!name || !initials || !role) { toast('Preencha nome, iniciais e cargo.', true); return; }
-      const member = { id: Date.now().toString(), initials, name, role, bio };
-      DATA.team.push(member);
-      renderTeamList();
-      // Clear form
-      ['new-name','new-initials','new-role','new-bio'].forEach(id => document.getElementById(id).value = '');
-      markDirty();
-      toast('Membro adicionado!');
-    }
+  function moveTeam(id, dir) {
+    const i = DATA.team.findIndex(m => m.id === id);
+    const j = i + dir;
+    if (j < 0 || j >= DATA.team.length) return;
+    [DATA.team[i], DATA.team[j]] = [DATA.team[j], DATA.team[i]];
+    renderMemberList(); persist(); showLastSaved();
+  }
 
-    function removeMember(id) {
-      if (!confirm('Remover este membro da equipe?')) return;
-      DATA.team = DATA.team.filter(m => m.id !== id);
-      renderTeamList();
-      markDirty();
-      toast('Membro removido.');
-    }
+  function validateAddForm() {
+    const ok = document.getElementById('new-m-name').value.trim() &&
+               document.getElementById('new-m-init').value.trim() &&
+               document.getElementById('new-m-role').value.trim();
+    document.getElementById('addMemberBtn').disabled = !ok;
+  }
 
-    function editMember(id) {
-      const m = DATA.team.find(m => m.id === id);
-      if (!m) return;
-      document.getElementById('edit-id').value       = m.id;
-      document.getElementById('edit-name').value     = m.name;
-      document.getElementById('edit-initials').value = m.initials;
-      document.getElementById('edit-role').value     = m.role;
-      document.getElementById('edit-bio').value      = m.bio;
-      const form = document.getElementById('editMemberForm');
-      form.classList.add('open');
-      form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+  function addMember() {
+    const name = document.getElementById('new-m-name').value.trim();
+    const init = document.getElementById('new-m-init').value.trim().toUpperCase();
+    const role = document.getElementById('new-m-role').value.trim();
+    const bio  = document.getElementById('new-m-bio').value.trim();
+    if (!name || !init || !role) { toast('Preencha os campos obrigatórios.', 'error'); return; }
+    DATA.team.push({ id: Date.now().toString(), initials: init, name, role, bio, photo: _newPhotoData || null });
+    renderMemberList(); persist(); showLastSaved(); clearAddForm();
+    toast('Novo membro adicionado', 'success');
+  }
 
-    function saveMember() {
-      const id = document.getElementById('edit-id').value;
-      const idx = DATA.team.findIndex(m => m.id === id);
-      if (idx === -1) return;
-      DATA.team[idx] = {
-        id,
-        name:     document.getElementById('edit-name').value.trim(),
-        initials: document.getElementById('edit-initials').value.trim().toUpperCase(),
-        role:     document.getElementById('edit-role').value.trim(),
-        bio:      document.getElementById('edit-bio').value.trim(),
-      };
-      renderTeamList();
-      cancelEdit();
-      markDirty();
-      toast('Membro atualizado!');
-    }
+  function clearAddForm() {
+    ['new-m-name','new-m-init','new-m-role','new-m-bio'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('new-bio-count').textContent = '0';
+    document.getElementById('new-bio-bar').style.width = '0%';
+    document.getElementById('addMemberBtn').disabled = true;
+    removeNewPhoto();
+  }
 
-    function cancelEdit() {
-      document.getElementById('editMemberForm').classList.remove('open');
+  function openEditMember(id) {
+    const m = DATA.team.find(m => m.id === id);
+    if (!m) return;
+    document.getElementById('edit-m-id').value   = m.id;
+    document.getElementById('edit-m-name').value = m.name;
+    document.getElementById('edit-m-init').value = m.initials;
+    document.getElementById('edit-m-role').value = m.role;
+    document.getElementById('edit-m-bio').value  = m.bio || '';
+    document.getElementById('editModalTitle').textContent = 'Editar: ' + m.name;
+    updateBioBar('edit-m-bio','edit-bio-bar','edit-bio-count');
+    // photo
+    const prev = document.getElementById('edit-photo-preview');
+    const remBtn = document.getElementById('edit-photo-remove');
+    if (m.photo) {
+      prev.innerHTML = `<img src="${m.photo}" alt="${m.name}" />`;
+      remBtn.style.display = 'inline-flex';
+    } else {
+      prev.textContent = m.initials;
+      remBtn.style.display = 'none';
     }
+    document.getElementById('edit-photo-input').value = '';
+    openModal('editMemberModal');
+  }
 
-    /* ─────────────────────────────────────────
-       SAVE / DISCARD
-    ───────────────────────────────────────── */
-    function markDirty() {
-      dirty = true;
-      document.getElementById('saveBar').classList.add('show');
-    }
-    function hideSaveBar() {
-      dirty = false;
-      document.getElementById('saveBar').classList.remove('show');
-    }
+  function saveMember() {
+    const id  = document.getElementById('edit-m-id').value;
+    const idx = DATA.team.findIndex(m => m.id === id);
+    if (idx === -1) return;
+    const existingPhoto = DATA.team[idx].photo;
+    DATA.team[idx] = {
+      id,
+      name:     document.getElementById('edit-m-name').value.trim(),
+      initials: document.getElementById('edit-m-init').value.trim().toUpperCase(),
+      role:     document.getElementById('edit-m-role').value.trim(),
+      bio:      document.getElementById('edit-m-bio').value.trim(),
+      photo:    _editPhotoData !== undefined ? _editPhotoData : existingPhoto,
+    };
+    _editPhotoData = undefined;
+    renderMemberList(); persist(); showLastSaved(); closeModal('editMemberModal');
+    toast('Membro atualizado', 'success');
+  }
 
-    function saveAll() {
-      DATA.stats = {
-        years:        parseInt(document.getElementById('st-years').value)        || DEFAULT_DATA.stats.years,
-        cases:        parseInt(document.getElementById('st-cases').value)        || DEFAULT_DATA.stats.cases,
-        satisfaction: parseInt(document.getElementById('st-satisfaction').value) || DEFAULT_DATA.stats.satisfaction,
-        lawyers:      parseInt(document.getElementById('st-lawyers').value)      || DEFAULT_DATA.stats.lawyers,
-      };
-      DATA.google = {
-        score: document.getElementById('gl-score').value.trim() || DEFAULT_DATA.google.score,
-        count: parseInt(document.getElementById('gl-count').value) || DEFAULT_DATA.google.count,
-      };
-      DATA.contact = {
-        phone:   document.getElementById('ct-phone').value.trim()   || DEFAULT_DATA.contact.phone,
-        email:   document.getElementById('ct-email').value.trim()   || DEFAULT_DATA.contact.email,
-        address: document.getElementById('ct-address').value.trim() || DEFAULT_DATA.contact.address,
-        hours:   document.getElementById('ct-hours').value.trim()   || DEFAULT_DATA.contact.hours,
-      };
-      DATA.whatsapp = document.getElementById('cfg-wpp').value.trim().replace(/\D/g,'') || DEFAULT_DATA.whatsapp;
-      saveData(DATA);
-      hideSaveBar();
-      toast('Alterações salvas com sucesso! ✓');
-    }
+  function confirmRemoveMember(id) {
+    const m = DATA.team.find(m => m.id === id);
+    openConfirm('🗑️', 'Remover membro?',
+      `"${m ? m.name : 'Este membro'}" será removido da equipe do site. Esta ação não pode ser desfeita.`,
+      'Remover',
+      () => {
+        DATA.team = DATA.team.filter(m => m.id !== id);
+        renderMemberList(); persist(); showLastSaved();
+        toast('Membro removido', 'success');
+      });
+  }
 
-    function discardChanges() {
-      DATA = loadData();
-      populateForms();
-      hideSaveBar();
-      toast('Alterações descartadas.');
+  function updateBioBar(fieldId, barId, countId) {
+    const val = document.getElementById(fieldId).value.length;
+    const pct = (val / 200) * 100;
+    const bar = document.getElementById(barId);
+    const cnt = document.getElementById(countId);
+    if (cnt) cnt.textContent = val;
+    if (bar) {
+      bar.style.width = Math.min(pct, 100) + '%';
+      bar.className = 'char-bar' + (pct > 90 ? ' over' : pct > 75 ? ' warn' : '');
     }
+  }
 
-    /* ─────────────────────────────────────────
-       SETTINGS
-    ───────────────────────────────────────── */
-    function changePassword() {
-      const np = document.getElementById('cfg-newpwd').value;
-      const cp = document.getElementById('cfg-confirmpwd').value;
-      if (!np) { toast('Digite uma nova senha.', true); return; }
-      if (np !== cp) { toast('As senhas não coincidem.', true); return; }
-      if (np.length < 4) { toast('Senha muito curta (mínimo 4 caracteres).', true); return; }
-      localStorage.setItem(PWD_KEY, np);
-      document.getElementById('cfg-newpwd').value = '';
-      document.getElementById('cfg-confirmpwd').value = '';
-      toast('Senha alterada com sucesso!');
+  /* ══════════════════════════════════════
+     ADDRESSES
+  ══════════════════════════════════════ */
+  function renderAddrList() {
+    const list = document.getElementById('addrList');
+    if (!DATA.addresses || !DATA.addresses.length) {
+      list.innerHTML = '<p style="font-size:14px;color:var(--text-light);text-align:center;padding:1.5rem 0">Nenhum endereço cadastrado.</p>';
+      return;
     }
+    list.innerHTML = DATA.addresses.map(a => `
+      <div class="addr-card" id="ac-${a.id}">
+        <div class="addr-pin">📍</div>
+        <div class="addr-body">
+          <div class="addr-label-row">
+            <span class="addr-name">${a.label}</span>
+            ${a.main ? '<span class="addr-badge">Principal</span>' : ''}
+          </div>
+          <div class="addr-text">${a.address}</div>
+        </div>
+        <div class="addr-actions">
+          ${a.mapUrl ? `<a href="${a.mapUrl}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="text-decoration:none">🗺️ Mapa</a>` : ''}
+          <button class="btn btn-outline btn-sm" onclick="openEditAddr('${a.id}')">✏️ Editar</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="confirmRemoveAddr('${a.id}')">🗑️ Remover</button>
+        </div>
+      </div>`).join('');
+  }
 
-    function confirmReset() {
-      if (!confirm('Isso irá redefinir TODOS os dados do site para o padrão original. Tem certeza?')) return;
-      localStorage.removeItem(DATA_KEY);
-      DATA = { ...DEFAULT_DATA };
-      populateForms();
-      hideSaveBar();
-      toast('Dados redefinidos para o padrão.');
-    }
+  function addAddress() {
+    const label = document.getElementById('new-a-label').value.trim();
+    const text  = document.getElementById('new-a-text').value.trim();
+    const map   = document.getElementById('new-a-map').value.trim();
+    const main  = document.getElementById('new-a-main').checked;
+    if (!label || !text) { toast('Preencha o nome e o endereço.', 'error'); return; }
+    if (main) DATA.addresses.forEach(a => a.main = false);
+    DATA.addresses.push({ id: Date.now().toString(), label, address: text, mapUrl: map, main });
+    renderAddrList(); persist(); showLastSaved(); clearAddrForm();
+    toast('Endereço adicionado', 'success');
+  }
 
-    /* ─────────────────────────────────────────
-       TOAST
-    ───────────────────────────────────────── */
-    let toastTimer;
-    function toast(msg, isError = false) {
-      const el = document.getElementById('toast');
-      el.textContent = msg;
-      el.className = 'toast' + (isError ? ' error' : '');
-      el.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
-    }
-  </script>
+  function clearAddrForm() {
+    ['new-a-label','new-a-text','new-a-map'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('new-a-main').checked = false;
+  }
+
+  function openEditAddr(id) {
+    const a = DATA.addresses.find(a => a.id === id);
+    if (!a) return;
+    document.getElementById('edit-a-id').value    = a.id;
+    document.getElementById('edit-a-label').value = a.label;
+    document.getElementById('edit-a-text').value  = a.address;
+    document.getElementById('edit-a-map').value   = a.mapUrl || '';
+    document.getElementById('edit-a-main').checked= !!a.main;
+    document.getElementById('editAddrTitle').textContent = 'Editar: ' + a.label;
+    openModal('editAddrModal');
+  }
+
+  function saveAddress() {
+    const id  = document.getElementById('edit-a-id').value;
+    const idx = DATA.addresses.findIndex(a => a.id === id);
+    if (idx === -1) return;
+    const main = document.getElementById('edit-a-main').checked;
+    if (main) DATA.addresses.forEach(a => a.main = false);
+    DATA.addresses[idx] = {
+      id,
+      label:   document.getElementById('edit-a-label').value.trim(),
+      address: document.getElementById('edit-a-text').value.trim(),
+      mapUrl:  document.getElementById('edit-a-map').value.trim(),
+      main,
+    };
+    renderAddrList(); persist(); showLastSaved(); closeModal('editAddrModal');
+    toast('Endereço atualizado', 'success');
+  }
+
+  function confirmRemoveAddr(id) {
+    const a = DATA.addresses.find(a => a.id === id);
+    openConfirm('🗑️', 'Remover endereço?',
+      `"${a ? a.label : 'Este endereço'}" será removido do site. Esta ação não pode ser desfeita.`,
+      'Remover',
+      () => {
+        DATA.addresses = DATA.addresses.filter(a => a.id !== id);
+        renderAddrList(); persist(); showLastSaved();
+        toast('Endereço removido', 'success');
+      });
+  }
+
+  /* ══════════════════════════════════════
+     SETTINGS
+  ══════════════════════════════════════ */
+  function changePassword() {
+    const np = document.getElementById('cfg-newpwd').value;
+    const cp = document.getElementById('cfg-confirmpwd').value;
+    if (!np)         { toast('Digite a nova senha.', 'error'); return; }
+    if (np.length < 8) { toast('A senha deve ter pelo menos 8 caracteres.', 'error'); return; }
+    if (np !== cp)   { toast('As senhas não coincidem.', 'error'); return; }
+    localStorage.setItem(PWD_KEY, np);
+    document.getElementById('cfg-newpwd').value    = '';
+    document.getElementById('cfg-confirmpwd').value = '';
+    toast('Senha alterada com sucesso!', 'success');
+  }
+
+  function openResetModal() {
+    document.getElementById('resetConfirmInput').value = '';
+    document.getElementById('resetConfirmBtn').disabled = true;
+    openModal('resetModal');
+  }
+
+  function checkResetConfirm() {
+    const val = document.getElementById('resetConfirmInput').value;
+    document.getElementById('resetConfirmBtn').disabled = val !== 'EU ENTENDO';
+  }
+
+  function doReset() {
+    localStorage.removeItem(DATA_KEY);
+    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    populateForms(); updateDashboard(); updateTeamToggleBtn();
+    hideUnsaved(); closeModal('resetModal');
+    showLastSaved();
+    toast('Dados redefinidos para o padrão.', 'warn');
+  }
+
+  /* ══════════════════════════════════════
+     MODALS
+  ══════════════════════════════════════ */
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  let _confirmCb = null;
+  function openConfirm(icon, title, desc, okLabel, cb) {
+    document.getElementById('confirmIcon').textContent  = icon;
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmDesc').textContent  = desc;
+    document.getElementById('confirmOkBtn').textContent = okLabel;
+    _confirmCb = cb;
+    openModal('confirmModal');
+  }
+  document.getElementById('confirmOkBtn').addEventListener('click', () => {
+    if (_confirmCb) _confirmCb();
+    closeModal('confirmModal'); _confirmCb = null;
+  });
+
+  /* ══════════════════════════════════════
+     PHOTO UPLOAD
+  ══════════════════════════════════════ */
+  let _editPhotoData = undefined;
+  let _newPhotoData  = null;
+
+  function handleEditPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      _editPhotoData = e.target.result;
+      const prev = document.getElementById('edit-photo-preview');
+      prev.innerHTML = `<img src="${_editPhotoData}" alt="Foto" />`;
+      document.getElementById('edit-photo-remove').style.display = 'inline-flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeEditPhoto() {
+    _editPhotoData = null;
+    const prev = document.getElementById('edit-photo-preview');
+    const initials = document.getElementById('edit-m-init').value || '—';
+    prev.textContent = initials;
+    document.getElementById('edit-photo-remove').style.display = 'none';
+    document.getElementById('edit-photo-input').value = '';
+  }
+
+  function handleNewPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      _newPhotoData = e.target.result;
+      const prev = document.getElementById('new-photo-preview');
+      prev.innerHTML = `<img src="${_newPhotoData}" alt="Foto" />`;
+      document.getElementById('new-photo-remove').style.display = 'inline-flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeNewPhoto() {
+    _newPhotoData = null;
+    const prev = document.getElementById('new-photo-preview');
+    prev.textContent = '—';
+    document.getElementById('new-photo-remove').style.display = 'none';
+    document.getElementById('new-photo-input').value = '';
+  }
+
+  /* ══════════════════════════════════════
+     TOAST
+  ══════════════════════════════════════ */
+  function toast(msg, type = 'success') {
+    const icons = { success:'✓', error:'✕', info:'ℹ', warn:'⚠' };
+    const container = document.getElementById('toast-container');
+    const item = document.createElement('div');
+    item.className = 'toast-item';
+    item.innerHTML = `
+      <div class="toast-icon-wrap ${type}">${icons[type] || '✓'}</div>
+      <div class="toast-body"><div class="toast-msg">${msg}</div></div>
+      <button class="toast-close" aria-label="Fechar">×</button>`;
+    item.querySelector('.toast-close').addEventListener('click', () => dismissToast(item));
+    container.appendChild(item);
+    requestAnimationFrame(() => { requestAnimationFrame(() => { item.classList.add('show'); }); });
+    setTimeout(() => dismissToast(item), 4500);
+  }
+
+  function dismissToast(item) {
+    item.classList.remove('show');
+    item.classList.add('hide');
+    setTimeout(() => item.remove(), 400);
+  }
+</script>
 </body>
 </html>
