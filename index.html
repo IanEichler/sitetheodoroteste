@@ -343,7 +343,7 @@
     .btn-wpp svg { width: 18px; height: 18px; flex-shrink: 0; }
 
     /* ── TICKER ── */
-    .ticker { background: var(--gold); overflow: hidden; height: 46px; display: flex; align-items: center; }
+    .ticker { background: var(--gold); overflow: hidden; height: 46px; display: flex; align-items: center; position: relative; z-index: 5; }
     .ticker-track {
       display: flex; align-items: center; gap: 0; white-space: nowrap; will-change: transform;
     }
@@ -635,8 +635,20 @@
       background: var(--cream-2); border: 1px solid var(--cream-3);
       border-radius: var(--r); padding: 1.5rem;
       transition: border-color .2s, box-shadow .2s;
+      position: relative;
     }
     .ci-card:hover { border-color: rgba(19,63,59,.25); box-shadow: var(--shadow-lg); }
+    .ci-card.copyable { cursor: pointer; }
+    .ci-copied-badge {
+      position: absolute; top: .6rem; right: .75rem;
+      font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--forest); background: rgba(19,63,59,.1); border: 1px solid rgba(19,63,59,.2);
+      padding: .2rem .55rem; border-radius: 20px;
+      opacity: 0; transform: translateY(-4px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+    }
+    .ci-card.copied .ci-copied-badge { opacity: 1; transform: translateY(0); }
     .ci-icon { display: flex; align-items: center; margin-bottom: .75rem; color: var(--gold); }
     .ci-label { font-size: .62rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
     .ci-val { font-size: .875rem; color: var(--text-mid); line-height: 1.5; }
@@ -708,7 +720,6 @@
       .stat-item:nth-child(3) { border-top: 1px solid var(--cream-3); }
       .stat-item:nth-child(4) { border-top: 1px solid var(--cream-3); border-right: none; }
       .sobre-inner, .contato-inner { grid-template-columns: 1fr; }
-      #equipe-grid { grid-template-columns: repeat(2,1fr); }
       .areas-grid { grid-template-columns: 1fr; }
       .area-card:last-child { flex-direction: column; gap: 1rem; }
       .footer-top { grid-template-columns: 1fr 1fr; }
@@ -731,7 +742,7 @@
       .nav-links, .nav-cta { display: none; }
       .nav-burger { display: flex; padding: 8px; margin: -8px; }
       .logo-desktop { display: none; }
-      .logo-mobile { display: block; height: 50px; width: auto; }
+      .logo-mobile { display: block; height: 44px; max-height: 44px; width: auto; object-fit: contain; }
 
       /* ── MENU MOBILE ── */
       #mob-menu { padding: 0 6vw 3rem; justify-content: center; flex-direction: column; gap: 2rem; }
@@ -748,18 +759,35 @@
         position: relative; overflow: hidden;
       }
 
-      /* ── HERO ── */
-      #hero { grid-template-columns: 1fr; padding: 78px 4vw 0; min-height: auto; }
-      .hero-left { padding-bottom: 32px; }
-      .hero-eyebrow { font-size: .52rem; letter-spacing: .1em; margin-bottom: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .hero-h1 { font-size: clamp(2rem, 9.5vw, 3rem); line-height: 1.08; margin-bottom: 1rem; }
-      .hero-sub { font-size: .84rem; line-height: 1.7; margin-bottom: 0; max-width: 100%; }
-      .hero-rating { margin-top: .7rem; margin-bottom: 1rem; padding: .3rem .75rem; }
+      /* ── HERO MOBILE ── */
+      #hero {
+        grid-template-columns: 1fr;
+        padding: 86px 5vw 0;
+        min-height: auto;
+        align-items: start;
+        text-align: center;
+        overflow: visible;
+        margin-bottom: 0;
+      }
+      .hero-left {
+        padding-bottom: 1.5rem;
+        display: flex; flex-direction: column; align-items: center;
+      }
+      .hero-eyebrow { font-size: .5rem; letter-spacing: .1em; margin-bottom: .75rem; }
+      .hero-h1 { font-size: clamp(2.4rem, 11vw, 3.2rem); line-height: 1.08; margin-bottom: .85rem; text-align: center; }
+      .hero-sub { font-size: .82rem; line-height: 1.65; max-width: 100%; text-align: center; margin-bottom: 1rem; white-space: normal; }
+      .hero-rating { margin-top: .5rem; margin-bottom: 1.1rem; padding: .3rem .75rem; }
       .hr-score { font-size: .72rem; }
       .hr-stars { font-size: .62rem; }
       .hr-count { font-size: .58rem; }
       #heroCtaBtn { width: 100%; justify-content: center; padding: .95rem 1.5rem; font-size: .76rem; }
-      .hero-img { position: relative; right: auto; bottom: auto; height: clamp(200px, 58vw, 320px); display: block; margin: 0 auto; }
+      .hero-right { width: 100%; margin-top: 0; line-height: 0; font-size: 0; }
+      .hero-img {
+        display: block;
+        position: relative; right: auto; bottom: auto;
+        width: 100%; height: auto;
+        object-fit: contain; object-position: top center;
+      }
       .hero-scroll { display: none; }
       .hero-glow { display: none; }
 
@@ -813,14 +841,10 @@
 
       /* ── EQUIPE ── */
       #equipe { padding: 56px 4vw; }
-      #equipe-grid[data-cols],
-      #equipe-grid[data-cols="1"],
-      #equipe-grid[data-cols="2"],
-      #equipe-grid[data-cols="3"],
-      #equipe-grid[data-cols="4"] { grid-template-columns: repeat(2,1fr); gap: 1rem; }
-      .membro-photo { height: 140px; }
-      .membro-name { font-size: .82rem; line-height: 1.3; }
+      #equipe-grid { grid-template-columns: repeat(2,1fr); gap: 1rem; }
+      .membro-name { font-size: .9rem; line-height: 1.3; }
       .membro-role { font-size: .58rem; letter-spacing: .05em; }
+      .photo-ov p { text-align: left; }
 
       /* ── CONTATO ── */
       #contato { padding: 56px 4vw; }
@@ -978,7 +1002,10 @@
     </div>
 
     <div class="hero-right">
-      <img src="group.png" alt="Dra. Ana Theodoro e Dr. Marcos Porto" class="hero-img" />
+      <picture>
+        <source srcset="group-mobile.png" media="(max-width: 600px)" />
+        <img src="group.png" alt="Dra. Aline Porto e Dr. Nilson Porto" class="hero-img" />
+      </picture>
     </div>
 
     <div class="hero-scroll" style="display:none">
@@ -1216,15 +1243,17 @@
         <h2 class="s-title gs0">Entre em <em>contato</em></h2>
         <p class="s-sub gs0" style="margin-bottom:0">A primeira consulta é gratuita. Nossa equipe retornará em até 24 horas. Ou fale diretamente pelo WhatsApp clicando no botão acima.</p>
         <div class="ci-grid">
-          <div class="ci-card gs0">
+          <div class="ci-card gs0 copyable" onclick="copyContact(this,'phone')">
+            <span class="ci-copied-badge">Número copiado ✓</span>
             <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
             <div class="ci-label">Telefone</div>
-            <div class="ci-val"><a href="tel:+5566999843063" id="ci-phone">+55 (66) 99984-3063</a></div>
+            <div class="ci-val" id="ci-phone">+55 (66) 99984-3063</div>
           </div>
-          <div class="ci-card gs0">
+          <div class="ci-card gs0 copyable" onclick="copyContact(this,'email')">
+            <span class="ci-copied-badge">E-mail copiado ✓</span>
             <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
             <div class="ci-label">E-mail</div>
-            <div class="ci-val"><a href="mailto:contato@theodoroeporto.adv.br" id="ci-email">contato@theodoroeporto.adv.br</a></div>
+            <div class="ci-val" id="ci-email">contato@theodoroeporto.adv.br</div>
           </div>
           <div class="ci-card gs0">
             <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -1500,6 +1529,16 @@
     /* ─────────────────────────────────────────
        SMOOTH SCROLL
     ───────────────────────────────────────── */
+    function copyContact(card, type) {
+      const text = type === 'phone'
+        ? document.getElementById('ci-phone').textContent.trim()
+        : document.getElementById('ci-email').textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        card.classList.add('copied');
+        setTimeout(() => card.classList.remove('copied'), 2200);
+      });
+    }
+
     function smoothScrollTo(targetY, duration) {
       const start = window.scrollY;
       const distance = targetY - start;
@@ -1776,5 +1815,38 @@
     document.getElementById('mNome').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('mNext1').click(); });
     document.getElementById('mCaso').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) document.getElementById('mNext2').click(); });
   </script>
+
+  <!-- WHATSAPP FLOAT MOBILE -->
+  <a id="wpp-fab" href="https://wa.me/5566999843063" target="_blank" rel="noopener" aria-label="Falar pelo WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <style>
+    #wpp-fab {
+      display: none;
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #25D366; color: #fff;
+      align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.45);
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+    }
+    #wpp-fab svg { width: 28px; height: 28px; }
+    #wpp-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,.55); }
+    #wpp-fab::after {
+      content: '';
+      position: absolute; inset: 0; border-radius: 50%;
+      background: rgba(37,211,102,.35);
+      animation: wppPulse 2s ease-out infinite;
+    }
+    @keyframes wppPulse {
+      0%   { transform: scale(1); opacity: .7; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+    @media (max-width: 768px) {
+      #wpp-fab { display: flex; }
+    }
+  </style>
 </body>
 </html>
