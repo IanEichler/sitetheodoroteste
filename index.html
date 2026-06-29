@@ -1413,7 +1413,6 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -1455,25 +1454,24 @@
       } catch(e) { return DEFAULT_DATA; }
     }
 
-    /* ── SUPABASE ── */
-    const _sb = supabase.createClient(
-      'https://wmzfehnczvdraeninzcf.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY'
-    );
+    /* ── SUPABASE (fetch leve, sem biblioteca) ── */
+    const _SB_URL = 'https://wmzfehnczvdraeninzcf.supabase.co/rest/v1/site_config?id=eq.1&select=data';
+    const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
 
-    let DATA = loadData(); // carrega do localStorage imediatamente
+    let DATA = loadData(); // carrega do localStorage imediatamente (sem espera)
 
-    // Busca dados atualizados do Supabase em background
-    (async () => {
-      try {
-        const { data, error } = await _sb.from('site_config').select('data').eq('id', 1).single();
-        if (!error && data?.data && Object.keys(data.data).length > 0) {
-          localStorage.setItem('tp_data', JSON.stringify(data.data));
-          DATA = loadData();
-          applyData(); // re-aplica com dados atualizados
-        }
-      } catch(e) { /* usa localStorage como fallback */ }
-    })();
+    // Sincroniza com Supabase em background — só re-renderiza se os dados forem diferentes
+    fetch(_SB_URL, { headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY } })
+      .then(r => r.json())
+      .then(rows => {
+        const remote = rows[0]?.data;
+        if (!remote || !Object.keys(remote).length) return;
+        const local = JSON.stringify(DATA);
+        localStorage.setItem('tp_data', JSON.stringify(remote));
+        DATA = loadData();
+        if (JSON.stringify(DATA) !== local) applyData(); // só re-renderiza se mudou
+      })
+      .catch(() => {});
 
     /* Apply data to DOM */
     function applyData() {
