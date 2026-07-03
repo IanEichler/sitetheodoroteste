@@ -55,7 +55,7 @@
       display: flex;
       flex-direction: column;
       gap: 1.35rem;
-      padding-left: 3.6rem;
+      padding-left: 1.9rem;
     }
 
     .link-item { position: relative; }
@@ -81,18 +81,21 @@
 
     .link-img {
       position: absolute;
-      left: -3.15rem;
-      bottom: -.85rem;
-      width: 7.7rem;
-      height: 8.6rem;
+      left: -1.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6.2rem;
+      height: 6.2rem;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(0,0,0,.45), 0 0 0 3px rgba(255,255,255,.09);
       pointer-events: none;
       z-index: 2;
     }
     .link-img img {
       width: 100%; height: 100%;
-      object-fit: contain;
-      object-position: bottom center;
-      filter: drop-shadow(0 12px 16px rgba(0,0,0,.5));
+      object-fit: cover;
+      object-position: center top;
     }
 
     .link-text { color: #fff; text-align: right; line-height: 1.28; max-width: 68%; }
@@ -123,8 +126,8 @@
     }
 
     @media (max-width: 380px) {
-      .links-list { padding-left: 3rem; gap: 1.1rem; }
-      .link-img { width: 6.4rem; height: 7.2rem; left: -2.6rem; bottom: -.6rem; }
+      .links-list { padding-left: 1.5rem; gap: 1.1rem; }
+      .link-img { width: 5.2rem; height: 5.2rem; left: -1.1rem; }
       .link-btn { min-height: 6rem; padding: .65rem 1.1rem; }
       .link-subtitle { font-size: 1.12rem; }
       .link-title { font-size: .9rem; }
