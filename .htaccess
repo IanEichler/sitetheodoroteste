@@ -2,3 +2,6 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} ^www\.theodoroeporto\.adv\.br [NC]
 RewriteRule ^(.*)$ https://theodoroeporto.adv.br/$1 [L,R=301]
+
+# /admin (sem .html) serve o painel administrativo
+RewriteRule ^admin/?$ admin.html [L]
