@@ -1786,7 +1786,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _newLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.88);
+      _newLinkPhotoData = await resizeImageFile(file, 1000, 'image/png', 0.9);
       const prev = document.getElementById('new-link-photo-preview');
       prev.innerHTML = `<img src="${_newLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('new-link-photo-remove').style.display = 'inline-flex';
@@ -1807,7 +1807,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _editLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.88);
+      _editLinkPhotoData = await resizeImageFile(file, 1000, 'image/png', 0.9);
       const prev = document.getElementById('edit-link-photo-preview');
       prev.innerHTML = `<img src="${_editLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('edit-link-photo-remove').style.display = 'inline-flex';
