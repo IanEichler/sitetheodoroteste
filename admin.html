@@ -1686,7 +1686,7 @@
         </div>
         <div class="member-avatar" style="border-radius:12px">${l.image ? `<img src="${l.image}" alt="${l.title || 'Link'}" />` : '🔗'}</div>
         <div class="member-info">
-          <div class="member-name">${l.title || 'Link'}</div>
+          <div class="member-name">${l.title || 'Link'} <span style="font-weight:400;color:var(--text-light);font-size:12px">· 🖱️ ${l.clicks || 0} clique${(l.clicks || 0) === 1 ? '' : 's'}</span></div>
           <div class="member-role">${l.url}</div>
         </div>
         <div class="member-actions">

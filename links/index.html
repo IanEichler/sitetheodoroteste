@@ -6,6 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Todos os canais de contato da Theodoro & Porto Advocacia em um só lugar." />
   <title>Links — Theodoro &amp; Porto Advocacia</title>
+  <link rel="canonical" href="https://theodoroeporto.adv.br/links/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://theodoroeporto.adv.br/links/" />
+  <meta property="og:title" content="Theodoro & Porto Advocacia — Nossos Links" />
+  <meta property="og:description" content="Acesse nosso site, fale no WhatsApp e siga nossas redes — tudo em um só lugar." />
+  <meta property="og:image" content="https://theodoroeporto.adv.br/group.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Theodoro & Porto Advocacia — Nossos Links" />
+  <meta name="twitter:description" content="Acesse nosso site, fale no WhatsApp e siga nossas redes — tudo em um só lugar." />
+  <meta name="twitter:image" content="https://theodoroeporto.adv.br/group.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -223,12 +237,13 @@
       }
       wrap.innerHTML = links.map(l => {
         const url = escapeHtml(normalizeUrl(l.url));
+        const click = `onclick="trackClick('${l.id}')"`;
         if (l.image) {
-          return `<a class="link-banner" href="${url}" target="_blank" rel="noopener">
+          return `<a class="link-banner" href="${url}" target="_blank" rel="noopener" ${click}>
             <img src="${l.image}" alt="${escapeHtml(l.title || 'Link')}" />
           </a>`;
         }
-        return `<a class="link-btn" href="${url}" target="_blank" rel="noopener">
+        return `<a class="link-btn" href="${url}" target="_blank" rel="noopener" ${click}>
           <div class="link-text"><div class="link-title">${escapeHtml(l.title || 'Link')}</div></div>
         </a>`;
       }).join('');
@@ -254,6 +269,31 @@
         }
       })
       .catch(() => {});
+
+    /* Contagem de cliques por link — como os links abrem em nova aba
+       (target="_blank"), a página atual continua rodando e dá tempo do
+       fetch terminar antes do usuário sair. */
+    function trackClick(linkId) {
+      try {
+        const raw = localStorage.getItem('tp_data');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        const link = (data.links || []).find(l => l.id === linkId);
+        if (!link) return;
+        link.clicks = (link.clicks || 0) + 1;
+        localStorage.setItem('tp_data', JSON.stringify(data));
+        fetch('https://wmzfehnczvdraeninzcf.supabase.co/rest/v1/site_config?id=eq.1', {
+          method: 'PATCH',
+          headers: {
+            apikey: _SB_KEY,
+            Authorization: 'Bearer ' + _SB_KEY,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
+        }).catch(() => {});
+      } catch (e) {}
+    }
 
     /* Seta de "tem mais conteúdo abaixo" — só mostra se a página realmente
        rolar, some assim que o usuário começa a descer ou chega no final. */

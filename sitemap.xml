@@ -36,4 +36,10 @@
     <changefreq>monthly</changefreq>
     <lastmod>2026-06-24</lastmod>
   </url>
+  <url>
+    <loc>https://theodoroeporto.adv.br/links/</loc>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-03</lastmod>
+  </url>
 </urlset>
