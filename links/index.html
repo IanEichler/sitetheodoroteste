@@ -156,30 +156,38 @@
       right: 1rem;
       bottom: 1.1rem;
       z-index: 10;
-      width: 42px;
-      height: 42px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       background: rgba(201,168,76,.16);
       border: 1px solid rgba(201,168,76,.35);
       backdrop-filter: blur(6px);
-      animation: scrollHintBounce 1.6s ease-in-out infinite;
       opacity: 1;
       transition: opacity .3s ease;
       pointer-events: none;
     }
     .scroll-hint.hide { opacity: 0; }
-    .scroll-hint svg { width: 18px; height: 18px; color: var(--gold-light); }
-    @keyframes scrollHintBounce {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(7px); }
+    .scroll-hint svg {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      color: var(--gold-light);
+      animation: scrollHintSlide 1.6s cubic-bezier(.5,0,.5,1) infinite;
+    }
+    @keyframes scrollHintSlide {
+      0%   { transform: translateY(-16px); opacity: 0; }
+      35%  { opacity: 1; }
+      70%  { opacity: 1; }
+      100% { transform: translateY(16px); opacity: 0; }
     }
     @media (max-width: 640px) {
       .scroll-hint { display: flex; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .scroll-hint { animation: none; }
+      .scroll-hint svg { animation: none; }
     }
   </style>
 </head>
