@@ -1040,7 +1040,7 @@
           <div class="add-member-title">Adicionar Novo Link</div>
           <div class="f">
             <label for="new-l-title">Título <span style="color:var(--red)">*</span></label>
-            <input type="text" id="new-l-title" placeholder="Ex: Acesse nosso site" oninput="validateAddLinkForm()" />
+            <input type="text" id="new-l-title" placeholder="Ex: Acesse nosso site" />
           </div>
           <div class="f">
             <label for="new-l-subtitle">Texto de destaque <span style="font-weight:400;color:var(--text-light)">(opcional, aparece em negrito)</span></label>
@@ -1048,7 +1048,7 @@
           </div>
           <div class="f">
             <label for="new-l-url">Link (URL) <span style="color:var(--red)">*</span></label>
-            <input type="text" id="new-l-url" placeholder="https://... ou https://wa.me/55..." oninput="validateAddLinkForm()" />
+            <input type="text" id="new-l-url" placeholder="https://... ou https://wa.me/55..." />
           </div>
           <div class="photo-upload-area">
             <div class="photo-preview" id="new-link-photo-preview" style="border-radius:12px">—</div>
@@ -1063,9 +1063,10 @@
             <input type="file" id="new-link-photo-input" class="photo-file-input" accept="image/*" onchange="handleNewLinkPhoto(this)" />
           </div>
           <div class="form-actions">
-            <button class="btn btn-green" id="addLinkBtn" onclick="addLink()" disabled>+ Adicionar Link</button>
+            <button class="btn btn-green" id="addLinkBtn" onclick="addLink()">+ Adicionar Link</button>
             <button class="btn btn-outline" onclick="clearAddLinkForm()">Limpar</button>
           </div>
+          <p style="font-size:12px;color:var(--text-light);margin-top:.6rem">Ao clicar em "Adicionar Link", ele já é salvo — não precisa de outro botão de salvar.</p>
         </div>
       </section>
 
@@ -1142,8 +1143,12 @@
 
   async function saveToSupabase(dataObj) {
     try {
-      await sb.from('site_config').upsert({ id: 1, data: dataObj, updated_at: new Date().toISOString() });
-    } catch(e) { console.warn('Supabase save failed', e); }
+      const { error } = await sb.from('site_config').upsert({ id: 1, data: dataObj, updated_at: new Date().toISOString() });
+      if (error) throw error;
+    } catch(e) {
+      console.warn('Supabase save failed', e);
+      toast('Não foi possível sincronizar com o servidor. Salvo só neste navegador — tente novamente ou verifique sua internet.', 'error');
+    }
   }
 
   /* ══════════════════════════════════════
@@ -1660,12 +1665,6 @@
     renderLinksList(); persist(); showLastSaved();
   }
 
-  function validateAddLinkForm() {
-    const ok = document.getElementById('new-l-title').value.trim() &&
-               document.getElementById('new-l-url').value.trim();
-    document.getElementById('addLinkBtn').disabled = !ok;
-  }
-
   function addLink() {
     const title    = document.getElementById('new-l-title').value.trim();
     const subtitle = document.getElementById('new-l-subtitle').value.trim();
@@ -1678,7 +1677,6 @@
 
   function clearAddLinkForm() {
     ['new-l-title','new-l-subtitle','new-l-url'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('addLinkBtn').disabled = true;
     removeNewLinkPhoto();
   }
 
