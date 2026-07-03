@@ -1,0 +1,4 @@
+# Consolida www e sem-www numa única URL canônica (evita conteúdo duplicado no Google)
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.theodoroeporto\.adv\.br [NC]
+RewriteRule ^(.*)$ https://theodoroeporto.adv.br/$1 [L,R=301]

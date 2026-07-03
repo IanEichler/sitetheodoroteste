@@ -3,3 +3,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/theodoroeporto/public_html/
     - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -f .htaccess $DEPLOYPATH
