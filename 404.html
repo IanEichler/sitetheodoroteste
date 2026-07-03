@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo-symbol-gold.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <title>Página não encontrada — Theodoro &amp; Porto Advocacia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:      #133F3B;
+      --forest-dark: #0d2e2b;
+      --forest-deep: #081a18;
+      --gold:        #C9A84C;
+      --gold-light:  #E2C068;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: radial-gradient(120% 90% at 50% -10%, #1a5850 0%, var(--forest-deep) 55%, #050e0d 100%);
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+
+    .wrap { max-width: 460px; }
+
+    .brand-logo { height: 44px; width: auto; margin-bottom: 2.5rem; opacity: .9; }
+
+    .code {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(4.5rem, 18vw, 7rem);
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, #8a6f2f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: .75rem;
+    }
+
+    p {
+      font-size: .95rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.6;
+      margin-bottom: 2.25rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .75rem 1.5rem;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--forest-deep);
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.4); }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      font-size: .78rem;
+      color: rgba(255,255,255,.35);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <img class="brand-logo" src="logo-gold.png" alt="Theodoro & Porto" onerror="this.style.display='none'" />
+    <div class="code">404</div>
+    <h1>Página não encontrada</h1>
+    <p>O endereço que você tentou acessar não existe ou foi movido. Que tal voltar para o site ou falar direto com a gente?</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/">← Voltar ao site</a>
+      <a class="btn btn-outline" href="/links/">Ver todos os links</a>
+    </div>
+    <div class="footer-note">Theodoro &amp; Porto Advocacia · Rondonópolis – MT</div>
+  </div>
+
+</body>
+</html>
