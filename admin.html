@@ -648,7 +648,7 @@
         <div class="photo-preview" id="edit-link-photo-preview" style="border-radius:12px">—</div>
         <div class="photo-upload-info">
           <p>Arte do botão <span style="color:var(--red)">*</span></p>
-          <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total.</small>
+          <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Exporte como <strong>retângulo cheio, sem cantos arredondados e sem transparência</strong> — o site arredonda os cantos sozinho.</small>
           <div style="display:flex;gap:.5rem;margin-top:.6rem">
             <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-link-photo-input').click()">📷 Escolher imagem</button>
             <button class="btn btn-danger-ghost btn-sm" type="button" id="edit-link-photo-remove" onclick="removeEditLinkPhoto()" style="display:none">Remover</button>
@@ -1038,7 +1038,7 @@
             <div class="photo-preview" id="new-link-photo-preview" style="border-radius:12px">—</div>
             <div class="photo-upload-info">
               <p>Arte do botão <span style="color:var(--red)">*</span></p>
-              <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Todas devem ter a mesma proporção (largura × altura).</small>
+              <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Exporte como <strong>retângulo cheio, sem cantos arredondados e sem transparência</strong> — o site arredonda os cantos sozinho. Todas devem ter a mesma proporção (largura × altura).</small>
               <div style="display:flex;gap:.5rem;margin-top:.6rem">
                 <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-link-photo-input').click()">📷 Escolher imagem</button>
                 <button class="btn btn-danger-ghost btn-sm" type="button" id="new-link-photo-remove" onclick="removeNewLinkPhoto()" style="display:none">Remover</button>
@@ -1777,7 +1777,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _newLinkPhotoData = await resizeImageFile(file, 1000, 'image/png', 0.9);
+      _newLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.88);
       const prev = document.getElementById('new-link-photo-preview');
       prev.innerHTML = `<img src="${_newLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('new-link-photo-remove').style.display = 'inline-flex';
@@ -1798,7 +1798,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _editLinkPhotoData = await resizeImageFile(file, 1000, 'image/png', 0.9);
+      _editLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.88);
       const prev = document.getElementById('edit-link-photo-preview');
       prev.innerHTML = `<img src="${_editLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('edit-link-photo-remove').style.display = 'inline-flex';
