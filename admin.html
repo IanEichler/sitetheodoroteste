@@ -635,6 +635,47 @@
   </div>
 </div>
 
+<!-- Edit Link Modal -->
+<div class="modal-overlay" id="editLinkModal" role="dialog" aria-modal="true" aria-labelledby="editLinkTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="editLinkTitle">Editar Link</div>
+      <button class="modal-close" onclick="closeModal('editLinkModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-l-id" />
+      <div class="f">
+        <label for="edit-l-title">Título</label>
+        <input type="text" id="edit-l-title" />
+      </div>
+      <div class="f">
+        <label for="edit-l-subtitle">Texto de destaque <span style="font-weight:400;color:var(--text-light)">(opcional, aparece em negrito)</span></label>
+        <input type="text" id="edit-l-subtitle" />
+      </div>
+      <div class="f">
+        <label for="edit-l-url">Link (URL)</label>
+        <input type="text" id="edit-l-url" placeholder="https://... ou https://wa.me/55..." />
+      </div>
+      <div class="photo-upload-area">
+        <div class="photo-preview" id="edit-link-photo-preview" style="border-radius:12px">—</div>
+        <div class="photo-upload-info">
+          <p>Imagem do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+          <small>Ideal: PNG com fundo transparente, pessoa/objeto recortado.</small>
+          <div style="display:flex;gap:.5rem;margin-top:.6rem">
+            <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-link-photo-input').click()">📷 Escolher imagem</button>
+            <button class="btn btn-danger-ghost btn-sm" type="button" id="edit-link-photo-remove" onclick="removeEditLinkPhoto()" style="display:none">Remover</button>
+          </div>
+        </div>
+        <input type="file" id="edit-link-photo-input" class="photo-file-input" accept="image/*" onchange="handleEditLinkPhoto(this)" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editLinkModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveLink()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 <!-- Confirm Modal -->
 <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:400px">
@@ -664,6 +705,7 @@
         <li>Apagar todos os membros da equipe</li>
         <li>Resetar todas as estatísticas para o padrão</li>
         <li>Apagar todos os endereços cadastrados</li>
+        <li>Apagar todos os links da página /links</li>
         <li>Restaurar informações de contato originais</li>
       </ul>
       <p class="confirm-warn" style="display:block;margin-bottom:1.25rem">Esta ação não pode ser desfeita.</p>
@@ -725,6 +767,10 @@
         <button class="nav-item" data-page="contato" onclick="goTo('contato',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Contato &amp; Endereços
+        </button>
+        <button class="nav-item" data-page="links" onclick="goTo('links',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Links (Linktree)
         </button>
       </div>
       <div class="sidebar-group">
@@ -971,6 +1017,58 @@
         </div>
       </section>
 
+      <!-- ── LINKS (LINKTREE) ── -->
+      <section class="page" id="page-links">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Links</span></nav>
+        <div class="page-title">Gerenciar Links</div>
+        <div class="page-sub">Botões exibidos em <strong>theodoroeporto.adv.br/links</strong>. Use ▲▼ para reordenar.</div>
+
+        <div class="section-toggle-bar">
+          <div class="section-toggle-info">
+            <h4>Página de Links</h4>
+            <p>Página pública, ideal para bio do Instagram/WhatsApp.</p>
+          </div>
+          <a class="btn btn-outline" href="links/" target="_blank" rel="noopener">👁️ Ver Página de Links</a>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Links Atuais</span></div>
+          <div class="member-cards" id="linkList"></div>
+        </div>
+
+        <div class="card">
+          <div class="add-member-title">Adicionar Novo Link</div>
+          <div class="f">
+            <label for="new-l-title">Título <span style="color:var(--red)">*</span></label>
+            <input type="text" id="new-l-title" placeholder="Ex: Acesse nosso site" oninput="validateAddLinkForm()" />
+          </div>
+          <div class="f">
+            <label for="new-l-subtitle">Texto de destaque <span style="font-weight:400;color:var(--text-light)">(opcional, aparece em negrito)</span></label>
+            <input type="text" id="new-l-subtitle" placeholder="Ex: nosso site" />
+          </div>
+          <div class="f">
+            <label for="new-l-url">Link (URL) <span style="color:var(--red)">*</span></label>
+            <input type="text" id="new-l-url" placeholder="https://... ou https://wa.me/55..." oninput="validateAddLinkForm()" />
+          </div>
+          <div class="photo-upload-area">
+            <div class="photo-preview" id="new-link-photo-preview" style="border-radius:12px">—</div>
+            <div class="photo-upload-info">
+              <p>Imagem do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+              <small>Ideal: PNG com fundo transparente, pessoa/objeto recortado. Se não enviar, o texto fica centralizado no botão.</small>
+              <div style="display:flex;gap:.5rem;margin-top:.6rem">
+                <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-link-photo-input').click()">📷 Escolher imagem</button>
+                <button class="btn btn-danger-ghost btn-sm" type="button" id="new-link-photo-remove" onclick="removeNewLinkPhoto()" style="display:none">Remover</button>
+              </div>
+            </div>
+            <input type="file" id="new-link-photo-input" class="photo-file-input" accept="image/*" onchange="handleNewLinkPhoto(this)" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-green" id="addLinkBtn" onclick="addLink()" disabled>+ Adicionar Link</button>
+            <button class="btn btn-outline" onclick="clearAddLinkForm()">Limpar</button>
+          </div>
+        </div>
+      </section>
+
       <!-- ── CONFIGURAÇÕES ── -->
       <section class="page" id="page-config">
         <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Configurações</span></nav>
@@ -1061,6 +1159,7 @@
     contact: { phone: '+55 (66) 99984-3063', email: 'contato@theodoroeporto.adv.br', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', hours: 'Segunda a Sexta: 7h às 17h' },
     whatsapp: '5566999843063',
     teamVisible: true,
+    links: [],
     addresses: [
       { id: '1', label: 'Matriz', address: 'Rua Arnaldo Estevão de Figueiredo, 874\nCentro — Rondonópolis – MT, 78.700-150', mapUrl: 'https://maps.google.com/?q=Rua+Arnaldo+Estev%C3%A3o+de+Figueiredo+874+Rondon%C3%B3polis+MT', main: true },
       { id: '2', label: 'Unidade Comercial', address: 'Prime Centro Empresarial\nAv. Tiradentes, 1841 — 15º andar, Salas 1505 e 1506\nCentro — Rondonópolis – MT, 78.700-028', mapUrl: 'https://maps.google.com/?q=Avenida+Tiradentes+1841+Rondon%C3%B3polis+MT', main: false },
@@ -1085,6 +1184,7 @@
         teamVisible: s.teamVisible !== undefined ? s.teamVisible : DEFAULT_DATA.teamVisible,
         addresses:   s.addresses   || DEFAULT_DATA.addresses,
         team:        s.team        || DEFAULT_DATA.team,
+        links:       s.links       || DEFAULT_DATA.links,
       };
     } catch(e) { return structuredClone ? structuredClone(DEFAULT_DATA) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
   }
@@ -1217,6 +1317,7 @@
     // Lists
     renderMemberList();
     renderAddrList();
+    renderLinksList();
   }
 
   function updateDashboard() {
@@ -1521,6 +1622,160 @@
         renderAddrList(); persist(); showLastSaved();
         toast('Endereço removido', 'success');
       });
+  }
+
+  /* ══════════════════════════════════════
+     LINKS (LINKTREE)
+  ══════════════════════════════════════ */
+  function renderLinksList() {
+    const list = document.getElementById('linkList');
+    if (!list) return;
+    if (!DATA.links || !DATA.links.length) {
+      list.innerHTML = '<p style="font-size:14px;color:var(--text-light);text-align:center;padding:1.5rem 0">Nenhum link cadastrado.</p>';
+      return;
+    }
+    list.innerHTML = DATA.links.map((l, i) => `
+      <div class="member-card" id="lc-${l.id}">
+        <div class="member-order">
+          <button class="order-btn" onclick="moveLink('${l.id}',-1)" ${i===0?'disabled':''} aria-label="Mover para cima">▲</button>
+          <button class="order-btn" onclick="moveLink('${l.id}',1)"  ${i===DATA.links.length-1?'disabled':''} aria-label="Mover para baixo">▼</button>
+        </div>
+        <div class="member-avatar" style="border-radius:12px">${l.image ? `<img src="${l.image}" alt="${l.title}" />` : '🔗'}</div>
+        <div class="member-info">
+          <div class="member-name">${l.title}${l.subtitle ? ' — <strong>' + l.subtitle + '</strong>' : ''}</div>
+          <div class="member-role">${l.url}</div>
+        </div>
+        <div class="member-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditLink('${l.id}')">✏️ Editar</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="confirmRemoveLink('${l.id}')">🗑️ Remover</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function moveLink(id, dir) {
+    const i = DATA.links.findIndex(l => l.id === id);
+    const j = i + dir;
+    if (j < 0 || j >= DATA.links.length) return;
+    [DATA.links[i], DATA.links[j]] = [DATA.links[j], DATA.links[i]];
+    renderLinksList(); persist(); showLastSaved();
+  }
+
+  function validateAddLinkForm() {
+    const ok = document.getElementById('new-l-title').value.trim() &&
+               document.getElementById('new-l-url').value.trim();
+    document.getElementById('addLinkBtn').disabled = !ok;
+  }
+
+  function addLink() {
+    const title    = document.getElementById('new-l-title').value.trim();
+    const subtitle = document.getElementById('new-l-subtitle').value.trim();
+    const url      = document.getElementById('new-l-url').value.trim();
+    if (!title || !url) { toast('Preencha o título e o link.', 'error'); return; }
+    DATA.links.push({ id: Date.now().toString(), title, subtitle, url, image: _newLinkPhotoData || null });
+    renderLinksList(); persist(); showLastSaved(); clearAddLinkForm();
+    toast('Novo link adicionado', 'success');
+  }
+
+  function clearAddLinkForm() {
+    ['new-l-title','new-l-subtitle','new-l-url'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('addLinkBtn').disabled = true;
+    removeNewLinkPhoto();
+  }
+
+  function openEditLink(id) {
+    const l = DATA.links.find(l => l.id === id);
+    if (!l) return;
+    document.getElementById('edit-l-id').value       = l.id;
+    document.getElementById('edit-l-title').value    = l.title;
+    document.getElementById('edit-l-subtitle').value = l.subtitle || '';
+    document.getElementById('edit-l-url').value      = l.url;
+    document.getElementById('editLinkTitle').textContent = 'Editar: ' + l.title;
+    const prev = document.getElementById('edit-link-photo-preview');
+    const remBtn = document.getElementById('edit-link-photo-remove');
+    if (l.image) {
+      prev.innerHTML = `<img src="${l.image}" alt="${l.title}" />`;
+      remBtn.style.display = 'inline-flex';
+    } else {
+      prev.textContent = '🔗';
+      remBtn.style.display = 'none';
+    }
+    document.getElementById('edit-link-photo-input').value = '';
+    _editLinkPhotoData = undefined;
+    openModal('editLinkModal');
+  }
+
+  function saveLink() {
+    const id  = document.getElementById('edit-l-id').value;
+    const idx = DATA.links.findIndex(l => l.id === id);
+    if (idx === -1) return;
+    const existingImage = DATA.links[idx].image;
+    DATA.links[idx] = {
+      id,
+      title:    document.getElementById('edit-l-title').value.trim(),
+      subtitle: document.getElementById('edit-l-subtitle').value.trim(),
+      url:      document.getElementById('edit-l-url').value.trim(),
+      image:    _editLinkPhotoData !== undefined ? _editLinkPhotoData : existingImage,
+    };
+    _editLinkPhotoData = undefined;
+    renderLinksList(); persist(); showLastSaved(); closeModal('editLinkModal');
+    toast('Link atualizado', 'success');
+  }
+
+  function confirmRemoveLink(id) {
+    const l = DATA.links.find(l => l.id === id);
+    openConfirm('🗑️', 'Remover link?',
+      `"${l ? l.title : 'Este link'}" será removido da página /links. Esta ação não pode ser desfeita.`,
+      'Remover',
+      () => {
+        DATA.links = DATA.links.filter(l => l.id !== id);
+        renderLinksList(); persist(); showLastSaved();
+        toast('Link removido', 'success');
+      });
+  }
+
+  let _editLinkPhotoData = undefined;
+  let _newLinkPhotoData  = null;
+
+  function handleNewLinkPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      _newLinkPhotoData = e.target.result;
+      const prev = document.getElementById('new-link-photo-preview');
+      prev.innerHTML = `<img src="${_newLinkPhotoData}" alt="Imagem" />`;
+      document.getElementById('new-link-photo-remove').style.display = 'inline-flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeNewLinkPhoto() {
+    _newLinkPhotoData = null;
+    const prev = document.getElementById('new-link-photo-preview');
+    prev.textContent = '—';
+    document.getElementById('new-link-photo-remove').style.display = 'none';
+    document.getElementById('new-link-photo-input').value = '';
+  }
+
+  function handleEditLinkPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      _editLinkPhotoData = e.target.result;
+      const prev = document.getElementById('edit-link-photo-preview');
+      prev.innerHTML = `<img src="${_editLinkPhotoData}" alt="Imagem" />`;
+      document.getElementById('edit-link-photo-remove').style.display = 'inline-flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeEditLinkPhoto() {
+    _editLinkPhotoData = null;
+    const prev = document.getElementById('edit-link-photo-preview');
+    prev.textContent = '🔗';
+    document.getElementById('edit-link-photo-remove').style.display = 'none';
+    document.getElementById('edit-link-photo-input').value = '';
   }
 
   /* ══════════════════════════════════════
