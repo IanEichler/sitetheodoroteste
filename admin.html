@@ -659,8 +659,8 @@
       <div class="photo-upload-area">
         <div class="photo-preview" id="edit-link-photo-preview" style="border-radius:12px">—</div>
         <div class="photo-upload-info">
-          <p>Imagem do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
-          <small>Ideal: PNG com fundo transparente, pessoa/objeto recortado.</small>
+          <p>Arte do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+          <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total.</small>
           <div style="display:flex;gap:.5rem;margin-top:.6rem">
             <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-link-photo-input').click()">📷 Escolher imagem</button>
             <button class="btn btn-danger-ghost btn-sm" type="button" id="edit-link-photo-remove" onclick="removeEditLinkPhoto()" style="display:none">Remover</button>
@@ -1053,8 +1053,8 @@
           <div class="photo-upload-area">
             <div class="photo-preview" id="new-link-photo-preview" style="border-radius:12px">—</div>
             <div class="photo-upload-info">
-              <p>Imagem do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
-              <small>Ideal: PNG com fundo transparente, pessoa/objeto recortado. Se não enviar, o texto fica centralizado no botão.</small>
+              <p>Arte do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+              <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Todas devem ter a mesma proporção (largura × altura). Se não enviar, aparece um botão simples só com o título.</small>
               <div style="display:flex;gap:.5rem;margin-top:.6rem">
                 <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-link-photo-input').click()">📷 Escolher imagem</button>
                 <button class="btn btn-danger-ghost btn-sm" type="button" id="new-link-photo-remove" onclick="removeNewLinkPhoto()" style="display:none">Remover</button>
@@ -1769,7 +1769,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _newLinkPhotoData = await resizeImageFile(file, 640, 'image/png', 0.9);
+      _newLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.85);
       const prev = document.getElementById('new-link-photo-preview');
       prev.innerHTML = `<img src="${_newLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('new-link-photo-remove').style.display = 'inline-flex';
@@ -1790,7 +1790,7 @@
     const file = input.files[0];
     if (!file) return;
     try {
-      _editLinkPhotoData = await resizeImageFile(file, 640, 'image/png', 0.9);
+      _editLinkPhotoData = await resizeImageFile(file, 1000, 'image/jpeg', 0.85);
       const prev = document.getElementById('edit-link-photo-preview');
       prev.innerHTML = `<img src="${_editLinkPhotoData}" alt="Imagem" />`;
       document.getElementById('edit-link-photo-remove').style.display = 'inline-flex';

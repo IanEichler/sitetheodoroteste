@@ -54,57 +54,44 @@
     .links-list {
       display: flex;
       flex-direction: column;
-      gap: 1.35rem;
-      padding-left: 2.6rem;
+      gap: 1.1rem;
     }
 
-    .link-item { position: relative; }
+    /* Link com arte completa enviada pelo admin: a imagem É o botão inteiro */
+    .link-banner {
+      display: block;
+      width: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(0,0,0,.4);
+      transition: transform .18s ease, box-shadow .18s ease;
+      line-height: 0;
+    }
+    .link-banner:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0,0,0,.48); }
+    .link-banner:active { transform: translateY(0); }
+    .link-banner img { display: block; width: 100%; height: auto; }
 
+    /* Link sem imagem: botão de texto simples */
     .link-btn {
-      position: relative;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      min-height: 6.9rem;
+      justify-content: center;
+      min-height: 5.2rem;
       border-radius: 22px;
       padding: .75rem 1.5rem;
       text-decoration: none;
+      text-align: center;
       background: linear-gradient(135deg, #1c5a53 0%, var(--forest) 45%, var(--forest-dark) 78%, #071815 100%);
       box-shadow: 0 12px 28px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);
-      overflow: visible;
       transition: transform .18s ease, box-shadow .18s ease;
     }
     .link-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.08); }
     .link-btn:active { transform: translateY(0); }
 
-    .link-item.no-image .link-btn { justify-content: center; padding: .75rem 1.25rem; }
-
-    .link-img {
-      position: absolute;
-      left: -2.2rem;
-      bottom: -.9rem;
-      height: 8.8rem;
-      max-width: 9rem;
-      pointer-events: none;
-      z-index: 2;
-      display: flex;
-      align-items: flex-end;
-    }
-    .link-img img {
-      display: block;
-      height: 100%;
-      width: auto;
-      max-width: 9rem;
-      object-fit: contain;
-      object-position: bottom;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.5));
-    }
-
-    .link-text { color: #fff; text-align: right; line-height: 1.28; max-width: 68%; }
-    .link-item.no-image .link-text { text-align: center; max-width: 100%; }
-    .link-title { font-size: 1rem; font-weight: 400; color: rgba(255,255,255,.85); }
+    .link-text { color: #fff; line-height: 1.28; }
+    .link-title { font-size: 1.15rem; font-weight: 700; font-family: 'Syne', sans-serif; }
     .link-subtitle { font-size: 1.32rem; font-weight: 700; font-family: 'Syne', sans-serif; letter-spacing: -.01em; }
-    .link-item.no-image .link-title:only-child { font-size: 1.15rem; font-weight: 700; font-family: 'Syne', sans-serif; color: #fff; }
 
     .empty-msg { color: rgba(255,255,255,.55); font-size: .9rem; text-align: center; padding: 2rem 0; }
 
@@ -128,11 +115,10 @@
     }
 
     @media (max-width: 380px) {
-      .links-list { padding-left: 2.1rem; gap: 1.1rem; }
-      .link-img { height: 7.2rem; left: -1.8rem; }
-      .link-btn { min-height: 6rem; padding: .65rem 1.1rem; }
+      .links-list { gap: .9rem; }
+      .link-btn { min-height: 4.6rem; padding: .65rem 1.1rem; }
       .link-subtitle { font-size: 1.12rem; }
-      .link-title { font-size: .9rem; }
+      .link-title { font-size: 1rem; }
     }
   </style>
 </head>
@@ -175,16 +161,19 @@
         wrap.innerHTML = '<p class="empty-msg">Nenhum link disponível no momento.</p>';
         return;
       }
-      wrap.innerHTML = links.map(l => `
-        <div class="link-item ${l.image ? 'has-image' : 'no-image'}">
-          <a class="link-btn" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
-            ${l.image ? `<div class="link-img"><img src="${l.image}" alt="${escapeHtml(l.title)}" /></div>` : ''}
-            <div class="link-text">
-              <div class="link-title">${escapeHtml(l.title)}</div>
-              ${l.subtitle ? `<div class="link-subtitle">${escapeHtml(l.subtitle)}</div>` : ''}
-            </div>
-          </a>
-        </div>`).join('');
+      wrap.innerHTML = links.map(l => {
+        if (l.image) {
+          return `<a class="link-banner" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+            <img src="${l.image}" alt="${escapeHtml(l.title)}" />
+          </a>`;
+        }
+        return `<a class="link-btn" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+          <div class="link-text">
+            <div class="link-title">${escapeHtml(l.title)}</div>
+            ${l.subtitle ? `<div class="link-subtitle">${escapeHtml(l.subtitle)}</div>` : ''}
+          </div>
+        </a>`;
+      }).join('');
     }
 
     let LINKS = loadLinks();
