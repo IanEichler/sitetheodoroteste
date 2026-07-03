@@ -134,6 +134,39 @@
       .link-btn { min-height: 4.6rem; padding: .65rem 1.1rem; }
       .link-title { font-size: 1rem; }
     }
+
+    /* ── SCROLL HINT (mobile) ── */
+    .scroll-hint {
+      display: none;
+      position: fixed;
+      right: 1rem;
+      bottom: 1.1rem;
+      z-index: 10;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201,168,76,.16);
+      border: 1px solid rgba(201,168,76,.35);
+      backdrop-filter: blur(6px);
+      animation: scrollHintBounce 1.6s ease-in-out infinite;
+      opacity: 1;
+      transition: opacity .3s ease;
+      pointer-events: none;
+    }
+    .scroll-hint.hide { opacity: 0; }
+    .scroll-hint svg { width: 18px; height: 18px; color: var(--gold-light); }
+    @keyframes scrollHintBounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(7px); }
+    }
+    @media (max-width: 640px) {
+      .scroll-hint { display: flex; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-hint { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -153,6 +186,10 @@
       <a href="../index.html">← Voltar ao site</a>
       <span class="copy">© <span id="footerYear"></span> Theodoro &amp; Porto Advocacia</span>
     </div>
+  </div>
+
+  <div class="scroll-hint" id="scrollHint" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
   </div>
 
   <script>
@@ -217,6 +254,19 @@
         }
       })
       .catch(() => {});
+
+    /* Seta de "tem mais conteúdo abaixo" — só mostra se a página realmente
+       rolar, some assim que o usuário começa a descer ou chega no final. */
+    function updateScrollHint() {
+      const hint = document.getElementById('scrollHint');
+      if (!hint) return;
+      const scrollable = document.documentElement.scrollHeight > window.innerHeight + 40;
+      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24;
+      hint.classList.toggle('hide', !scrollable || window.scrollY > 30 || nearBottom);
+    }
+    window.addEventListener('scroll', updateScrollHint, { passive: true });
+    window.addEventListener('resize', updateScrollHint);
+    setTimeout(updateScrollHint, 400);
   </script>
 
 </body>
