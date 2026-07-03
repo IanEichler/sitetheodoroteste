@@ -644,22 +644,10 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="edit-l-id" />
-      <div class="f">
-        <label for="edit-l-title">Título</label>
-        <input type="text" id="edit-l-title" />
-      </div>
-      <div class="f">
-        <label for="edit-l-subtitle">Texto de destaque <span style="font-weight:400;color:var(--text-light)">(opcional, aparece em negrito)</span></label>
-        <input type="text" id="edit-l-subtitle" />
-      </div>
-      <div class="f">
-        <label for="edit-l-url">Link (URL)</label>
-        <input type="text" id="edit-l-url" placeholder="https://... ou https://wa.me/55..." />
-      </div>
       <div class="photo-upload-area">
         <div class="photo-preview" id="edit-link-photo-preview" style="border-radius:12px">—</div>
         <div class="photo-upload-info">
-          <p>Arte do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+          <p>Arte do botão <span style="color:var(--red)">*</span></p>
           <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total.</small>
           <div style="display:flex;gap:.5rem;margin-top:.6rem">
             <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-link-photo-input').click()">📷 Escolher imagem</button>
@@ -667,6 +655,14 @@
           </div>
         </div>
         <input type="file" id="edit-link-photo-input" class="photo-file-input" accept="image/*" onchange="handleEditLinkPhoto(this)" />
+      </div>
+      <div class="f">
+        <label for="edit-l-url">Link (URL)</label>
+        <input type="text" id="edit-l-url" placeholder="https://... ou https://wa.me/55..." />
+      </div>
+      <div class="f">
+        <label for="edit-l-title">Nome interno <span style="font-weight:400;color:var(--text-light)">(opcional, só pra você identificar na lista)</span></label>
+        <input type="text" id="edit-l-title" />
       </div>
     </div>
     <div class="modal-footer">
@@ -1038,29 +1034,25 @@
 
         <div class="card">
           <div class="add-member-title">Adicionar Novo Link</div>
-          <div class="f">
-            <label for="new-l-title">Título <span style="color:var(--red)">*</span></label>
-            <input type="text" id="new-l-title" placeholder="Ex: Acesse nosso site" />
-          </div>
-          <div class="f">
-            <label for="new-l-subtitle">Texto de destaque <span style="font-weight:400;color:var(--text-light)">(opcional, aparece em negrito)</span></label>
-            <input type="text" id="new-l-subtitle" placeholder="Ex: nosso site" />
-          </div>
-          <div class="f">
-            <label for="new-l-url">Link (URL) <span style="color:var(--red)">*</span></label>
-            <input type="text" id="new-l-url" placeholder="https://... ou https://wa.me/55..." />
-          </div>
           <div class="photo-upload-area">
             <div class="photo-preview" id="new-link-photo-preview" style="border-radius:12px">—</div>
             <div class="photo-upload-info">
-              <p>Arte do botão <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
-              <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Todas devem ter a mesma proporção (largura × altura). Se não enviar, aparece um botão simples só com o título.</small>
+              <p>Arte do botão <span style="color:var(--red)">*</span></p>
+              <small>Envie a arte já pronta (com fundo, texto e ícone) — ela vira o botão inteiro, em largura total. Todas devem ter a mesma proporção (largura × altura).</small>
               <div style="display:flex;gap:.5rem;margin-top:.6rem">
                 <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-link-photo-input').click()">📷 Escolher imagem</button>
                 <button class="btn btn-danger-ghost btn-sm" type="button" id="new-link-photo-remove" onclick="removeNewLinkPhoto()" style="display:none">Remover</button>
               </div>
             </div>
             <input type="file" id="new-link-photo-input" class="photo-file-input" accept="image/*" onchange="handleNewLinkPhoto(this)" />
+          </div>
+          <div class="f">
+            <label for="new-l-url">Link (URL) <span style="color:var(--red)">*</span></label>
+            <input type="text" id="new-l-url" placeholder="https://... ou https://wa.me/55..." />
+          </div>
+          <div class="f">
+            <label for="new-l-title">Nome interno <span style="font-weight:400;color:var(--text-light)">(opcional, só pra você identificar na lista)</span></label>
+            <input type="text" id="new-l-title" placeholder="Ex: Instagram" />
           </div>
           <div class="form-actions">
             <button class="btn btn-green" id="addLinkBtn" onclick="addLink()">+ Adicionar Link</button>
@@ -1676,9 +1668,9 @@
           <button class="order-btn" onclick="moveLink('${l.id}',-1)" ${i===0?'disabled':''} aria-label="Mover para cima">▲</button>
           <button class="order-btn" onclick="moveLink('${l.id}',1)"  ${i===DATA.links.length-1?'disabled':''} aria-label="Mover para baixo">▼</button>
         </div>
-        <div class="member-avatar" style="border-radius:12px">${l.image ? `<img src="${l.image}" alt="${l.title}" />` : '🔗'}</div>
+        <div class="member-avatar" style="border-radius:12px">${l.image ? `<img src="${l.image}" alt="${l.title || 'Link'}" />` : '🔗'}</div>
         <div class="member-info">
-          <div class="member-name">${l.title}${l.subtitle ? ' — <strong>' + l.subtitle + '</strong>' : ''}</div>
+          <div class="member-name">${l.title || 'Link'}</div>
           <div class="member-role">${l.url}</div>
         </div>
         <div class="member-actions">
@@ -1697,28 +1689,27 @@
   }
 
   function addLink() {
-    const title    = document.getElementById('new-l-title').value.trim();
-    const subtitle = document.getElementById('new-l-subtitle').value.trim();
-    const url      = document.getElementById('new-l-url').value.trim();
-    if (!title || !url) { toast('Preencha o título e o link.', 'error'); return; }
-    DATA.links.push({ id: Date.now().toString(), title, subtitle, url, image: _newLinkPhotoData || null });
+    const title = document.getElementById('new-l-title').value.trim();
+    const url   = document.getElementById('new-l-url').value.trim();
+    if (!url)            { toast('Preencha o link.', 'error'); return; }
+    if (!_newLinkPhotoData) { toast('Envie a arte do botão.', 'error'); return; }
+    DATA.links.push({ id: Date.now().toString(), title, url, image: _newLinkPhotoData });
     renderLinksList(); persist(); showLastSaved(); clearAddLinkForm();
     toast('Novo link adicionado', 'success');
   }
 
   function clearAddLinkForm() {
-    ['new-l-title','new-l-subtitle','new-l-url'].forEach(id => document.getElementById(id).value = '');
+    ['new-l-title','new-l-url'].forEach(id => document.getElementById(id).value = '');
     removeNewLinkPhoto();
   }
 
   function openEditLink(id) {
     const l = DATA.links.find(l => l.id === id);
     if (!l) return;
-    document.getElementById('edit-l-id').value       = l.id;
-    document.getElementById('edit-l-title').value    = l.title;
-    document.getElementById('edit-l-subtitle').value = l.subtitle || '';
-    document.getElementById('edit-l-url').value      = l.url;
-    document.getElementById('editLinkTitle').textContent = 'Editar: ' + l.title;
+    document.getElementById('edit-l-id').value    = l.id;
+    document.getElementById('edit-l-title').value = l.title || '';
+    document.getElementById('edit-l-url').value   = l.url;
+    document.getElementById('editLinkTitle').textContent = 'Editar: ' + (l.title || 'Link');
     const prev = document.getElementById('edit-link-photo-preview');
     const remBtn = document.getElementById('edit-link-photo-remove');
     if (l.image) {
@@ -1738,12 +1729,13 @@
     const idx = DATA.links.findIndex(l => l.id === id);
     if (idx === -1) return;
     const existingImage = DATA.links[idx].image;
+    const image = _editLinkPhotoData !== undefined ? _editLinkPhotoData : existingImage;
+    if (!image) { toast('Envie a arte do botão.', 'error'); return; }
     DATA.links[idx] = {
       id,
-      title:    document.getElementById('edit-l-title').value.trim(),
-      subtitle: document.getElementById('edit-l-subtitle').value.trim(),
-      url:      document.getElementById('edit-l-url').value.trim(),
-      image:    _editLinkPhotoData !== undefined ? _editLinkPhotoData : existingImage,
+      title: document.getElementById('edit-l-title').value.trim(),
+      url:   document.getElementById('edit-l-url').value.trim(),
+      image,
     };
     _editLinkPhotoData = undefined;
     renderLinksList(); persist(); showLastSaved(); closeModal('editLinkModal');

@@ -91,7 +91,6 @@
 
     .link-text { color: #fff; line-height: 1.28; }
     .link-title { font-size: 1.15rem; font-weight: 700; font-family: 'Syne', sans-serif; }
-    .link-subtitle { font-size: 1.32rem; font-weight: 700; font-family: 'Syne', sans-serif; letter-spacing: -.01em; }
 
     .empty-msg { color: rgba(255,255,255,.55); font-size: .9rem; text-align: center; padding: 2rem 0; }
 
@@ -117,7 +116,6 @@
     @media (max-width: 380px) {
       .links-list { gap: .9rem; }
       .link-btn { min-height: 4.6rem; padding: .65rem 1.1rem; }
-      .link-subtitle { font-size: 1.12rem; }
       .link-title { font-size: 1rem; }
     }
   </style>
@@ -164,14 +162,11 @@
       wrap.innerHTML = links.map(l => {
         if (l.image) {
           return `<a class="link-banner" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
-            <img src="${l.image}" alt="${escapeHtml(l.title)}" />
+            <img src="${l.image}" alt="${escapeHtml(l.title || 'Link')}" />
           </a>`;
         }
         return `<a class="link-btn" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
-          <div class="link-text">
-            <div class="link-title">${escapeHtml(l.title)}</div>
-            ${l.subtitle ? `<div class="link-subtitle">${escapeHtml(l.subtitle)}</div>` : ''}
-          </div>
+          <div class="link-text"><div class="link-title">${escapeHtml(l.title || 'Link')}</div></div>
         </a>`;
       }).join('');
     }
