@@ -153,6 +153,15 @@
       return String(str || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     }
 
+    /* Corrige links salvos sem protocolo (ex: "wa.me/55...") que o navegador
+       trataria como caminho relativo desta página, não como link externo. */
+    function normalizeUrl(url) {
+      url = (url || '').trim();
+      if (!url) return url;
+      if (/^(https?:|mailto:|tel:)/i.test(url)) return url;
+      return 'https://' + url;
+    }
+
     function render(links) {
       const wrap = document.getElementById('linksList');
       if (!links || !links.length) {
@@ -160,12 +169,13 @@
         return;
       }
       wrap.innerHTML = links.map(l => {
+        const url = escapeHtml(normalizeUrl(l.url));
         if (l.image) {
-          return `<a class="link-banner" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+          return `<a class="link-banner" href="${url}" target="_blank" rel="noopener">
             <img src="${l.image}" alt="${escapeHtml(l.title || 'Link')}" />
           </a>`;
         }
-        return `<a class="link-btn" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+        return `<a class="link-btn" href="${url}" target="_blank" rel="noopener">
           <div class="link-text"><div class="link-title">${escapeHtml(l.title || 'Link')}</div></div>
         </a>`;
       }).join('');

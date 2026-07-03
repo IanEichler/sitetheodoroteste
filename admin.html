@@ -1704,9 +1704,18 @@
     renderLinksList(); persist(); showLastSaved();
   }
 
+  /* Garante URL absoluta — sem isso "wa.me/55..." vira link relativo
+     (ex: site.com/links/wa.me/55...) em vez de abrir o destino certo. */
+  function normalizeUrl(url) {
+    url = (url || '').trim();
+    if (!url) return url;
+    if (/^(https?:|mailto:|tel:)/i.test(url)) return url;
+    return 'https://' + url;
+  }
+
   function addLink() {
     const title = document.getElementById('new-l-title').value.trim();
-    const url   = document.getElementById('new-l-url').value.trim();
+    const url   = normalizeUrl(document.getElementById('new-l-url').value);
     if (!url)            { toast('Preencha o link.', 'error'); return; }
     if (!_newLinkPhotoData) { toast('Envie a arte do botão.', 'error'); return; }
     DATA.links.push({ id: Date.now().toString(), title, url, image: _newLinkPhotoData });
@@ -1750,7 +1759,7 @@
     DATA.links[idx] = {
       id,
       title: document.getElementById('edit-l-title').value.trim(),
-      url:   document.getElementById('edit-l-url').value.trim(),
+      url:   normalizeUrl(document.getElementById('edit-l-url').value),
       image,
     };
     _editLinkPhotoData = undefined;
