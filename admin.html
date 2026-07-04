@@ -1290,6 +1290,25 @@
         <div class="page-title">Blog</div>
         <div class="page-sub">Artigos publicados em <strong>theodoroeporto.adv.br/blog</strong>. Novos posts sempre nascem como rascunho — revise antes de publicar.</div>
 
+        <div class="card" style="background:rgba(37,99,235,.04);border-color:rgba(37,99,235,.15)">
+          <div class="card-title"><span class="card-title-bar" style="background:var(--blue)"></span><span class="card-title-text">Sugestão Automática de Artigo (IA)</span></div>
+          <p style="font-size:13px;color:var(--text-mid);margin-bottom:1rem">A cada <strong id="blogAutoDaysLabel">3</strong> dias, um robô gera um rascunho novo automaticamente (nunca publica sozinho — sempre aparece em "Rascunhos" pra você revisar antes).</p>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="blog-auto-days">Gerar um rascunho novo a cada quantos dias?</label>
+              <input type="number" id="blog-auto-days" min="1" max="30" value="3" />
+            </div>
+            <div class="f" style="display:flex;align-items:flex-end;padding-bottom:1rem">
+              <label class="f-checkbox">
+                <input type="checkbox" id="blog-auto-enabled" checked /> Ativar sugestão automática
+              </label>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-blue" onclick="saveBlogAutoConfig()">Salvar Configuração</button>
+          </div>
+        </div>
+
         <div class="tabs">
           <button class="tab-btn active" onclick="switchBlogTab(this,'published')">Publicados</button>
           <button class="tab-btn" onclick="switchBlogTab(this,'draft')">Rascunhos</button>
@@ -1464,7 +1483,9 @@
       { id: '3', question: 'Quanto tempo demora um processo?', answer: 'Cada caso tem um prazo diferente, que depende da complexidade, da vara/tribunal responsável e de eventuais recursos. Durante o acompanhamento, mantemos você informado sobre cada etapa.' },
       { id: '4', question: 'Vocês atendem clientes de outras cidades além de Rondonópolis?', answer: 'Sim. Além do escritório em Rondonópolis, temos atendimento em Primavera do Leste e realizamos consultas remotas por telefone ou videochamada para outras regiões.' },
       { id: '5', question: 'Como funcionam os honorários advocatícios?', answer: 'Os honorários variam conforme a área e a complexidade do caso — podem ser um valor fixo, parcelado ou um percentual sobre o resultado (em ações que envolvem valores a receber). Isso é sempre explicado com transparência antes de qualquer contratação.' },
-    ]
+    ],
+    blogAutoDays: 3,
+    blogAutoEnabled: true
   };
 
   function loadData() {
@@ -1480,6 +1501,8 @@
         faqs:        s.faqs       || DEFAULT_DATA.faqs,
         team:        s.team        || DEFAULT_DATA.team,
         links:       s.links       || DEFAULT_DATA.links,
+        blogAutoDays:    s.blogAutoDays    !== undefined ? s.blogAutoDays    : DEFAULT_DATA.blogAutoDays,
+        blogAutoEnabled: s.blogAutoEnabled !== undefined ? s.blogAutoEnabled : DEFAULT_DATA.blogAutoEnabled,
       };
     } catch(e) { return structuredClone ? structuredClone(DEFAULT_DATA) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
   }
@@ -2435,7 +2458,26 @@
   }
   document.getElementById('new-blog-slug')?.addEventListener('input', () => { _slugTouched = true; });
 
+  function populateBlogAutoConfig() {
+    const daysInput = document.getElementById('blog-auto-days');
+    const enabledInput = document.getElementById('blog-auto-enabled');
+    const label = document.getElementById('blogAutoDaysLabel');
+    if (daysInput) daysInput.value = DATA.blogAutoDays;
+    if (enabledInput) enabledInput.checked = DATA.blogAutoEnabled !== false;
+    if (label) label.textContent = DATA.blogAutoDays;
+  }
+
+  function saveBlogAutoConfig() {
+    const days = parseInt(document.getElementById('blog-auto-days').value) || 3;
+    DATA.blogAutoDays = days;
+    DATA.blogAutoEnabled = document.getElementById('blog-auto-enabled').checked;
+    document.getElementById('blogAutoDaysLabel').textContent = days;
+    persist(); showLastSaved();
+    toast('Configuração salva', 'success');
+  }
+
   async function loadBlogPosts() {
+    populateBlogAutoConfig();
     const statusEl = document.getElementById('blogStatus');
     if (statusEl) statusEl.textContent = 'Carregando…';
     try {
