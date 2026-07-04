@@ -42,4 +42,10 @@
     <changefreq>monthly</changefreq>
     <lastmod>2026-07-03</lastmod>
   </url>
+  <url>
+    <loc>https://theodoroeporto.adv.br/politica-de-privacidade.html</loc>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
+    <lastmod>2026-07-04</lastmod>
+  </url>
 </urlset>
