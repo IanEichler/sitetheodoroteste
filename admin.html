@@ -1115,6 +1115,7 @@
           <button class="stats-filter-btn" data-range="30" onclick="setStatsRange(30,this)">30 dias</button>
           <button class="stats-filter-btn" data-range="90" onclick="setStatsRange(90,this)">90 dias</button>
           <button class="stats-filter-btn" data-range="0" onclick="setStatsRange(0,this)">Tudo</button>
+          <button class="btn btn-outline btn-sm" id="statsRefreshBtn" onclick="loadStats()" title="Atualizar">🔄 Atualizar</button>
           <span class="stats-filter-status" id="statsStatus"></span>
         </div>
 
@@ -1937,7 +1938,9 @@
 
   async function loadStats() {
     const statusEl = document.getElementById('statsStatus');
+    const refreshBtn = document.getElementById('statsRefreshBtn');
     if (statusEl) statusEl.textContent = 'Carregando…';
+    if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = '🔄 Atualizando…'; }
     try {
       let query = sb.from('page_visits').select('created_at,page,device,country,region,city').order('created_at', { ascending: true });
       if (statsRangeDays > 0) {
@@ -1949,10 +1952,12 @@
       const { data: rows, error } = await query;
       if (error) throw error;
       renderStats(rows || []);
-      if (statusEl) statusEl.textContent = '';
+      if (statusEl) statusEl.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     } catch (e) {
       console.warn('Falha ao carregar estatísticas', e);
       if (statusEl) statusEl.textContent = 'Não foi possível carregar (a tabela page_visits existe?).';
+    } finally {
+      if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = '🔄 Atualizar'; }
     }
   }
 
