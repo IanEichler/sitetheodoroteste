@@ -48,4 +48,20 @@
     <changefreq>yearly</changefreq>
     <lastmod>2026-07-04</lastmod>
   </url>
+  <url>
+    <loc>https://theodoroeporto.adv.br/blog/</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-04</lastmod>
+  </url>
+  <url><loc>https://theodoroeporto.adv.br/blog/revisao-da-vida-toda-inss</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/auxilio-doenca-como-solicitar</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/rescisao-indireta-trabalhista</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/horas-extras-como-calcular</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/indenizacao-danos-morais</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/contratos-verbais-tem-validade</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/pensao-alimenticia-como-calcular</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/guarda-compartilhada-como-funciona</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/nome-negativado-indevidamente</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
+  <url><loc>https://theodoroeporto.adv.br/blog/produto-com-defeito-direitos</loc><priority>0.7</priority><changefreq>monthly</changefreq><lastmod>2026-07-04</lastmod></url>
 </urlset>

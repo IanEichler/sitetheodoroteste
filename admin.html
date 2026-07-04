@@ -734,6 +734,63 @@
   </div>
 </div>
 
+<!-- Edit Blog Post Modal -->
+<div class="modal-overlay" id="editBlogModal" role="dialog" aria-modal="true" aria-labelledby="editBlogTitle">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title" id="editBlogTitle">Editar Artigo</div>
+      <button class="modal-close" onclick="closeModal('editBlogModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-blog-id" />
+      <div class="form-grid-2">
+        <div class="f">
+          <label for="edit-blog-title">Título</label>
+          <input type="text" id="edit-blog-title" />
+        </div>
+        <div class="f">
+          <label for="edit-blog-area">Área</label>
+          <select id="edit-blog-area">
+            <option value="geral">Geral</option>
+            <option value="previdenciario">Previdenciário</option>
+            <option value="trabalhista">Trabalhista</option>
+            <option value="civil">Civil</option>
+            <option value="familia">Família</option>
+            <option value="consumidor">Consumidor</option>
+          </select>
+        </div>
+      </div>
+      <div class="f">
+        <label for="edit-blog-slug">URL (slug)</label>
+        <input type="text" id="edit-blog-slug" />
+      </div>
+      <div class="f">
+        <label for="edit-blog-excerpt">Resumo</label>
+        <textarea id="edit-blog-excerpt" rows="2"></textarea>
+      </div>
+      <div class="photo-upload-area">
+        <div class="photo-preview" id="edit-blog-cover-preview" style="border-radius:12px">—</div>
+        <div class="photo-upload-info">
+          <p>Imagem de capa <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+          <div style="display:flex;gap:.5rem;margin-top:.6rem">
+            <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('edit-blog-cover-input').click()">📷 Escolher imagem</button>
+            <button class="btn btn-danger-ghost btn-sm" type="button" id="edit-blog-cover-remove" onclick="removeEditBlogCover()" style="display:none">Remover</button>
+          </div>
+        </div>
+        <input type="file" id="edit-blog-cover-input" class="photo-file-input" accept="image/*" onchange="handleEditBlogCover(this)" />
+      </div>
+      <div class="f">
+        <label for="edit-blog-content">Conteúdo</label>
+        <textarea id="edit-blog-content" rows="14"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editBlogModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveBlogPost()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 <!-- Confirm Modal -->
 <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:400px">
@@ -838,6 +895,10 @@
         <button class="nav-item" data-page="faq" onclick="goTo('faq',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           FAQ
+        </button>
+        <button class="nav-item" data-page="blog" onclick="goTo('blog',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Blog
         </button>
       </div>
       <div class="sidebar-group">
@@ -1223,6 +1284,74 @@
         </div>
       </section>
 
+      <!-- ── BLOG ── -->
+      <section class="page" id="page-blog">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Blog</span></nav>
+        <div class="page-title">Blog</div>
+        <div class="page-sub">Artigos publicados em <strong>theodoroeporto.adv.br/blog</strong>. Novos posts sempre nascem como rascunho — revise antes de publicar.</div>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchBlogTab(this,'published')">Publicados</button>
+          <button class="tab-btn" onclick="switchBlogTab(this,'draft')">Rascunhos</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text" id="blogListTitle">Artigos Publicados</span></div>
+          <div id="blogStatus" style="font-size:13px;color:var(--text-light);margin-bottom:.75rem"></div>
+          <div class="member-cards" id="blogList"></div>
+        </div>
+
+        <div class="card">
+          <div class="add-member-title">Novo Artigo</div>
+          <div class="form-grid-2">
+            <div class="f">
+              <label for="new-blog-title">Título <span style="color:var(--red)">*</span></label>
+              <input type="text" id="new-blog-title" placeholder="Ex: Como funciona a revisão da vida toda do INSS" oninput="autoSlug()" />
+            </div>
+            <div class="f">
+              <label for="new-blog-area">Área</label>
+              <select id="new-blog-area">
+                <option value="geral">Geral</option>
+                <option value="previdenciario">Previdenciário</option>
+                <option value="trabalhista">Trabalhista</option>
+                <option value="civil">Civil</option>
+                <option value="familia">Família</option>
+                <option value="consumidor">Consumidor</option>
+              </select>
+            </div>
+          </div>
+          <div class="f">
+            <label for="new-blog-slug">URL (slug) <span style="font-weight:400;color:var(--text-light)">gerado automaticamente, pode editar</span></label>
+            <input type="text" id="new-blog-slug" placeholder="como-funciona-revisao-vida-toda-inss" />
+          </div>
+          <div class="f">
+            <label for="new-blog-excerpt">Resumo <span style="font-weight:400;color:var(--text-light)">(aparece na listagem e no compartilhamento)</span></label>
+            <textarea id="new-blog-excerpt" rows="2" placeholder="Resumo curto do artigo..."></textarea>
+          </div>
+          <div class="photo-upload-area">
+            <div class="photo-preview" id="new-blog-cover-preview" style="border-radius:12px">—</div>
+            <div class="photo-upload-info">
+              <p>Imagem de capa <span style="font-weight:400;color:var(--text-light)">(opcional)</span></p>
+              <small>Aparece na listagem do blog e no topo do artigo.</small>
+              <div style="display:flex;gap:.5rem;margin-top:.6rem">
+                <button class="btn btn-outline btn-sm" type="button" onclick="document.getElementById('new-blog-cover-input').click()">📷 Escolher imagem</button>
+                <button class="btn btn-danger-ghost btn-sm" type="button" id="new-blog-cover-remove" onclick="removeNewBlogCover()" style="display:none">Remover</button>
+              </div>
+            </div>
+            <input type="file" id="new-blog-cover-input" class="photo-file-input" accept="image/*" onchange="handleNewBlogCover(this)" />
+          </div>
+          <div class="f">
+            <label for="new-blog-content">Conteúdo <span style="color:var(--red)">*</span></label>
+            <textarea id="new-blog-content" rows="12" placeholder="Texto do artigo. Pode usar linhas em branco para separar parágrafos."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline" onclick="addBlogPost('draft')">💾 Salvar como Rascunho</button>
+            <button class="btn btn-green" onclick="addBlogPost('published')">✓ Publicar Agora</button>
+            <button class="btn btn-ghost" onclick="clearAddBlogForm()">Limpar</button>
+          </div>
+        </div>
+      </section>
+
       <!-- ── CONFIGURAÇÕES ── -->
       <section class="page" id="page-config">
         <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Configurações</span></nav>
@@ -1509,6 +1638,7 @@
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (id === 'stats' && !statsLoaded) { statsLoaded = true; loadStats(); }
+    if (id === 'blog'  && !blogLoaded)  { blogLoaded  = true; loadBlogPosts(); }
   }
 
   /* ══════════════════════════════════════
@@ -2279,6 +2409,236 @@
         renderFaqAdminList(); persist(); showLastSaved();
         toast('Pergunta removida', 'success');
       });
+  }
+
+  /* ══════════════════════════════════════
+     BLOG
+  ══════════════════════════════════════ */
+  let BLOG_POSTS = [];
+  let blogTab = 'published';
+  let blogLoaded = false;
+  let _slugTouched = false;
+
+  function slugify(text) {
+    return (text || '')
+      .toString().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  function autoSlug() {
+    if (_slugTouched) return;
+    document.getElementById('new-blog-slug').value = slugify(document.getElementById('new-blog-title').value);
+  }
+  document.getElementById('new-blog-slug')?.addEventListener('input', () => { _slugTouched = true; });
+
+  async function loadBlogPosts() {
+    const statusEl = document.getElementById('blogStatus');
+    if (statusEl) statusEl.textContent = 'Carregando…';
+    try {
+      const { data, error } = await sb.from('blog_posts').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      BLOG_POSTS = data || [];
+      if (statusEl) statusEl.textContent = '';
+    } catch (e) {
+      console.warn('Falha ao carregar blog', e);
+      if (statusEl) statusEl.textContent = 'Não foi possível carregar (a tabela blog_posts existe?).';
+      BLOG_POSTS = [];
+    }
+    renderBlogList();
+  }
+
+  function switchBlogTab(btn, tab) {
+    blogTab = tab;
+    btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('blogListTitle').textContent = tab === 'published' ? 'Artigos Publicados' : 'Rascunhos';
+    renderBlogList();
+  }
+
+  const BLOG_AREA_LABELS = { geral: 'Geral', previdenciario: 'Previdenciário', trabalhista: 'Trabalhista', civil: 'Civil', familia: 'Família', consumidor: 'Consumidor' };
+
+  function renderBlogList() {
+    const list = document.getElementById('blogList');
+    if (!list) return;
+    const posts = BLOG_POSTS.filter(p => p.status === blogTab);
+    if (!posts.length) {
+      list.innerHTML = `<p style="font-size:14px;color:var(--text-light);text-align:center;padding:1.5rem 0">Nenhum artigo ${blogTab === 'published' ? 'publicado' : 'em rascunho'}.</p>`;
+      return;
+    }
+    list.innerHTML = posts.map(p => `
+      <div class="member-card" id="bp-${p.id}">
+        <div class="member-avatar" style="border-radius:12px">${p.cover_image ? `<img src="${p.cover_image}" alt="${p.title}" />` : '📰'}</div>
+        <div class="member-info">
+          <div class="member-name">${p.title}</div>
+          <div class="member-role">${BLOG_AREA_LABELS[p.area] || 'Geral'} · /blog/${p.slug}</div>
+        </div>
+        <div class="member-actions">
+          ${p.status === 'published'
+            ? `<a class="btn btn-outline btn-sm" href="/blog/${p.slug}" target="_blank" rel="noopener">👁️ Ver</a><button class="btn btn-danger-ghost btn-sm" onclick="unpublishBlogPost('${p.id}')">Voltar a rascunho</button>`
+            : `<button class="btn btn-green btn-sm" onclick="publishBlogPost('${p.id}')">✓ Publicar</button>`}
+          <button class="btn btn-outline btn-sm" onclick="openEditBlog('${p.id}')">✏️ Editar</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="confirmRemoveBlogPost('${p.id}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function addBlogPost(status) {
+    const title = document.getElementById('new-blog-title').value.trim();
+    const content = document.getElementById('new-blog-content').value.trim();
+    const slug = document.getElementById('new-blog-slug').value.trim() || slugify(title);
+    if (!title || !content) { toast('Preencha o título e o conteúdo.', 'error'); return; }
+    const area = document.getElementById('new-blog-area').value;
+    const excerpt = document.getElementById('new-blog-excerpt').value.trim();
+    try {
+      const { error } = await sb.from('blog_posts').insert({
+        title, slug, content, area, excerpt,
+        cover_image: _newBlogCoverData || null,
+        status,
+        published_at: status === 'published' ? new Date().toISOString() : null,
+      });
+      if (error) throw error;
+      clearAddBlogForm();
+      await loadBlogPosts();
+      toast(status === 'published' ? 'Artigo publicado' : 'Rascunho salvo', 'success');
+    } catch (e) {
+      console.warn(e);
+      toast('Não foi possível salvar (slug duplicado?).', 'error');
+    }
+  }
+
+  function clearAddBlogForm() {
+    ['new-blog-title','new-blog-slug','new-blog-excerpt','new-blog-content'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('new-blog-area').value = 'geral';
+    _slugTouched = false;
+    removeNewBlogCover();
+  }
+
+  function openEditBlog(id) {
+    const p = BLOG_POSTS.find(p => String(p.id) === String(id));
+    if (!p) return;
+    document.getElementById('edit-blog-id').value = p.id;
+    document.getElementById('edit-blog-title').value = p.title;
+    document.getElementById('edit-blog-area').value = p.area || 'geral';
+    document.getElementById('edit-blog-slug').value = p.slug;
+    document.getElementById('edit-blog-excerpt').value = p.excerpt || '';
+    document.getElementById('edit-blog-content').value = p.content;
+    const prev = document.getElementById('edit-blog-cover-preview');
+    const remBtn = document.getElementById('edit-blog-cover-remove');
+    if (p.cover_image) {
+      prev.innerHTML = `<img src="${p.cover_image}" alt="${p.title}" />`;
+      remBtn.style.display = 'inline-flex';
+    } else {
+      prev.textContent = '📰';
+      remBtn.style.display = 'none';
+    }
+    document.getElementById('edit-blog-cover-input').value = '';
+    _editBlogCoverData = undefined;
+    openModal('editBlogModal');
+  }
+
+  async function saveBlogPost() {
+    const id = document.getElementById('edit-blog-id').value;
+    const existing = BLOG_POSTS.find(p => String(p.id) === String(id));
+    if (!existing) return;
+    const title = document.getElementById('edit-blog-title').value.trim();
+    const content = document.getElementById('edit-blog-content').value.trim();
+    if (!title || !content) { toast('Preencha o título e o conteúdo.', 'error'); return; }
+    const payload = {
+      title,
+      area: document.getElementById('edit-blog-area').value,
+      slug: document.getElementById('edit-blog-slug').value.trim() || slugify(title),
+      excerpt: document.getElementById('edit-blog-excerpt').value.trim(),
+      content,
+      cover_image: _editBlogCoverData !== undefined ? _editBlogCoverData : existing.cover_image,
+    };
+    try {
+      const { error } = await sb.from('blog_posts').update(payload).eq('id', id);
+      if (error) throw error;
+      _editBlogCoverData = undefined;
+      await loadBlogPosts();
+      closeModal('editBlogModal');
+      toast('Artigo atualizado', 'success');
+    } catch (e) {
+      console.warn(e);
+      toast('Não foi possível salvar (slug duplicado?).', 'error');
+    }
+  }
+
+  async function publishBlogPost(id) {
+    try {
+      const { error } = await sb.from('blog_posts').update({ status: 'published', published_at: new Date().toISOString() }).eq('id', id);
+      if (error) throw error;
+      await loadBlogPosts();
+      toast('Artigo publicado', 'success');
+    } catch (e) { console.warn(e); toast('Não foi possível publicar.', 'error'); }
+  }
+
+  async function unpublishBlogPost(id) {
+    try {
+      const { error } = await sb.from('blog_posts').update({ status: 'draft' }).eq('id', id);
+      if (error) throw error;
+      await loadBlogPosts();
+      toast('Artigo voltou a ser rascunho', 'info');
+    } catch (e) { console.warn(e); toast('Não foi possível atualizar.', 'error'); }
+  }
+
+  function confirmRemoveBlogPost(id) {
+    const p = BLOG_POSTS.find(p => String(p.id) === String(id));
+    openConfirm('🗑️', 'Remover artigo?',
+      `"${p ? p.title : 'Este artigo'}" será removido permanentemente. Esta ação não pode ser desfeita.`,
+      'Remover',
+      async () => {
+        try {
+          const { error } = await sb.from('blog_posts').delete().eq('id', id);
+          if (error) throw error;
+          await loadBlogPosts();
+          toast('Artigo removido', 'success');
+        } catch (e) { console.warn(e); toast('Não foi possível remover.', 'error'); }
+      });
+  }
+
+  let _newBlogCoverData = null;
+  let _editBlogCoverData = undefined;
+
+  async function handleNewBlogCover(input) {
+    const file = input.files[0];
+    if (!file) return;
+    try {
+      _newBlogCoverData = await resizeImageFile(file, 1000, 'image/jpeg', 0.85);
+      const prev = document.getElementById('new-blog-cover-preview');
+      prev.innerHTML = `<img src="${_newBlogCoverData}" alt="Capa" />`;
+      document.getElementById('new-blog-cover-remove').style.display = 'inline-flex';
+    } catch (e) { toast('Não foi possível processar essa imagem.', 'error'); }
+  }
+  function removeNewBlogCover() {
+    _newBlogCoverData = null;
+    const prev = document.getElementById('new-blog-cover-preview');
+    if (prev) prev.textContent = '—';
+    const remBtn = document.getElementById('new-blog-cover-remove');
+    if (remBtn) remBtn.style.display = 'none';
+    const input = document.getElementById('new-blog-cover-input');
+    if (input) input.value = '';
+  }
+  async function handleEditBlogCover(input) {
+    const file = input.files[0];
+    if (!file) return;
+    try {
+      _editBlogCoverData = await resizeImageFile(file, 1000, 'image/jpeg', 0.85);
+      const prev = document.getElementById('edit-blog-cover-preview');
+      prev.innerHTML = `<img src="${_editBlogCoverData}" alt="Capa" />`;
+      document.getElementById('edit-blog-cover-remove').style.display = 'inline-flex';
+    } catch (e) { toast('Não foi possível processar essa imagem.', 'error'); }
+  }
+  function removeEditBlogCover() {
+    _editBlogCoverData = null;
+    const prev = document.getElementById('edit-blog-cover-preview');
+    prev.textContent = '📰';
+    document.getElementById('edit-blog-cover-remove').style.display = 'none';
+    document.getElementById('edit-blog-cover-input').value = '';
   }
 
   /* ══════════════════════════════════════

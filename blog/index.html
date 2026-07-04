@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="../logo-symbol-gold.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Jurídico | Theodoro &amp; Porto Advocacia</title>
+  <meta name="description" content="Artigos sobre Direito Previdenciário, Trabalhista, Civil, Família e do Consumidor, escritos pela equipe da Theodoro & Porto Advocacia em Rondonópolis MT." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://theodoroeporto.adv.br/blog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Blog Jurídico | Theodoro & Porto Advocacia" />
+  <meta property="og:description" content="Artigos sobre Direito Previdenciário, Trabalhista, Civil, Família e do Consumidor." />
+  <meta property="og:image" content="https://theodoroeporto.adv.br/group.png" />
+  <meta property="og:url" content="https://theodoroeporto.adv.br/blog/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../area-styles.css" />
+  <style>
+    .blog-hero { padding: 150px 5vw 60px; text-align: center; }
+    .blog-hero-eyebrow { font-size: .66rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: .75rem; }
+    .blog-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; color: var(--forest); margin-bottom: .75rem; }
+    .blog-hero p { color: var(--text-mid); max-width: 560px; margin: 0 auto; }
+
+    .blog-filters { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; padding: 0 5vw 3rem; }
+    .blog-filter-btn {
+      font-size: .78rem; font-weight: 600; color: var(--text-mid);
+      background: #fff; border: 1px solid var(--cream-3); border-radius: 20px;
+      padding: .45rem 1.1rem; cursor: pointer; transition: all .15s;
+    }
+    .blog-filter-btn:hover { background: var(--cream-2); }
+    .blog-filter-btn.active { background: var(--forest); border-color: var(--forest); color: #fff; }
+
+    .blog-grid {
+      max-width: 1100px; margin: 0 auto; padding: 0 5vw 100px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.75rem;
+    }
+    .blog-card {
+      display: flex; flex-direction: column; background: #fff; border-radius: 12px;
+      overflow: hidden; text-decoration: none; color: inherit;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08); transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .blog-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,.12); }
+    .blog-card-cover { width: 100%; height: 170px; background: var(--forest-deep); object-fit: cover; display: block; }
+    .blog-card-cover.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .blog-card-body { padding: 1.25rem 1.35rem 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .blog-card-area {
+      font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .5rem;
+    }
+    .blog-card-title { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--forest); margin-bottom: .6rem; line-height: 1.3; }
+    .blog-card-excerpt { font-size: .88rem; color: var(--text-mid); line-height: 1.55; flex: 1; }
+    .blog-card-date { font-size: .74rem; color: var(--text-light); margin-top: 1rem; }
+
+    .blog-empty { text-align: center; padding: 3rem 0; color: var(--text-light); grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="nav-back" onclick="history.length>1&&history.back();return false;">&#8592; <span>Voltar</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html#areas">Áreas</a></li>
+      <li><a href="../index.html#sobre">Sobre</a></li>
+      <li><a href="../index.html#faq">FAQ</a></li>
+      <li><a href="../index.html#contato">Contato</a></li>
+    </ul>
+    <a href="https://wa.me/5566999843063" class="nav-cta" target="_blank" rel="noopener">Fale sobre seu caso</a>
+  </nav>
+
+  <section class="blog-hero">
+    <div class="blog-hero-eyebrow">Theodoro &amp; Porto Advocacia</div>
+    <h1>Blog Jurídico</h1>
+    <p>Artigos sobre Direito Previdenciário, Trabalhista, Civil, Família e do Consumidor, escritos para ajudar você a entender seus direitos.</p>
+  </section>
+
+  <div class="blog-filters" id="blogFilters">
+    <button class="blog-filter-btn active" data-area="all">Todos</button>
+    <button class="blog-filter-btn" data-area="previdenciario">Previdenciário</button>
+    <button class="blog-filter-btn" data-area="trabalhista">Trabalhista</button>
+    <button class="blog-filter-btn" data-area="civil">Civil</button>
+    <button class="blog-filter-btn" data-area="familia">Família</button>
+    <button class="blog-filter-btn" data-area="consumidor">Consumidor</button>
+  </div>
+
+  <div class="blog-grid" id="blogGrid">
+    <p class="blog-empty">Carregando artigos...</p>
+  </div>
+
+  <footer>
+    <span>© <span id="footerYear"></span> Theodoro e Porto Advocacia · CNPJ 31.598.704/0001-31 · Desenvolvido por Ian Eichler</span>
+    <a href="../index.html">Voltar ao site</a>
+  </footer>
+
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    const AREA_LABELS = { geral: 'Geral', previdenciario: 'Previdenciário', trabalhista: 'Trabalhista', civil: 'Civil', familia: 'Família', consumidor: 'Consumidor' };
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+
+    let POSTS = [];
+    let currentFilter = 'all';
+
+    function render() {
+      const grid = document.getElementById('blogGrid');
+      const filtered = currentFilter === 'all' ? POSTS : POSTS.filter(p => p.area === currentFilter);
+      if (!filtered.length) {
+        grid.innerHTML = '<p class="blog-empty">Nenhum artigo nessa área ainda.</p>';
+        return;
+      }
+      grid.innerHTML = filtered.map(p => {
+        const date = p.published_at ? new Date(p.published_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
+        const cover = p.cover_image
+          ? `<img class="blog-card-cover" src="${p.cover_image}" alt="${escapeHtml(p.title)}" />`
+          : `<div class="blog-card-cover placeholder">📰</div>`;
+        return `
+        <a class="blog-card" href="${encodeURIComponent(p.slug)}">
+          ${cover}
+          <div class="blog-card-body">
+            <div class="blog-card-area">${AREA_LABELS[p.area] || 'Geral'}</div>
+            <div class="blog-card-title">${escapeHtml(p.title)}</div>
+            <p class="blog-card-excerpt">${escapeHtml(p.excerpt || '')}</p>
+            <div class="blog-card-date">${date}</div>
+          </div>
+        </a>`;
+      }).join('');
+    }
+
+    document.getElementById('blogFilters').addEventListener('click', (e) => {
+      const btn = e.target.closest('.blog-filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.area;
+      render();
+    });
+
+    const _SB_URL = 'https://wmzfehnczvdraeninzcf.supabase.co/rest/v1/blog_posts?select=title,slug,excerpt,area,cover_image,published_at&status=eq.published&order=published_at.desc';
+    const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
+
+    fetch(_SB_URL, { headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY } })
+      .then(r => r.json())
+      .then(rows => { POSTS = Array.isArray(rows) ? rows : []; render(); })
+      .catch(() => { document.getElementById('blogGrid').innerHTML = '<p class="blog-empty">Não foi possível carregar os artigos agora.</p>'; });
+  </script>
+
+</body>
+</html>

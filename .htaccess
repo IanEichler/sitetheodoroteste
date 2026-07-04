@@ -6,5 +6,10 @@ RewriteRule ^(.*)$ https://theodoroeporto.adv.br/$1 [L,R=301]
 # /admin (sem .html) serve o painel administrativo
 RewriteRule ^admin/?$ admin.html [L]
 
+# /blog/<slug> serve o template de artigo (URL limpa, sem ?slug=)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^blog/([^/]+)/?$ blog/post.html?slug=$1 [L,QSA]
+
 # Página 404 personalizada
 ErrorDocument 404 /404.html
