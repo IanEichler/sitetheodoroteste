@@ -2468,7 +2468,8 @@
   }
 
   function saveBlogAutoConfig() {
-    const days = parseInt(document.getElementById('blog-auto-days').value) || 3;
+    const raw = parseInt(document.getElementById('blog-auto-days').value);
+    const days = Number.isNaN(raw) ? 3 : Math.max(0, raw);
     DATA.blogAutoDays = days;
     DATA.blogAutoEnabled = document.getElementById('blog-auto-enabled').checked;
     document.getElementById('blogAutoDaysLabel').textContent = days;

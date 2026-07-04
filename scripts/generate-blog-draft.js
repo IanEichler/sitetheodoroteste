@@ -44,7 +44,7 @@ async function getBlogConfig() {
   const data = rows[0]?.data || {};
   return {
     enabled: data.blogAutoEnabled !== false,
-    days: data.blogAutoDays || 3,
+    days: data.blogAutoDays !== undefined && data.blogAutoDays !== null ? data.blogAutoDays : 3,
   };
 }
 
