@@ -1337,6 +1337,18 @@
   }
   function getPwd()  { return localStorage.getItem(PWD_KEY) || DEFAULT_PWD; }
 
+  /* Sessão: fica logado por 7 dias, sem pedir senha de novo a cada F5 */
+  const SESSION_KEY = 'tp_admin_session';
+  const SESSION_MS  = 7 * 24 * 60 * 60 * 1000;
+  function startSession() { localStorage.setItem(SESSION_KEY, JSON.stringify({ expires: Date.now() + SESSION_MS })); }
+  function hasValidSession() {
+    try {
+      const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      return !!s && s.expires > Date.now();
+    } catch (e) { return false; }
+  }
+  function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
   let DATA  = loadData();
   let dirty = false;
 
@@ -1367,6 +1379,7 @@
       btn.disabled = true;
       loadFromSupabase().then(() => {
         DATA = loadData();
+        startSession();
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         btn.textContent = 'Entrar';
@@ -1380,6 +1393,16 @@
     }
   }
 
+  // Sessão ainda válida (F5 recente) — pula a tela de login direto
+  if (hasValidSession()) {
+    loadFromSupabase().then(() => {
+      DATA = loadData();
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      init();
+    });
+  }
+
   function logout() {
     if (dirty) {
       openConfirm('⚠️','Sair sem salvar?','Há alterações não salvas. Se sair agora elas serão perdidas.', 'Sair mesmo assim', doLogout);
@@ -1389,6 +1412,7 @@
   }
 
   function doLogout() {
+    clearSession();
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
     document.getElementById('loginPwd').value = '';
