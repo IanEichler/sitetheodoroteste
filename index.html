@@ -734,6 +734,25 @@
     .depo-gstars { color: #FBBC05; font-size: .85rem; letter-spacing: .04em; }
     .depo-gcount { font-size: .72rem; color: rgba(250,250,248,.45); letter-spacing: .04em; }
 
+    /* ── FAQ ── */
+    #faq { padding: 100px 5vw 60px; background: var(--cream); }
+    .faq-inner { max-width: 800px; margin: 0 auto; }
+    .faq-header { margin-bottom: 2.5rem; }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid rgba(19,63,59,.12); }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      background: none; border: none; cursor: pointer; text-align: left;
+      padding: 1.35rem 0; font-family: 'Syne', sans-serif; font-size: 1.05rem; color: var(--forest);
+    }
+    .faq-q:hover { color: var(--gold-dark, var(--gold)); }
+    .faq-icon { flex-shrink: 0; width: 22px; height: 22px; color: var(--gold); transition: transform .25s ease; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+    .faq-item.open .faq-a-wrap { grid-template-rows: 1fr; }
+    .faq-a-inner { overflow: hidden; }
+    .faq-a { padding: 0 0 1.5rem; color: var(--text-mid, #4B5563); font-size: .95rem; line-height: 1.7; max-width: 640px; }
+
     /* ── CONTATO: info only ── */
     #contato { padding: 100px 5vw; background: var(--cream); }
     .contato-inner {
@@ -1345,6 +1364,18 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="faq-inner">
+      <div class="faq-header">
+        <div class="s-label gs0"><span class="s-lline"></span>Perguntas Frequentes</div>
+        <h2 class="s-title gs0">Tire suas <em>dúvidas</em></h2>
+      </div>
+      <div class="faq-list" id="faqList"><!-- renderizado por JS --></div>
+    </div>
+  </section>
+  <script type="application/ld+json" id="faqSchema">{}</script>
+
   <!-- CONTATO: info only -->
   <section id="contato">
     <div class="contato-inner">
@@ -1436,6 +1467,13 @@
         { id: '2', initials: 'MP', name: 'Dr. Marcos Porto',   role: 'Sócio-Fundador · Trabalhista &amp; Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
         { id: '3', initials: 'LC', name: 'Dr. Lucas Carvalho', role: 'Associado Sênior · Trabalhista',                     bio: 'Pós-graduado em Direito do Trabalho pela PUC-SP. Expert em compliance e reclamações trabalhistas.' },
         { id: '4', initials: 'FR', name: 'Dra. Fernanda Rocha',role: 'Associada · Civil &amp; Sucessões',                 bio: 'Especialista em Direito Civil e Sucessório. Ampla experiência em inventários e partilha de bens.' },
+      ],
+      faqs: [
+        { id: '1', question: 'Como funciona a consulta inicial?', answer: 'A primeira consulta é gratuita. Você conversa com um de nossos advogados, expõe seu caso e recebe uma avaliação inicial sobre as possibilidades jurídicas, sem compromisso.' },
+        { id: '2', question: 'Quais documentos preciso levar na primeira reunião?', answer: 'Depende do caso, mas em geral pedimos documento de identidade, comprovante de residência e qualquer documento relacionado ao problema (contratos, notificações, laudos, etc.). Nossa equipe orienta você antes da consulta.' },
+        { id: '3', question: 'Quanto tempo demora um processo?', answer: 'Cada caso tem um prazo diferente, que depende da complexidade, da vara/tribunal responsável e de eventuais recursos. Durante o acompanhamento, mantemos você informado sobre cada etapa.' },
+        { id: '4', question: 'Vocês atendem clientes de outras cidades além de Rondonópolis?', answer: 'Sim. Além do escritório em Rondonópolis, temos atendimento em Primavera do Leste e realizamos consultas remotas por telefone ou videochamada para outras regiões.' },
+        { id: '5', question: 'Como funcionam os honorários advocatícios?', answer: 'Os honorários variam conforme a área e a complexidade do caso — podem ser um valor fixo, parcelado ou um percentual sobre o resultado (em ações que envolvem valores a receber). Isso é sempre explicado com transparência antes de qualquer contratação.' },
       ]
     };
 
@@ -1450,6 +1488,7 @@
           teamVisible: saved.teamVisible !== undefined ? saved.teamVisible : DEFAULT_DATA.teamVisible,
           addresses:   saved.addresses  || DEFAULT_DATA.addresses,
           team:        saved.team       || DEFAULT_DATA.team,
+          faqs:        saved.faqs       || DEFAULT_DATA.faqs,
         };
       } catch(e) { return DEFAULT_DATA; }
     }
@@ -1538,6 +1577,50 @@
 
       // Addresses
       renderAddresses(DATA.addresses);
+
+      // FAQ
+      renderFAQ(DATA.faqs);
+    }
+
+    function renderFAQ(faqs) {
+      const list = document.getElementById('faqList');
+      const section = document.getElementById('faq');
+      const schemaEl = document.getElementById('faqSchema');
+      if (!list) return;
+      if (!faqs || !faqs.length) {
+        if (section) section.style.display = 'none';
+        return;
+      }
+      if (section) section.style.display = '';
+      list.innerHTML = faqs.map((f, i) => `
+        <div class="faq-item" id="faq-${f.id}">
+          <button class="faq-q" onclick="toggleFaq('${f.id}')" aria-expanded="false">
+            <span>${f.question}</span>
+            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a">${f.answer}</p></div></div>
+        </div>`).join('');
+
+      if (schemaEl) {
+        const schema = {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(f => ({
+            '@type': 'Question',
+            name: f.question,
+            acceptedAnswer: { '@type': 'Answer', text: f.answer },
+          })),
+        };
+        schemaEl.textContent = JSON.stringify(schema);
+      }
+    }
+
+    function toggleFaq(id) {
+      const item = document.getElementById('faq-' + id);
+      if (!item) return;
+      const btn = item.querySelector('.faq-q');
+      const isOpen = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     }
 
     function renderAddresses(addresses) {

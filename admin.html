@@ -709,6 +709,31 @@
   </div>
 </div>
 
+<!-- Edit FAQ Modal -->
+<div class="modal-overlay" id="editFaqModal" role="dialog" aria-modal="true" aria-labelledby="editFaqTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="editFaqTitle">Editar Pergunta</div>
+      <button class="modal-close" onclick="closeModal('editFaqModal')" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-faq-id" />
+      <div class="f">
+        <label for="edit-faq-q">Pergunta</label>
+        <input type="text" id="edit-faq-q" />
+      </div>
+      <div class="f">
+        <label for="edit-faq-a">Resposta</label>
+        <textarea id="edit-faq-a" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editFaqModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveFaq()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 <!-- Confirm Modal -->
 <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:400px">
@@ -739,6 +764,7 @@
         <li>Resetar todas as estatísticas para o padrão</li>
         <li>Apagar todos os endereços cadastrados</li>
         <li>Apagar todos os links da página /links</li>
+        <li>Restaurar as perguntas frequentes originais</li>
         <li>Restaurar informações de contato originais</li>
       </ul>
       <p class="confirm-warn" style="display:block;margin-bottom:1.25rem">Esta ação não pode ser desfeita.</p>
@@ -808,6 +834,10 @@
         <button class="nav-item" data-page="stats" onclick="goTo('stats',this)">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
           Estatísticas
+        </button>
+        <button class="nav-item" data-page="faq" onclick="goTo('faq',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          FAQ
         </button>
       </div>
       <div class="sidebar-group">
@@ -1165,6 +1195,34 @@
         </div>
       </section>
 
+      <!-- ── FAQ ── -->
+      <section class="page" id="page-faq">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">FAQ</span></nav>
+        <div class="page-title">Perguntas Frequentes</div>
+        <div class="page-sub">Aparecem no site entre os depoimentos e o contato. Use ▲▼ para reordenar.</div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Perguntas Atuais</span></div>
+          <div class="member-cards" id="faqAdminList"></div>
+        </div>
+
+        <div class="card">
+          <div class="add-member-title">Adicionar Nova Pergunta</div>
+          <div class="f">
+            <label for="new-faq-q">Pergunta <span style="color:var(--red)">*</span></label>
+            <input type="text" id="new-faq-q" placeholder="Ex: Quanto tempo demora um processo?" />
+          </div>
+          <div class="f">
+            <label for="new-faq-a">Resposta <span style="color:var(--red)">*</span></label>
+            <textarea id="new-faq-a" rows="3" placeholder="Resposta completa..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-green" onclick="addFaq()">+ Adicionar Pergunta</button>
+            <button class="btn btn-outline" onclick="clearAddFaqForm()">Limpar</button>
+          </div>
+        </div>
+      </section>
+
       <!-- ── CONFIGURAÇÕES ── -->
       <section class="page" id="page-config">
         <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Configurações</span></nav>
@@ -1270,6 +1328,13 @@
       { id: '2', initials: 'AP', name: 'Dra. Aline Porto',    role: 'Sócia-Fundadora · Trabalhista & Previdenciário', bio: 'Especialista em Direito do Trabalho e Previdenciário pela FGV. Ampla experiência em processos junto ao INSS.' },
       { id: '3', initials: 'LC', name: 'Dr. Lucas Carvalho',  role: 'Associado Sênior · Trabalhista',                 bio: 'Pós-graduado em Direito do Trabalho pela PUC-SP. Expert em compliance e reclamações trabalhistas.' },
       { id: '4', initials: 'FR', name: 'Dra. Fernanda Rocha', role: 'Associada · Civil & Sucessões',                  bio: 'Especialista em Direito Civil e Sucessório. Ampla experiência em inventários e partilha de bens.' },
+    ],
+    faqs: [
+      { id: '1', question: 'Como funciona a consulta inicial?', answer: 'A primeira consulta é gratuita. Você conversa com um de nossos advogados, expõe seu caso e recebe uma avaliação inicial sobre as possibilidades jurídicas, sem compromisso.' },
+      { id: '2', question: 'Quais documentos preciso levar na primeira reunião?', answer: 'Depende do caso, mas em geral pedimos documento de identidade, comprovante de residência e qualquer documento relacionado ao problema (contratos, notificações, laudos, etc.). Nossa equipe orienta você antes da consulta.' },
+      { id: '3', question: 'Quanto tempo demora um processo?', answer: 'Cada caso tem um prazo diferente, que depende da complexidade, da vara/tribunal responsável e de eventuais recursos. Durante o acompanhamento, mantemos você informado sobre cada etapa.' },
+      { id: '4', question: 'Vocês atendem clientes de outras cidades além de Rondonópolis?', answer: 'Sim. Além do escritório em Rondonópolis, temos atendimento em Primavera do Leste e realizamos consultas remotas por telefone ou videochamada para outras regiões.' },
+      { id: '5', question: 'Como funcionam os honorários advocatícios?', answer: 'Os honorários variam conforme a área e a complexidade do caso — podem ser um valor fixo, parcelado ou um percentual sobre o resultado (em ações que envolvem valores a receber). Isso é sempre explicado com transparência antes de qualquer contratação.' },
     ]
   };
 
@@ -1283,6 +1348,7 @@
         whatsapp:    s.whatsapp    || DEFAULT_DATA.whatsapp,
         teamVisible: s.teamVisible !== undefined ? s.teamVisible : DEFAULT_DATA.teamVisible,
         addresses:   s.addresses   || DEFAULT_DATA.addresses,
+        faqs:        s.faqs       || DEFAULT_DATA.faqs,
         team:        s.team        || DEFAULT_DATA.team,
         links:       s.links       || DEFAULT_DATA.links,
       };
@@ -1490,6 +1556,7 @@
     renderMemberList();
     renderAddrList();
     renderLinksList();
+    renderFaqAdminList();
   }
 
   function updateDashboard() {
@@ -2130,6 +2197,88 @@
         <div class="loc-track"><div class="loc-fill" style="width:${Math.round(((l.clicks||0)/max)*100)}%"></div></div>
         <span class="loc-count">${l.clicks || 0}</span>
       </div>`).join('');
+  }
+
+  /* ══════════════════════════════════════
+     FAQ
+  ══════════════════════════════════════ */
+  function renderFaqAdminList() {
+    const list = document.getElementById('faqAdminList');
+    if (!list) return;
+    if (!DATA.faqs || !DATA.faqs.length) {
+      list.innerHTML = '<p style="font-size:14px;color:var(--text-light);text-align:center;padding:1.5rem 0">Nenhuma pergunta cadastrada.</p>';
+      return;
+    }
+    list.innerHTML = DATA.faqs.map((f, i) => `
+      <div class="member-card" id="fq-${f.id}">
+        <div class="member-order">
+          <button class="order-btn" onclick="moveFaq('${f.id}',-1)" ${i===0?'disabled':''} aria-label="Mover para cima">▲</button>
+          <button class="order-btn" onclick="moveFaq('${f.id}',1)"  ${i===DATA.faqs.length-1?'disabled':''} aria-label="Mover para baixo">▼</button>
+        </div>
+        <div class="member-info">
+          <div class="member-name">${f.question}</div>
+          <div class="member-role">${f.answer}</div>
+        </div>
+        <div class="member-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditFaq('${f.id}')">✏️ Editar</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="confirmRemoveFaq('${f.id}')">🗑️ Remover</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function moveFaq(id, dir) {
+    const i = DATA.faqs.findIndex(f => f.id === id);
+    const j = i + dir;
+    if (j < 0 || j >= DATA.faqs.length) return;
+    [DATA.faqs[i], DATA.faqs[j]] = [DATA.faqs[j], DATA.faqs[i]];
+    renderFaqAdminList(); persist(); showLastSaved();
+  }
+
+  function addFaq() {
+    const question = document.getElementById('new-faq-q').value.trim();
+    const answer   = document.getElementById('new-faq-a').value.trim();
+    if (!question || !answer) { toast('Preencha a pergunta e a resposta.', 'error'); return; }
+    DATA.faqs.push({ id: Date.now().toString(), question, answer });
+    renderFaqAdminList(); persist(); showLastSaved(); clearAddFaqForm();
+    toast('Pergunta adicionada', 'success');
+  }
+
+  function clearAddFaqForm() {
+    document.getElementById('new-faq-q').value = '';
+    document.getElementById('new-faq-a').value = '';
+  }
+
+  function openEditFaq(id) {
+    const f = DATA.faqs.find(f => f.id === id);
+    if (!f) return;
+    document.getElementById('edit-faq-id').value = f.id;
+    document.getElementById('edit-faq-q').value  = f.question;
+    document.getElementById('edit-faq-a').value  = f.answer;
+    openModal('editFaqModal');
+  }
+
+  function saveFaq() {
+    const id  = document.getElementById('edit-faq-id').value;
+    const idx = DATA.faqs.findIndex(f => f.id === id);
+    if (idx === -1) return;
+    const question = document.getElementById('edit-faq-q').value.trim();
+    const answer   = document.getElementById('edit-faq-a').value.trim();
+    if (!question || !answer) { toast('Preencha a pergunta e a resposta.', 'error'); return; }
+    DATA.faqs[idx] = { id, question, answer };
+    renderFaqAdminList(); persist(); showLastSaved(); closeModal('editFaqModal');
+    toast('Pergunta atualizada', 'success');
+  }
+
+  function confirmRemoveFaq(id) {
+    const f = DATA.faqs.find(f => f.id === id);
+    openConfirm('🗑️', 'Remover pergunta?',
+      `"${f ? f.question : 'Esta pergunta'}" será removida do site. Esta ação não pode ser desfeita.`,
+      'Remover',
+      () => {
+        DATA.faqs = DATA.faqs.filter(f => f.id !== id);
+        renderFaqAdminList(); persist(); showLastSaved();
+        toast('Pergunta removida', 'success');
+      });
   }
 
   /* ══════════════════════════════════════
