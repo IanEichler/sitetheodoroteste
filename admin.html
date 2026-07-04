@@ -1158,6 +1158,11 @@
             <div id="locationList"></div>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Cliques por Link</span></div>
+          <div id="linkClicksList"></div>
+        </div>
       </section>
 
       <!-- ── CONFIGURAÇÕES ── -->
@@ -2002,6 +2007,7 @@
     renderStatsChart(siteRows, linksRows);
     renderDeviceBreakdown(mobileCount, desktopCount);
     renderLocationList(rows);
+    renderLinkClicks();
   }
 
   function dayKey(iso) {
@@ -2030,24 +2036,35 @@
     };
     const siteSeries  = countByDay(siteRows);
     const linksSeries = countByDay(linksRows);
-    const maxVal = Math.max(1, ...siteSeries, ...linksSeries);
+    const rawMax = Math.max(1, ...siteSeries, ...linksSeries);
+
+    // Eixo com "tick" inteiro e sem duplicar números (ex: nunca 2,2,1,1,0)
+    const tickCount = Math.min(4, rawMax);
+    const step = Math.max(1, Math.ceil(rawMax / tickCount));
+    const niceMax = step * tickCount;
 
     const W = 640, H = 220, padL = 28, padR = 12, padT = 16, padB = 24;
     const plotW = W - padL - padR, plotH = H - padT - padB;
     const n = days.length;
     const x = i => n === 1 ? padL + plotW / 2 : padL + (i / (n - 1)) * plotW;
-    const y = v => padT + plotH - (v / maxVal) * plotH;
+    const y = v => padT + plotH - (v / niceMax) * plotH;
 
-    const gridLines = [0, .25, .5, .75, 1].map(f => {
-      const yy = padT + plotH * (1 - f);
-      const val = Math.round(maxVal * f);
-      return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--viz-grid)" stroke-width="1"/>
-              <text x="2" y="${yy+4}" font-size="10" fill="var(--text-light)">${val}</text>`;
-    }).join('');
+    const gridLines = [];
+    for (let i = 0; i <= tickCount; i++) {
+      const val = i * step;
+      const yy = y(val);
+      gridLines.push(`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--viz-grid)" stroke-width="1"/>
+              <text x="2" y="${yy+4}" font-size="10" fill="var(--text-light)">${val}</text>`);
+    }
 
     const buildPath = (series) => series.map((v, i) => `${i===0?'M':'L'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
     const buildDots = (series, color) => n <= 14
       ? series.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="${color}"/>`).join('')
+      : '';
+    // Com poucos pontos (1-3 dias), rotula o valor direto no ponto — sem
+    // isso um único ponto isolado parece "quebrado" em vez de um dado real.
+    const buildValueLabels = (series, color) => n <= 3
+      ? series.map((v, i) => `<text x="${x(i).toFixed(1)}" y="${(y(v)-9).toFixed(1)}" font-size="11" font-weight="600" fill="${color}" text-anchor="middle">${v}</text>`).join('')
       : '';
 
     const dateLabels = n <= 14
@@ -2055,11 +2072,13 @@
       : `<text x="${padL}" y="${H-6}" font-size="10" fill="var(--text-light)">${days[0].slice(5)}</text><text x="${W-padR}" y="${H-6}" font-size="10" fill="var(--text-light)" text-anchor="end">${days[n-1].slice(5)}</text>`;
 
     svg.innerHTML = `
-      ${gridLines}
+      ${gridLines.join('')}
       <path d="${buildPath(siteSeries)}" fill="none" stroke="var(--viz-series-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="${buildPath(linksSeries)}" fill="none" stroke="var(--viz-series-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       ${buildDots(siteSeries, 'var(--viz-series-1)')}
       ${buildDots(linksSeries, 'var(--viz-series-2)')}
+      ${buildValueLabels(siteSeries, 'var(--viz-series-1)')}
+      ${buildValueLabels(linksSeries, 'var(--viz-series-2)')}
       ${dateLabels}
     `;
   }
@@ -2096,6 +2115,20 @@
         <span class="loc-name" title="${name}">${name}</span>
         <div class="loc-track"><div class="loc-fill" style="width:${Math.round((count/max)*100)}%"></div></div>
         <span class="loc-count">${count}</span>
+      </div>`).join('');
+  }
+
+  function renderLinkClicks() {
+    const wrap = document.getElementById('linkClicksList');
+    if (!wrap) return;
+    const links = (DATA.links || []).slice().sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
+    if (!links.length) { wrap.innerHTML = '<p style="font-size:13px;color:var(--text-light)">Nenhum link cadastrado.</p>'; return; }
+    const max = Math.max(1, ...links.map(l => l.clicks || 0));
+    wrap.innerHTML = links.map(l => `
+      <div class="loc-row">
+        <span class="loc-name" title="${l.title || 'Link'}">${l.title || 'Link'}</span>
+        <div class="loc-track"><div class="loc-fill" style="width:${Math.round(((l.clicks||0)/max)*100)}%"></div></div>
+        <span class="loc-count">${l.clicks || 0}</span>
       </div>`).join('');
   }
 
