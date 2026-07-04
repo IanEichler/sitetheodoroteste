@@ -39,6 +39,11 @@
       --shadow:      0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
       --shadow-md:   0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
       --shadow-lg:   0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
+      /* Viz (categorical, validated) */
+      --viz-series-1: #2a78d6;
+      --viz-series-2: #1baf7a;
+      --viz-grid:      #e1e0d9;
+      --viz-axis:      #c3c2b7;
     }
 
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
@@ -192,6 +197,38 @@
     .stat-body { flex: 1; }
     .stat-label { font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: .08em; }
     .stat-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.1; margin-top: .2rem; }
+
+    /* ════════════════════════════════
+       ESTATÍSTICAS
+    ════════════════════════════════ */
+    .stats-filter-bar {
+      display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .stats-filter-btn {
+      font-size: 13px; font-weight: 600; color: var(--text-mid);
+      background: var(--surface); border: 1px solid var(--border-dark);
+      border-radius: 20px; padding: .4rem 1rem; cursor: pointer; transition: all .15s;
+    }
+    .stats-filter-btn:hover { background: var(--bg); }
+    .stats-filter-btn.active { background: var(--forest); border-color: var(--forest); color: #fff; }
+    .stats-filter-status { font-size: 12px; color: var(--text-light); margin-left: .25rem; }
+
+    .chart-legend { display: flex; gap: 1.25rem; margin-bottom: 1rem; }
+    .chart-legend-item { display: flex; align-items: center; gap: .4rem; font-size: 13px; font-weight: 500; color: var(--text-mid); }
+    .chart-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .chart-empty { text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 14px; }
+
+    .device-bar-row { margin-bottom: 1.1rem; }
+    .device-bar-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: .4rem; }
+    .device-bar-track { height: 10px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+    .device-bar-fill { height: 100%; border-radius: 6px; transition: width .3s ease; }
+
+    .loc-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .85rem; }
+    .loc-name { font-size: 13px; font-weight: 500; color: var(--text-mid); width: 40%; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .loc-track { flex: 1; height: 8px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+    .loc-fill { height: 100%; background: var(--viz-series-1); border-radius: 5px; }
+    .loc-count { font-size: 12px; font-weight: 600; color: var(--text-light); width: 2.2rem; text-align: right; flex-shrink: 0; }
 
     /* ════════════════════════════════
        TABS (Dados do Site)
@@ -768,6 +805,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           Links (Linktree)
         </button>
+        <button class="nav-item" data-page="stats" onclick="goTo('stats',this)">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+          Estatísticas
+        </button>
       </div>
       <div class="sidebar-group">
         <span class="sidebar-group-label">Sistema</span>
@@ -1062,6 +1103,62 @@
         </div>
       </section>
 
+      <!-- ── ESTATÍSTICAS ── -->
+      <section class="page" id="page-stats">
+        <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Estatísticas</span></nav>
+        <div class="page-title">Estatísticas</div>
+        <div class="page-sub">Visitas no site e na página de links.</div>
+
+        <div class="stats-filter-bar">
+          <button class="stats-filter-btn active" data-range="1" onclick="setStatsRange(1,this)">Hoje</button>
+          <button class="stats-filter-btn" data-range="7" onclick="setStatsRange(7,this)">7 dias</button>
+          <button class="stats-filter-btn" data-range="30" onclick="setStatsRange(30,this)">30 dias</button>
+          <button class="stats-filter-btn" data-range="90" onclick="setStatsRange(90,this)">90 dias</button>
+          <button class="stats-filter-btn" data-range="0" onclick="setStatsRange(0,this)">Tudo</button>
+          <span class="stats-filter-status" id="statsStatus"></span>
+        </div>
+
+        <div class="dash-stats" id="statsTiles">
+          <div class="stat-card">
+            <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="stat-body"><div class="stat-label">Visitas no Site</div><div class="stat-value" id="st-visits-site">—</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+            <div class="stat-body"><div class="stat-label">Visitas em /links</div><div class="stat-value" id="st-visits-links">—</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+            <div class="stat-body"><div class="stat-label">Celular</div><div class="stat-value" id="st-pct-mobile">—</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon forest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="stat-body"><div class="stat-label">Computador</div><div class="stat-value" id="st-pct-desktop">—</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Visitas ao longo do tempo</span></div>
+          <div class="chart-legend">
+            <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--viz-series-1)"></span>Site</span>
+            <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--viz-series-2)"></span>/links</span>
+          </div>
+          <div id="statsChartWrap"><svg id="statsChart" viewBox="0 0 640 220" preserveAspectRatio="none" style="width:100%;height:220px;display:block"></svg></div>
+          <div class="chart-empty" id="statsChartEmpty" style="display:none">Sem dados de visitas neste período.</div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="card">
+            <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Dispositivo</span></div>
+            <div id="deviceBreakdown"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="card-title-bar"></span><span class="card-title-text">Principais localizações</span></div>
+            <div id="locationList"></div>
+          </div>
+        </div>
+      </section>
+
       <!-- ── CONFIGURAÇÕES ── -->
       <section class="page" id="page-config">
         <nav class="breadcrumb"><a onclick="goTo('dashboard',document.querySelector('[data-page=dashboard]'))">Dashboard</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Configurações</span></nav>
@@ -1315,6 +1412,7 @@
     if (btn) btn.classList.add('active');
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 'stats' && !statsLoaded) { statsLoaded = true; loadStats(); }
   }
 
   /* ══════════════════════════════════════
@@ -1822,6 +1920,154 @@
     prev.textContent = '🔗';
     document.getElementById('edit-link-photo-remove').style.display = 'none';
     document.getElementById('edit-link-photo-input').value = '';
+  }
+
+  /* ══════════════════════════════════════
+     ESTATÍSTICAS
+  ══════════════════════════════════════ */
+  let statsRangeDays = 1;
+  let statsLoaded = false;
+
+  async function setStatsRange(days, btn) {
+    statsRangeDays = days;
+    document.querySelectorAll('.stats-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    await loadStats();
+  }
+
+  async function loadStats() {
+    const statusEl = document.getElementById('statsStatus');
+    if (statusEl) statusEl.textContent = 'Carregando…';
+    try {
+      let query = sb.from('page_visits').select('created_at,page,device,country,region,city').order('created_at', { ascending: true });
+      if (statsRangeDays > 0) {
+        const start = statsRangeDays === 1
+          ? new Date(new Date().setHours(0, 0, 0, 0))
+          : new Date(Date.now() - statsRangeDays * 86400000);
+        query = query.gte('created_at', start.toISOString());
+      }
+      const { data: rows, error } = await query;
+      if (error) throw error;
+      renderStats(rows || []);
+      if (statusEl) statusEl.textContent = '';
+    } catch (e) {
+      console.warn('Falha ao carregar estatísticas', e);
+      if (statusEl) statusEl.textContent = 'Não foi possível carregar (a tabela page_visits existe?).';
+    }
+  }
+
+  function renderStats(rows) {
+    const siteRows  = rows.filter(r => r.page === 'site');
+    const linksRows = rows.filter(r => r.page === 'links');
+    document.getElementById('st-visits-site').textContent  = siteRows.length.toLocaleString('pt-BR');
+    document.getElementById('st-visits-links').textContent = linksRows.length.toLocaleString('pt-BR');
+
+    const mobileCount  = rows.filter(r => r.device === 'mobile').length;
+    const desktopCount = rows.filter(r => r.device === 'desktop').length;
+    const totalDev = mobileCount + desktopCount;
+    const pctMobile  = totalDev ? Math.round((mobileCount  / totalDev) * 100) : 0;
+    const pctDesktop = totalDev ? Math.round((desktopCount / totalDev) * 100) : 0;
+    document.getElementById('st-pct-mobile').textContent  = totalDev ? pctMobile + '%'  : '—';
+    document.getElementById('st-pct-desktop').textContent = totalDev ? pctDesktop + '%' : '—';
+
+    renderStatsChart(siteRows, linksRows);
+    renderDeviceBreakdown(mobileCount, desktopCount);
+    renderLocationList(rows);
+  }
+
+  function dayKey(iso) {
+    return new Date(iso).toISOString().slice(0, 10);
+  }
+
+  function renderStatsChart(siteRows, linksRows) {
+    const svg = document.getElementById('statsChart');
+    const emptyEl = document.getElementById('statsChartEmpty');
+    if (!siteRows.length && !linksRows.length) {
+      svg.style.display = 'none'; emptyEl.style.display = 'block';
+      return;
+    }
+    svg.style.display = 'block'; emptyEl.style.display = 'none';
+
+    const allDays = new Set([...siteRows, ...linksRows].map(r => dayKey(r.created_at)));
+    let days = Array.from(allDays).sort();
+    if (days.length < 2) {
+      const only = days[0] || dayKey(new Date().toISOString());
+      days = [only];
+    }
+    const countByDay = (list) => {
+      const map = {};
+      list.forEach(r => { const k = dayKey(r.created_at); map[k] = (map[k] || 0) + 1; });
+      return days.map(d => map[d] || 0);
+    };
+    const siteSeries  = countByDay(siteRows);
+    const linksSeries = countByDay(linksRows);
+    const maxVal = Math.max(1, ...siteSeries, ...linksSeries);
+
+    const W = 640, H = 220, padL = 28, padR = 12, padT = 16, padB = 24;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const n = days.length;
+    const x = i => n === 1 ? padL + plotW / 2 : padL + (i / (n - 1)) * plotW;
+    const y = v => padT + plotH - (v / maxVal) * plotH;
+
+    const gridLines = [0, .25, .5, .75, 1].map(f => {
+      const yy = padT + plotH * (1 - f);
+      const val = Math.round(maxVal * f);
+      return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--viz-grid)" stroke-width="1"/>
+              <text x="2" y="${yy+4}" font-size="10" fill="var(--text-light)">${val}</text>`;
+    }).join('');
+
+    const buildPath = (series) => series.map((v, i) => `${i===0?'M':'L'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const buildDots = (series, color) => n <= 14
+      ? series.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="${color}"/>`).join('')
+      : '';
+
+    const dateLabels = n <= 14
+      ? days.map((d, i) => `<text x="${x(i).toFixed(1)}" y="${H-6}" font-size="10" fill="var(--text-light)" text-anchor="middle">${d.slice(5)}</text>`).join('')
+      : `<text x="${padL}" y="${H-6}" font-size="10" fill="var(--text-light)">${days[0].slice(5)}</text><text x="${W-padR}" y="${H-6}" font-size="10" fill="var(--text-light)" text-anchor="end">${days[n-1].slice(5)}</text>`;
+
+    svg.innerHTML = `
+      ${gridLines}
+      <path d="${buildPath(siteSeries)}" fill="none" stroke="var(--viz-series-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${buildPath(linksSeries)}" fill="none" stroke="var(--viz-series-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${buildDots(siteSeries, 'var(--viz-series-1)')}
+      ${buildDots(linksSeries, 'var(--viz-series-2)')}
+      ${dateLabels}
+    `;
+  }
+
+  function renderDeviceBreakdown(mobileCount, desktopCount) {
+    const total = mobileCount + desktopCount;
+    const wrap = document.getElementById('deviceBreakdown');
+    if (!total) { wrap.innerHTML = '<p style="font-size:13px;color:var(--text-light)">Sem dados neste período.</p>'; return; }
+    const pctM = Math.round((mobileCount / total) * 100);
+    const pctD = 100 - pctM;
+    wrap.innerHTML = `
+      <div class="device-bar-row">
+        <div class="device-bar-label"><span>📱 Celular</span><span>${mobileCount} (${pctM}%)</span></div>
+        <div class="device-bar-track"><div class="device-bar-fill" style="width:${pctM}%;background:var(--viz-series-1)"></div></div>
+      </div>
+      <div class="device-bar-row">
+        <div class="device-bar-label"><span>🖥️ Computador</span><span>${desktopCount} (${pctD}%)</span></div>
+        <div class="device-bar-track"><div class="device-bar-fill" style="width:${pctD}%;background:var(--viz-series-2)"></div></div>
+      </div>`;
+  }
+
+  function renderLocationList(rows) {
+    const wrap = document.getElementById('locationList');
+    const counts = {};
+    rows.forEach(r => {
+      const label = r.city ? `${r.city}, ${r.region || r.country || ''}`.replace(/, $/, '') : (r.country || 'Desconhecida');
+      counts[label] = (counts[label] || 0) + 1;
+    });
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    if (!entries.length) { wrap.innerHTML = '<p style="font-size:13px;color:var(--text-light)">Sem dados neste período.</p>'; return; }
+    const max = entries[0][1];
+    wrap.innerHTML = entries.map(([name, count]) => `
+      <div class="loc-row">
+        <span class="loc-name" title="${name}">${name}</span>
+        <div class="loc-track"><div class="loc-fill" style="width:${Math.round((count/max)*100)}%"></div></div>
+        <span class="loc-count">${count}</span>
+      </div>`).join('');
   }
 
   /* ══════════════════════════════════════

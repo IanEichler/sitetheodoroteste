@@ -264,6 +264,32 @@
     const _SB_URL = 'https://wmzfehnczvdraeninzcf.supabase.co/rest/v1/site_config?id=eq.1&select=data';
     const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
 
+    /* ── ANALYTICS: registra a visita (1x por aba/sessão) ── */
+    (function trackVisit(pageName) {
+      try {
+        const flag = 'tp_visit_' + pageName;
+        if (sessionStorage.getItem(flag)) return;
+        sessionStorage.setItem(flag, '1');
+        const device = window.innerWidth < 768 ? 'mobile' : 'desktop';
+        const payload = { page: pageName, device };
+        fetch('https://ipapi.co/json/').then(r => r.ok ? r.json() : null).catch(() => null)
+          .then(loc => {
+            if (loc && !loc.error) {
+              payload.country = loc.country_name || null;
+              payload.region  = loc.region || null;
+              payload.city    = loc.city || null;
+            }
+          })
+          .finally(() => {
+            fetch('https://wmzfehnczvdraeninzcf.supabase.co/rest/v1/page_visits', {
+              method: 'POST',
+              headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+              body: JSON.stringify(payload),
+            }).catch(() => {});
+          });
+      } catch (e) {}
+    })('links');
+
     fetch(_SB_URL, { headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY } })
       .then(r => r.json())
       .then(rows => {
