@@ -18,4 +18,5 @@ jobs:
         env:
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
           GOOGLE_PLACE_ID: ${{ secrets.GOOGLE_PLACE_ID }}
+        # GOOGLE_PLACE_ID é opcional: o script descobre o Place ID sozinho se não for definido
         run: node scripts/update-google-rating.js

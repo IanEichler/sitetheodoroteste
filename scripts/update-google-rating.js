@@ -2,21 +2,38 @@
 // seção de depoimentos) automaticamente, usando a Google Places API.
 // Roda agendado pelo GitHub Actions (.github/workflows/update-google-rating.yml).
 //
-// Precisa de dois secrets no GitHub:
+// Precisa de um secret no GitHub:
 // - GOOGLE_PLACES_API_KEY: chave de API do Google Cloud com a "Places API" ativada.
-// - GOOGLE_PLACE_ID: o Place ID do escritório no Google Maps.
+//
+// O Place ID do escritório é descoberto automaticamente (busca por nome + endereço)
+// e não precisa ser configurado à mão. Se quiser forçar um Place ID específico,
+// defina também o secret opcional GOOGLE_PLACE_ID.
 
 const SB_BASE = 'https://wmzfehnczvdraeninzcf.supabase.co/rest/v1';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
 const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
-const PLACE_ID = process.env.GOOGLE_PLACE_ID;
+const PLACE_QUERY = 'Theodoro e Porto Advocacia, Rua Arnaldo Estêvão de Figueiredo 874, Rondonópolis - MT';
 
 function sbHeaders(extra = {}) {
   return { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, ...extra };
 }
 
-async function fetchGoogleRating() {
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(PLACE_ID)}&fields=rating,user_ratings_total&key=${GOOGLE_API_KEY}`;
+async function resolvePlaceId() {
+  if (process.env.GOOGLE_PLACE_ID) return process.env.GOOGLE_PLACE_ID;
+
+  const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(PLACE_QUERY)}&inputtype=textquery&fields=place_id,name&key=${GOOGLE_API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.status !== 'OK' || !data.candidates?.length) {
+    throw new Error(`Não encontrei o Place ID automaticamente (status "${data.status}"). Configure o secret GOOGLE_PLACE_ID manualmente.`);
+  }
+  const candidate = data.candidates[0];
+  console.log(`Place ID resolvido automaticamente: ${candidate.place_id} (${candidate.name})`);
+  return candidate.place_id;
+}
+
+async function fetchGoogleRating(placeId) {
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=rating,user_ratings_total&key=${GOOGLE_API_KEY}`;
   const res = await fetch(url);
   const data = await res.json();
   if (data.status !== 'OK') {
@@ -50,11 +67,12 @@ async function updateSiteConfig(google) {
 }
 
 async function main() {
-  if (!GOOGLE_API_KEY || !PLACE_ID) {
-    console.log('GOOGLE_PLACES_API_KEY ou GOOGLE_PLACE_ID não configurados — pulando (configure os secrets no GitHub).');
+  if (!GOOGLE_API_KEY) {
+    console.log('GOOGLE_PLACES_API_KEY não configurada — pulando (configure o secret no GitHub).');
     return;
   }
-  const google = await fetchGoogleRating();
+  const placeId = await resolvePlaceId();
+  const google = await fetchGoogleRating(placeId);
   await updateSiteConfig(google);
 }
 
