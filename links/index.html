@@ -197,6 +197,7 @@
       .scroll-hint svg { animation: none; }
     }
   </style>
+  <script src="../scripts/analytics.js" defer></script>
 </head>
 <body>
 
@@ -272,7 +273,7 @@
     const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtemZlaG5jenZkcmFlbmluemNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMjUwNjcsImV4cCI6MjA5NzkwMTA2N30.Z5kUqetdkEsidfZMV_zVhck2S0vV5tFcB24nqp5vJBY';
 
     /* ── ANALYTICS: registra a visita (1x por aba/sessão) ── */
-    (function trackVisit(pageName) {
+    function trackVisit(pageName) {
       try {
         const flag = 'tp_visit_' + pageName;
         if (sessionStorage.getItem(flag)) return;
@@ -295,7 +296,9 @@
             }).catch(() => {});
           });
       } catch (e) {}
-    })('links');
+    }
+    if (localStorage.getItem('tp_analytics_consent_v1') === 'granted') trackVisit('links');
+    window.addEventListener('tp:analytics-consent', () => trackVisit('links'), { once: true });
 
     fetch(_SB_URL, { headers: { apikey: _SB_KEY, Authorization: 'Bearer ' + _SB_KEY } })
       .then(r => r.json())
@@ -316,6 +319,7 @@
        fetch terminar antes do usuário sair. */
     function trackClick(linkId) {
       try {
+        if (localStorage.getItem('tp_analytics_consent_v1') !== 'granted') return;
         const raw = localStorage.getItem('tp_data');
         if (!raw) return;
         const data = JSON.parse(raw);

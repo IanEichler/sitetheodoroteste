@@ -1,6 +1,7 @@
-# Consolida www e sem-www numa única URL canônica (evita conteúdo duplicado no Google)
+# Consolida HTTP/HTTPS e www/sem-www numa única URL canônica
 RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www\.theodoroeporto\.adv\.br [NC]
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\.theodoroeporto\.adv\.br$ [NC]
 RewriteRule ^(.*)$ https://theodoroeporto.adv.br/$1 [L,R=301]
 
 # /admin (sem .html) serve o painel administrativo
