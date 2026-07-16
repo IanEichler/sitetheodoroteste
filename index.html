@@ -285,6 +285,7 @@
       transition: background .2s; font-family: 'Inter', sans-serif;
       position: relative; overflow: hidden;
       box-shadow: 0 0 18px rgba(201,168,76,.55);
+      text-decoration: none;
     }
     .btn-modal::after {
       content: '';
@@ -302,6 +303,13 @@
     .btn-modal svg { width: 16px; height: 16px; transition: transform .2s; }
     .btn-modal:hover { background: var(--gold-light); }
     .btn-modal:hover svg { transform: translateX(4px); }
+    .hero-form-link {
+      display: block; margin-top: .9rem; padding: .2rem 0;
+      color: rgba(250,250,248,.72); background: none; border: 0;
+      border-bottom: 1px solid rgba(250,250,248,.28); cursor: pointer;
+      font: 500 .72rem/1.4 'Inter', sans-serif; letter-spacing: .04em;
+    }
+    .hero-form-link:hover { color: var(--cream); border-bottom-color: var(--gold); }
     /* RIGHT: group photo */
     .hero-right {
       position: static;
@@ -886,6 +894,7 @@
         padding: 1rem 2rem; border-radius: 6px; border: none; cursor: pointer;
         box-shadow: 0 0 22px rgba(201,168,76,.45); width: 100%; max-width: 280px;
         position: relative; overflow: hidden;
+        text-decoration: none;
       }
 
       /* ── HERO MOBILE ── */
@@ -1084,7 +1093,7 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
-    <a href="#" class="nav-cta" id="navCta">Fale sobre seu caso</a>
+    <a href="https://wa.me/5566999843063?text=Oi%2C%20tudo%20bem%3F%20Gostaria%20de%20receber%20informa%C3%A7%C3%B5es%20sobre%20o%20atendimento%20jur%C3%ADdico." class="nav-cta" id="navCta" target="_blank" rel="noopener">Falar pelo WhatsApp</a>
     <button class="nav-burger" id="navBurger" aria-label="Menu">
       <span></span><span></span>
     </button>
@@ -1101,7 +1110,7 @@
       <li><a href="#faq" class="ml">FAQ</a></li>
       <li><a href="#contato" class="ml">Contato</a></li>
     </ul>
-    <button class="mob-menu-cta" id="mobMenuCta">Fale sobre seu caso →</button>
+    <a class="mob-menu-cta" id="mobMenuCta" href="https://wa.me/5566999843063?text=Oi%2C%20tudo%20bem%3F%20Gostaria%20de%20receber%20informa%C3%A7%C3%B5es%20sobre%20o%20atendimento%20jur%C3%ADdico." target="_blank" rel="noopener">Falar pelo WhatsApp →</a>
   </div>
 
   <!-- HERO -->
@@ -1128,10 +1137,11 @@
         <span class="hr-sep">·</span>
         <span class="hr-count">Primavera do Leste</span>
       </div>
-      <button class="btn-modal magnetic" id="heroCtaBtn">
-        <span>Fale sobre seu caso</span>
+      <a class="btn-modal magnetic" id="heroCtaBtn" href="https://wa.me/5566999843063?text=Oi%2C%20tudo%20bem%3F%20Gostaria%20de%20receber%20informa%C3%A7%C3%B5es%20sobre%20o%20atendimento%20jur%C3%ADdico." target="_blank" rel="noopener">
+        <span>Falar pelo WhatsApp</span>
         <svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      </a>
+      <button class="hero-form-link" id="heroFormBtn" type="button">Enviar informações antes</button>
     </div>
 
     <div class="hero-right">
@@ -1388,12 +1398,11 @@
         <h2 class="s-title gs0">Entre em <em>contato</em></h2>
         <p class="s-sub gs0" style="margin-bottom:0">Entre em contato para apresentar sua situação e receber informações sobre o atendimento. Você também pode falar diretamente pelo WhatsApp.</p>
         <div class="ci-grid">
-          <div class="ci-card gs0 copyable" onclick="copyContact(this,'phone')">
-            <span class="ci-copied-badge">Número copiado ✓</span>
+          <a class="ci-card gs0" id="ci-phone-card" href="tel:+5566999843063">
             <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.55 5.55l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
             <div class="ci-label">Telefone</div>
             <div class="ci-val" id="ci-phone">+55 (66) 99984-3063</div>
-          </div>
+          </a>
           <div class="ci-card gs0 copyable" onclick="copyContact(this,'email')">
             <span class="ci-copied-badge">E-mail copiado ✓</span>
             <div class="ci-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
@@ -1572,7 +1581,7 @@
       const ad = DATA.contact.address.replace('\n','<br>');
       const hr = DATA.contact.hours;
       document.getElementById('ci-phone').textContent   = ph;
-      document.getElementById('ci-phone').href          = 'tel:' + ph.replace(/\D/g,'');
+      document.getElementById('ci-phone-card').href     = 'tel:+' + ph.replace(/\D/g,'');
       document.getElementById('ci-email').textContent   = em;
       document.getElementById('ci-email').href          = 'mailto:' + em;
       // ci-address now rendered by renderAddresses()
@@ -1849,7 +1858,6 @@
     document.getElementById('mobMenuCta').addEventListener('click', () => {
       menuOpen = false; mobMenu.classList.remove('open');
       gsap.to(burger.querySelectorAll('span'), { rotate:0, y:0, duration:.3 });
-      setTimeout(openModal, 350);
     });
 
     /* ─────────────────────────────────────────
@@ -2061,12 +2069,12 @@
       wppBtn.href = `https://wa.me/${DATA.whatsapp}?text=${msg}`;
 
       setStep(3);
+      window.dispatchEvent(new CustomEvent('tp:lead-form-completed'));
     });
 
     document.getElementById('mBack3').addEventListener('click', () => setStep(2));
 
-    document.getElementById('heroCtaBtn').addEventListener('click', openModal);
-    document.getElementById('navCta').addEventListener('click', e => { e.preventDefault(); openModal(); });
+    document.getElementById('heroFormBtn').addEventListener('click', openModal);
     document.getElementById('modalClose').addEventListener('click', closeModal);
     document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
     window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });

@@ -4,18 +4,26 @@
   var MEASUREMENT_ID = 'G-P13799GMDH';
   var CONSENT_KEY = 'tp_analytics_consent_v1';
   var EVENT_NAME = 'ads_conversion_Contato_1';
+  var PRIMARY_EVENT_KEY = 'tp_primary_contact_sent';
   var analyticsReady = false;
 
   function startAnalytics() {
     if (analyticsReady) return;
     analyticsReady = true;
-    window['ga-disable-' + MEASUREMENT_ID] = false;
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    window.gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      wait_for_update: 500
+    });
     window.gtag('js', new Date());
     window.gtag('config', MEASUREMENT_ID, {
       anonymize_ip: true,
+      ads_data_redaction: true,
       allow_google_signals: false,
       allow_ad_personalization_signals: false
     });
@@ -24,6 +32,17 @@
     tag.async = true;
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(MEASUREMENT_ID);
     document.head.appendChild(tag);
+  }
+
+  function updateConsent(value) {
+    if (!analyticsReady || typeof window.gtag !== 'function') return;
+    var granted = value === 'granted' ? 'granted' : 'denied';
+    window.gtag('consent', 'update', {
+      analytics_storage: granted,
+      ad_storage: granted,
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
   }
 
   function getConsent() {
@@ -67,31 +86,49 @@
 
     document.getElementById('tp-cookie-accept').addEventListener('click', function () {
       saveConsent('granted');
-      startAnalytics();
+      updateConsent('granted');
       window.dispatchEvent(new CustomEvent('tp:analytics-consent'));
       removeBanner();
     });
     document.getElementById('tp-cookie-reject').addEventListener('click', function () {
-      var hadActiveTag = analyticsReady;
       saveConsent('denied');
-      window['ga-disable-' + MEASUREMENT_ID] = true;
+      updateConsent('denied');
       removeBanner();
-      if (hadActiveTag) window.location.reload();
     });
+  }
+
+  function sendEvent(name, params) {
+    if (!analyticsReady || typeof window.gtag !== 'function') return;
+    window.gtag('event', name, Object.assign({ page_path: window.location.pathname }, params || {}));
+  }
+
+  function trackPrimaryContactOnce(method) {
+    try {
+      if (window.sessionStorage.getItem(PRIMARY_EVENT_KEY)) return;
+      window.sessionStorage.setItem(PRIMARY_EVENT_KEY, '1');
+    } catch (error) { /* A deduplicação é apenas uma proteção adicional. */ }
+    sendEvent(EVENT_NAME, { contact_method: method });
   }
 
   function trackContact(method) {
-    if (!analyticsReady || typeof window.gtag !== 'function') return;
-    window.gtag('event', EVENT_NAME, {
-      contact_method: method,
-      page_path: window.location.pathname
+    sendEvent(method === 'whatsapp' ? 'contact_whatsapp' : 'contact_phone', {
+      contact_method: method
     });
+    trackPrimaryContactOnce(method);
   }
 
   function init() {
+    startAnalytics();
     var consent = getConsent();
-    if (consent === 'granted') startAnalytics();
-    else if (consent !== 'denied') showBanner();
+    if (consent === 'granted') updateConsent('granted');
+    else {
+      updateConsent('denied');
+      if (consent !== 'denied') showBanner();
+    }
+
+    window.addEventListener('tp:lead-form-completed', function () {
+      sendEvent('lead_form_completed', { contact_method: 'formulario' });
+    });
 
     document.addEventListener('click', function (event) {
       var consentButton = event.target.closest && event.target.closest('[data-tp-manage-consent]');
