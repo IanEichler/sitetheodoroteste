@@ -4,6 +4,11 @@ RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} ^www\.theodoroeporto\.adv\.br$ [NC]
 RewriteRule ^(.*)$ https://theodoroeporto.adv.br/$1 [L,R=301]
 
+# URLs limpas para as páginas das áreas de atuação
+RewriteCond %{THE_REQUEST} \s/+area-(previdenciario|trabalhista|civil|familia|consumidor)\.html[?\s] [NC]
+RewriteRule ^area-(previdenciario|trabalhista|civil|familia|consumidor)\.html$ /area-$1 [L,R=301,NE]
+RewriteRule ^area-(previdenciario|trabalhista|civil|familia|consumidor)/?$ area-$1.html [L]
+
 # /admin (sem .html) serve o painel administrativo
 RewriteRule ^admin/?$ admin.html [L]
 
